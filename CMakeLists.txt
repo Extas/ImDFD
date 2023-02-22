@@ -44,15 +44,15 @@ endif()
 
 # Meta information about the project
 # cmake-format: off
-set(META_PROJECT_NAME        "asap")
-set(META_PROJECT_DESCRIPTION "Instantly start with a fully loaded CMake project")
-set(META_AUTHOR_ORGANIZATION "The Authors")
-set(META_GITHUB_REPO         "https://github.com/abdes/asap")
-set(META_AUTHOR_DOMAIN       "https://github.com/abdes/asap")
-set(META_AUTHOR_MAINTAINER   "Abdessattar Sassi")
-set(META_VERSION_MAJOR       "4")
-set(META_VERSION_MINOR       "6")
-set(META_VERSION_PATCH       "2")
+set(META_PROJECT_NAME        "ImDFD")
+set(META_PROJECT_DESCRIPTION "A data flow diagram tool for my graduation project.")
+set(META_AUTHOR_ORGANIZATION "SCNU")
+set(META_GITHUB_REPO         "https://github.com/extas/ImDFD")
+set(META_AUTHOR_DOMAIN       "https://github.com/extas/ImDFD")
+set(META_AUTHOR_MAINTAINER   "Extas")
+set(META_VERSION_MAJOR       "0")
+set(META_VERSION_MINOR       "1")
+set(META_VERSION_PATCH       "0")
 set(META_VERSION_REVISION    "${GIT_REV}")
 set(META_VERSION             "${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
 set(META_NAME_VERSION        "${META_PROJECT_NAME} v${META_VERSION} (${META_VERSION_REVISION})")
@@ -87,7 +87,7 @@ option(ASAP_WITH_GOOGLE_ASAN    "Instrument code with address sanitizer"        
 option(ASAP_WITH_GOOGLE_UBSAN   "Instrument code with undefined behavior sanitizer"      OFF)
 option(ASAP_WITH_GOOGLE_TSAN    "Instrument code with thread sanitizer"                  OFF)
 option(ASAP_WITH_VALGRIND       "Builds targets with valgrind profilers added"           OFF)
-option(USE_CCACHE               "Enable caching of compiled artifacts using ccache"      OFF)
+option(USE_CCACHE               "Enable caching of compiled artifacts using ccache"      ON)
 # cmake-format: on
 
 # ------------------------------------------------------------------------------
