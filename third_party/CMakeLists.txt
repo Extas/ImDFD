@@ -23,3 +23,30 @@ message(STATUS "${ASAP_LOG_PROJECT_HIERARCHY} >> third-party modules")
 #   OPTIONS
 #   "MAGIC_ENUM_OPT_INSTALL ON")
 # ~~~
+
+asap_add_package(
+  NAME
+  GLFW
+  GIT_TAG
+  3.3.8
+  GITHUB_REPOSITORY
+  glfw/glfw
+  )
+
+asap_add_package(
+  NAME
+  glad
+  GIT_TAG
+  v0.1.36
+  GITHUB_REPOSITORY
+  Dav1dde/glad
+  )
+
+asap_add_package(
+  NAME
+  imgui
+  GIT_TAG
+  458a1090314a965dd37b02c918d83077a0142ad5 # docking branch
+  GITHUB_REPOSITORY
+  ocornut/imgui
+  )

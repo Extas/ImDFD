@@ -244,6 +244,10 @@ add_subdirectory(tools/version-info)
 
 # Add project modules here
 
+asap_push_module(main)
+add_subdirectory(main)
+asap_pop_module(main)
+
 # ------------------------------------------------------------------------------
 # Code analyzers: clang-tidy, cppcheck, valgrind, sanitizers, etc...
 #
