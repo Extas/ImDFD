@@ -30,11 +30,18 @@ set(MODULE_TARGET_NAME "ImDFD")
 asap_add_executable(
   ${MODULE_TARGET_NAME}
   SOURCES
-  src/main.cpp)
+  src/main.cpp
+  src/GLFWMainWindows.cpp
+  src/DearImGui.cpp
+)
+
+asap_set_language_standards(${MODULE_TARGET_NAME}
+  CXX 17)
 
 find_package(GLFW REQUIRED)
 find_package(GLAD REQUIRED)
 find_package(imgui REQUIRED)
+find_package(imgui_node_editor REQUIRED)
 
 asap_add_library(imgui STATIC
   SOURCES
@@ -53,12 +60,21 @@ target_include_directories(imgui PUBLIC
   ${GLFW_SOURCE_DIR}/include
 )
 
+file(GLOB IMGUI_NODE_EDITOR_SRC ${imgui_node_editor_SOURCE_DIR}/*.cpp)
+asap_add_library(imgui_node_editor STATIC
+  SOURCES
+  ${IMGUI_NODE_EDITOR_SRC}
+)
+target_link_libraries(imgui_node_editor PRIVATE imgui)
+target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_SOURCE_DIR})
+
 target_link_libraries(
   ${MODULE_TARGET_NAME}
   PUBLIC
   glfw
   glad
   imgui
+  imgui_node_editor
 )
 
 target_include_directories(${MODULE_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR}/include)

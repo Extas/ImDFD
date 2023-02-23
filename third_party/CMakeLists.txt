@@ -14,16 +14,15 @@ message(STATUS "${ASAP_LOG_PROJECT_HIERARCHY} >> third-party modules")
 # Example:
 # ~~~
 # asap_add_package(
-#   NAME
-#   magic_enum
-#   GIT_TAG
-#   master
-#   GITHUB_REPOSITORY
-#   abdes/magic_enum
-#   OPTIONS
-#   "MAGIC_ENUM_OPT_INSTALL ON")
+# NAME
+# magic_enum
+# GIT_TAG
+# master
+# GITHUB_REPOSITORY
+# abdes/magic_enum
+# OPTIONS
+# "MAGIC_ENUM_OPT_INSTALL ON")
 # ~~~
-
 asap_add_package(
   NAME
   GLFW
@@ -31,7 +30,7 @@ asap_add_package(
   3.3.8
   GITHUB_REPOSITORY
   glfw/glfw
-  )
+)
 
 asap_add_package(
   NAME
@@ -40,7 +39,7 @@ asap_add_package(
   v0.1.36
   GITHUB_REPOSITORY
   Dav1dde/glad
-  )
+)
 
 asap_add_package(
   NAME
@@ -49,4 +48,13 @@ asap_add_package(
   192196711a7d0d7c2d60454d42654cf090498a74 # docking branch
   GITHUB_REPOSITORY
   ocornut/imgui
-  )
+)
+
+asap_add_package(
+  NAME
+  imgui_node_editor
+  GIT_TAG
+  99ec923a39062f556ec7676fb9ba6d302d109f76
+  GITHUB_REPOSITORY
+  thedmd/imgui-node-editor
+)

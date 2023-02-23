@@ -1,11 +1,12 @@
-// main function
-#include <glad/glad.h>
-
-#include <iostream>
-#include <string>
-
-#include <GLFW/glfw3.h>
+#include <GLFWMainWindows.h>
 
 int main() {
+
+  GLFWMainWindows::Init();
+
+  GLFWMainWindows::MainLoop();
+
+  GLFWMainWindows::Shutdown();
+
   return 0;
 }
