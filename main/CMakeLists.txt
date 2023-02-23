@@ -30,6 +30,8 @@ set(MODULE_TARGET_NAME "ImDFD")
 
 asap_add_executable(
   ${MODULE_TARGET_NAME}
+  WARNING
+  EXCEPTIONS
   SOURCES
   src/main.cpp
   src/GLFWMainWindows.cpp
@@ -45,6 +47,7 @@ find_package(imgui REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 
 asap_add_library(imgui STATIC
+  WARNING
   SOURCES
   ${imgui_SOURCE_DIR}/imgui.cpp
   ${imgui_SOURCE_DIR}/imgui_draw.cpp
@@ -63,6 +66,7 @@ target_include_directories(imgui PUBLIC
 
 file(GLOB IMGUI_NODE_EDITOR_SRC ${imgui_node_editor_SOURCE_DIR}/*.cpp)
 asap_add_library(imgui_node_editor STATIC
+  WARNING
   SOURCES
   ${IMGUI_NODE_EDITOR_SRC}
 )
