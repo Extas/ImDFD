@@ -1,6 +1,7 @@
 # -----------------------------------------------------
 # Meta information about the this module
 # -----------------------------------------------------
+asap_push_module(main)
 
 asap_declare_module(
   MODULE_NAME
@@ -89,3 +90,5 @@ install(
   TARGETS ${MODULE_TARGET_NAME}
   RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT programs
   BUNDLE DESTINATION ${INSTALL_BIN} COMPONENT programs)
+
+asap_pop_module(main)

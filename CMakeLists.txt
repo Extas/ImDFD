@@ -16,12 +16,14 @@ cmake_minimum_required(VERSION 3.14)
 # the the include() or find_package() commands before checking the default
 # modules that come with CMake.
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 # But if this project is not the master project, prioritize the master project
 # cmake include dir if it exists.
 if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR
-   AND EXISTS "${CMAKE_SOURCE_DIR}/cmake")
+  AND EXISTS "${CMAKE_SOURCE_DIR}/cmake")
   list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 endif()
+
 # Include the log helpers module early so we can use early for logging the
 # project hierarchy
 include(LogHelpers)
@@ -38,26 +40,27 @@ set(CMAKE_USER_MAKE_RULES_OVERRIDE "ResetInitialCompilerOptions")
 include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 string(SUBSTRING "${GIT_SHA1}" 0 12 GIT_REV)
+
 if(NOT GIT_SHA1)
   set(GIT_REV "0")
 endif()
 
 # Meta information about the project
 # cmake-format: off
-set(META_PROJECT_NAME        "ImDFD")
+set(META_PROJECT_NAME "ImDFD")
 set(META_PROJECT_DESCRIPTION "A data flow diagram tool for my graduation project.")
 set(META_AUTHOR_ORGANIZATION "SCNU")
-set(META_GITHUB_REPO         "https://github.com/extas/ImDFD")
-set(META_AUTHOR_DOMAIN       "https://github.com/extas/ImDFD")
-set(META_AUTHOR_MAINTAINER   "Extas")
-set(META_VERSION_MAJOR       "0")
-set(META_VERSION_MINOR       "1")
-set(META_VERSION_PATCH       "0")
-set(META_VERSION_REVISION    "${GIT_REV}")
-set(META_VERSION             "${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
-set(META_NAME_VERSION        "${META_PROJECT_NAME} v${META_VERSION} (${META_VERSION_REVISION})")
-# cmake-format: on
+set(META_GITHUB_REPO "https://github.com/extas/ImDFD")
+set(META_AUTHOR_DOMAIN "https://github.com/extas/ImDFD")
+set(META_AUTHOR_MAINTAINER "Extas")
+set(META_VERSION_MAJOR "0")
+set(META_VERSION_MINOR "1")
+set(META_VERSION_PATCH "0")
+set(META_VERSION_REVISION "${GIT_REV}")
+set(META_VERSION "${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
+set(META_NAME_VERSION "${META_PROJECT_NAME} v${META_VERSION} (${META_VERSION_REVISION})")
 
+# cmake-format: on
 string(MAKE_C_IDENTIFIER ${META_PROJECT_NAME} META_PROJECT_ID)
 string(TOUPPER ${META_PROJECT_ID} META_PROJECT_ID)
 string(TOLOWER ${META_PROJECT_ID} META_PROJECT_ID_LOWER)
@@ -65,6 +68,7 @@ string(TOLOWER ${META_PROJECT_ID} META_PROJECT_ID_LOWER)
 # Determine if this is built as a subproject  or if it is the master project.
 if(NOT DEFINED ${META_PROJECT_ID}_IS_MASTER_PROJECT)
   set(${META_PROJECT_ID}_IS_MASTER_PROJECT OFF)
+
   if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(${META_PROJECT_ID}_IS_MASTER_PROJECT ON)
   endif()
@@ -80,14 +84,15 @@ asap_push_project(${META_PROJECT_NAME})
 
 # Project options
 # cmake-format: off
-option(BUILD_SHARED_LIBS        "Build shared instead of static libraries."              ON)
-option(ASAP_BUILD_TESTS         "Build tests."                                           OFF)
-option(ASAP_BUILD_EXAMPLES      "Build examples."                                        OFF)
-option(ASAP_WITH_GOOGLE_ASAN    "Instrument code with address sanitizer"                 OFF)
-option(ASAP_WITH_GOOGLE_UBSAN   "Instrument code with undefined behavior sanitizer"      OFF)
-option(ASAP_WITH_GOOGLE_TSAN    "Instrument code with thread sanitizer"                  OFF)
-option(ASAP_WITH_VALGRIND       "Builds targets with valgrind profilers added"           OFF)
-option(USE_CCACHE               "Enable caching of compiled artifacts using ccache"      ON)
+option(BUILD_SHARED_LIBS "Build shared instead of static libraries." ON)
+option(ASAP_BUILD_TESTS "Build tests." OFF)
+option(ASAP_BUILD_EXAMPLES "Build examples." OFF)
+option(ASAP_WITH_GOOGLE_ASAN "Instrument code with address sanitizer" OFF)
+option(ASAP_WITH_GOOGLE_UBSAN "Instrument code with undefined behavior sanitizer" OFF)
+option(ASAP_WITH_GOOGLE_TSAN "Instrument code with thread sanitizer" OFF)
+option(ASAP_WITH_VALGRIND "Builds targets with valgrind profilers added" OFF)
+option(USE_CCACHE "Enable caching of compiled artifacts using ccache" ON)
+
 # cmake-format: on
 
 # ------------------------------------------------------------------------------
@@ -117,8 +122,8 @@ set(${PROJECT_NAME}_BUILD_EXAMPLES ${ASAP_BUILD_EXAMPLES})
 
 # ---- Add dependencies via CPM ----
 # see https://github.com/TheLartians/CPM.cmake for more info
-
 include(cmake/CPM.cmake)
+
 # We make sure that we have 'third_party' in the name so that the targets get
 # excluded from the generated target lists for the various tools.
 set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/third_party_deps)
@@ -157,10 +162,10 @@ include(SphinxGeneration)
 # ------------------------------------------------------------------------------
 # Testing
 # ------------------------------------------------------------------------------
-
 if(ASAP_BUILD_TESTS)
   include(GoogleSanitizers)
   include(CodeCoverage)
+
   # Enable this target when the project has test cases
   asap_add_code_coverage_all_targets()
   include(Valgrind)
@@ -186,7 +191,6 @@ endif()
 # Call after documentation but before project modules and before adding common
 # cmake modules.
 # ------------------------------------------------------------------------------
-
 add_subdirectory(third_party)
 
 # ------------------------------------------------------------------------------
@@ -211,24 +215,25 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(
     STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")
   set(CMAKE_BUILD_TYPE
-      RelWithDebInfo
-      CACHE STRING "Choose the type of build." FORCE)
+    RelWithDebInfo
+    CACHE STRING "Choose the type of build." FORCE)
+
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
-                                               "MinSizeRel" "RelWithDebInfo")
+    "MinSizeRel" "RelWithDebInfo")
 endif()
 
 # ------------------------------------------------------------------------------
 # RPATH setup
 # ------------------------------------------------------------------------------
-
 if(APPLE)
   set(CMAKE_MACOSX_RPATH ON)
 endif()
 
 # Set runtime path
 set(CMAKE_SKIP_BUILD_RPATH FALSE) # Add absolute path to all dependencies for
-                                  # BUILD
+
+# BUILD
 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
@@ -239,14 +244,10 @@ endif()
 # ------------------------------------------------------------------------------
 # Project modules
 # ------------------------------------------------------------------------------
-
 add_subdirectory(tools/version-info)
 
 # Add project modules here
-
-asap_push_module(main)
 add_subdirectory(main)
-asap_pop_module(main)
 
 # ------------------------------------------------------------------------------
 # Code analyzers: clang-tidy, cppcheck, valgrind, sanitizers, etc...
@@ -254,7 +255,6 @@ asap_pop_module(main)
 # Call after sub-modules have been added so that source code files can be
 # properly collected for analysis.
 # ------------------------------------------------------------------------------
-
 if(${META_PROJECT_ID}_IS_MASTER_PROJECT)
   include(ClangTidy)
   asap_create_clang_tidy_targets()
