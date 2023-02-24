@@ -1,10 +1,7 @@
 #include <DearImGui.h>
-#include <GLFW/glfw3.h>
-#include <imgui_node_editor.h>
 #include <string_view>
 
-namespace ed = ax::NodeEditor;
-auto const kMContext = ed::CreateEditor();
+#include <ui/NodeEditerDemo.hpp>
 
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   IMGUI_CHECKVERSION();
@@ -34,25 +31,8 @@ void DearImGui::Update() {
   const std::string_view kTestText = "font test";
   ImGui::DebugTextEncoding(kTestText.data());
 
-  // begin
-  ImGui::Begin("Node Editor");
-  ed::SetCurrentEditor(kMContext);
-  ed::Begin("My Editor", ImVec2(0.0, 0.0f));
-  int uniqueId = 1;
-  // Start drawing nodes.
-  ed::BeginNode(uniqueId++);
-  ImGui::Text("Node A");
-  ed::BeginPin(uniqueId++, ed::PinKind::Input);
-  ImGui::Text("-> In");
-  ed::EndPin();
-  ImGui::SameLine();
-  ed::BeginPin(uniqueId++, ed::PinKind::Output);
-  ImGui::Text("Out ->");
-  ed::EndPin();
-  ed::EndNode();
-  ed::End();
-  ed::SetCurrentEditor(nullptr);
-  ImGui::End();
+  static NodeEditerDemo node_editer_demo;
+  node_editer_demo.Update();
 }
 
 void DearImGui::Render() {
@@ -71,8 +51,6 @@ void DearImGui::Render() {
 }
 
 void DearImGui::Shutdown() {
-  ed::DestroyEditor(kMContext);
-
   // Cleanup
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();

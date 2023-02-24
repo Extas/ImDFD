@@ -1,8 +1,8 @@
 #ifndef IMDFD__WINDOWS_H_
 #define IMDFD__WINDOWS_H_
+#include <glad/glad.h>
 
 #include <DearImGui.h>
-#include <glad/glad.h>
 #include <stdexcept>
 
 #include <GLFW/glfw3.h>

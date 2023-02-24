@@ -36,6 +36,7 @@ asap_add_executable(
   src/main.cpp
   src/GLFWMainWindows.cpp
   src/DearImGui.cpp
+  src/ui/NodeEditerDemo.hpp
 )
 
 asap_set_language_standards(${MODULE_TARGET_NAME}
