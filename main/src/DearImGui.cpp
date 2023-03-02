@@ -1,4 +1,5 @@
 #include <DearImGui.h>
+#include <filesystem>
 #include <string_view>
 
 #include <ui/NodeEditerDemo.hpp>
@@ -63,13 +64,18 @@ void DearImGui::IoConfig() {
   // docking and multi-viewport enable
   imgui_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   imgui_io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-  //  imgui_io.ConfigFlags |= ImGuiViewportFlags_NoDecoration;
+  // imgui_io.ConfigFlags |= ImGuiViewportFlags_NoDecoration;
   imgui_io.ConfigFlags |= ImGuiCol_DockingEmptyBg;
 
-  //   font
+  // font
   constexpr float kFontSize = 26.0F;
-  const std::string_view kFontPath =
-      "../../../../resources/fonts/sarasa-mono-sc-nerd-regular.ttf";
-  imgui_io.Fonts->AddFontFromFileTTF(kFontPath.data(), kFontSize, nullptr,
-      imgui_io.Fonts->GetGlyphRangesChineseFull());
+  // try to search font in data/fonts
+  for (const auto &font_path : std::filesystem::directory_iterator(
+           std::filesystem::current_path().parent_path() / "data" / "fonts")) {
+    if (font_path.path().extension() == ".ttf") {
+      imgui_io.Fonts->AddFontFromFileTTF(font_path.path().string().data(),
+          kFontSize, nullptr, imgui_io.Fonts->GetGlyphRangesChineseFull());
+      break;
+    }
+  }
 }
