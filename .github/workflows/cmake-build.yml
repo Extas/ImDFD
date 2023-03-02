@@ -120,6 +120,13 @@ jobs:
           sudo apt-get install gcc-11 g++-11
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
 
+      - name: Install libxrandr
+        shell: bash
+        if: startsWith(matrix.config.name, 'Ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxrandr-dev
+
       - name: Install ccache
         shell: cmake -P {0}
         run: |
