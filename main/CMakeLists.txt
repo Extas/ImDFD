@@ -47,6 +47,7 @@ find_package(GLAD REQUIRED)
 find_package(imgui REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 
+
 asap_add_library(imgui STATIC
   WARNING
   SOURCES
@@ -58,6 +59,8 @@ asap_add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
+
+target_link_libraries(imgui PUBLIC glfw glad)
 
 target_include_directories(imgui PUBLIC
   ${imgui_SOURCE_DIR}
@@ -77,8 +80,6 @@ target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_SOURCE_D
 target_link_libraries(
   ${MODULE_TARGET_NAME}
   PUBLIC
-  glfw
-  glad
   imgui
   imgui_node_editor
 )
