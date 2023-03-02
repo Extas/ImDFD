@@ -269,7 +269,7 @@
       "inherits": [
         "base",
         "release",
-        "compiler-clang"
+        "compiler-gcc"
       ],
       "vendor": {
         "jetbrains.com/clion": {

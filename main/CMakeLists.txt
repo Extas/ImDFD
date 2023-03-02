@@ -43,7 +43,7 @@ asap_set_language_standards(${MODULE_TARGET_NAME}
   CXX 17)
 
 find_package(GLFW REQUIRED)
-find_package(GLAD REQUIRED)
+find_package(glad REQUIRED)
 find_package(imgui REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 
