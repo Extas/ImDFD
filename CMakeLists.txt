@@ -84,8 +84,8 @@ asap_push_project(${META_PROJECT_NAME})
 
 # Project options
 # cmake-format: off
-option(BUILD_SHARED_LIBS "Build shared instead of static libraries." ON)
-option(ASAP_BUILD_TESTS "Build tests." OFF)
+option(BUILD_SHARED_LIBS "Build shared instead of static libraries." OFF)
+option(ASAP_BUILD_TESTS "Build tests." ON)
 option(ASAP_BUILD_EXAMPLES "Build examples." OFF)
 option(ASAP_WITH_GOOGLE_ASAN "Instrument code with address sanitizer" OFF)
 option(ASAP_WITH_GOOGLE_UBSAN "Instrument code with undefined behavior sanitizer" OFF)

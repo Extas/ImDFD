@@ -59,3 +59,11 @@ install(
   BUNDLE DESTINATION ${INSTALL_BIN} COMPONENT programs)
 
 asap_pop_module(logging)
+
+# -----------------------------------------------
+# Tests
+# -----------------------------------------------
+
+if(ASAP_BUILD_TESTS)
+  add_subdirectory(test)
+endif()

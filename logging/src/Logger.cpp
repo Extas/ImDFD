@@ -10,7 +10,7 @@ void Logger::Init() {
 
   // Create logger with both console and file sinks
   s_Logger = std::make_shared<spdlog::logger>(
-      "imdfd", spdlog::sinks_init_list{console_sink, file_sink});
+      "main", spdlog::sinks_init_list{console_sink, file_sink});
 
   // Set log level
   s_Logger->set_level(spdlog::level::trace);
