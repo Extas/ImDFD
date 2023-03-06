@@ -47,6 +47,7 @@ find_package(glad REQUIRED)
 find_package(imgui REQUIRED)
 find_package(imgui_node_editor REQUIRED)
 
+set(GLAD_PROFILE "core" CACHE STRING "" FORCE)
 
 asap_add_library(imgui STATIC
   WARNING

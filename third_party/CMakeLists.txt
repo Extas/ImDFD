@@ -23,6 +23,11 @@ message(STATUS "${ASAP_LOG_PROJECT_HIERARCHY} >> third-party modules")
 # OPTIONS
 # "MAGIC_ENUM_OPT_INSTALL ON")
 # ~~~
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 asap_add_package(
   NAME
   GLFW
@@ -32,6 +37,7 @@ asap_add_package(
   glfw/glfw
 )
 
+set(GLAD_INSTALL OFF CACHE BOOL "" FORCE)
 asap_add_package(
   NAME
   glad
