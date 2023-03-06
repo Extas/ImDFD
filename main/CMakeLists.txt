@@ -83,6 +83,7 @@ target_link_libraries(
   PUBLIC
   imgui
   imgui_node_editor
+  logging
 )
 
 target_include_directories(${MODULE_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR}/include)

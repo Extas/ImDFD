@@ -247,6 +247,7 @@ endif()
 add_subdirectory(tools/version-info)
 
 # Add project modules here
+add_subdirectory(logging)
 add_subdirectory(main)
 
 # ------------------------------------------------------------------------------

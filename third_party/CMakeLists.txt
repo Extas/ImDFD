@@ -64,3 +64,12 @@ asap_add_package(
   GITHUB_REPOSITORY
   thedmd/imgui-node-editor
 )
+
+asap_add_package(
+NAME
+spdlog
+GIT_TAG
+v1.11.0
+GITHUB_REPOSITORY
+gabime/spdlog
+)
