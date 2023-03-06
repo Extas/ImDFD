@@ -1,10 +1,20 @@
 #include <GLFWMainWindows.h>
+#include <Logger.h>
+
+#include <stdexcept>
+#include <string>
 
 void GLFWMainWindows::Init(int width, int height, const char *title) {
+  Logger::Trace("Initializing GLFW");
+  std::string info = "Window size: " + std::to_string(width) + "x" +
+                     std::to_string(height) + ", title: " + title;
+  Logger::Info(info.c_str());
+
   glfwSetErrorCallback(ErrorCallback);
 
   if (glfwInit() == 0) {
-    throw std::runtime_error("Failed to initialize GLFW");
+    Logger::Error("Failed to initialize GLFW");
+    exit(EXIT_FAILURE);
   }
 
   // Decide GL+GLSL versions
@@ -64,10 +74,12 @@ void GLFWMainWindows::MainLoop() {
 }
 
 void GLFWMainWindows::Shutdown() {
+  Logger::Trace("Shutting down GLFW");
   glfwDestroyWindow(window_ptr_);
   glfwTerminate();
 }
 
 void GLFWMainWindows::ErrorCallback(int error, const char *description) {
   fprintf(stderr, "Glfw Error %d: %s", error, description);
+  Logger::Error(description);
 }

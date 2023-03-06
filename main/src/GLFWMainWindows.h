@@ -3,7 +3,6 @@
 #include <glad/glad.h>
 
 #include <DearImGui.h>
-#include <stdexcept>
 
 #include <GLFW/glfw3.h>
 

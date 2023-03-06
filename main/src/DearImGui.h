@@ -2,7 +2,6 @@
 #define IMDFD__DEARIMGUI_H_
 
 #include <GLFW/glfw3.h>
-#include <memory>
 
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>

@@ -1,4 +1,4 @@
-#include <logger.h>
+#include <Logger.h>
 
 void Logger::Init() {
   // Create console sink
@@ -17,6 +17,11 @@ void Logger::Init() {
 
   // Set pattern
   spdlog::set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
+
+  atexit([]() {
+    Logger::GetLogger()->flush();
+    spdlog::shutdown();
+  });
 }
 
 void Logger::Trace(const char *message) {
@@ -37,4 +42,8 @@ void Logger::Error(const char *message) {
 
 void Logger::Critical(const char *message) {
   s_Logger->critical(message);
+}
+
+std::shared_ptr<spdlog::logger> &Logger::GetLogger() {
+  return s_Logger;
 }

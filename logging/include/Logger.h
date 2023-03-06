@@ -2,12 +2,14 @@
 #define LOGGER_H
 
 #include <memory>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
 class Logger {
 public:
+  static std::shared_ptr<spdlog::logger> &GetLogger();
+
   static void Init();
   static void Trace(const char *message);
   static void Info(const char *message);

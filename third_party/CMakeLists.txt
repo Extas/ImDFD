@@ -66,10 +66,10 @@ asap_add_package(
 )
 
 asap_add_package(
-NAME
-spdlog
-GIT_TAG
-v1.11.0
-GITHUB_REPOSITORY
-gabime/spdlog
+  NAME
+  spdlog
+  GIT_TAG
+  v1.11.0
+  GITHUB_REPOSITORY
+  gabime/spdlog
 )

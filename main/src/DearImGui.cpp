@@ -1,10 +1,13 @@
 #include <DearImGui.h>
-#include <filesystem>
-#include <string_view>
-
+#include <Logger.h>
 #include <ui/NodeEditerDemo.hpp>
 
+#include <filesystem>
+#include <memory>
+#include <string_view>
+
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
+  Logger::Trace("Initializing Dear ImGui");
   IMGUI_CHECKVERSION();
   context_ = ImGui::CreateContext();
 
@@ -52,6 +55,7 @@ void DearImGui::Render() {
 }
 
 void DearImGui::Shutdown() {
+  Logger::Trace("Shutting down Dear ImGui");
   // Cleanup
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();

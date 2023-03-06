@@ -97,7 +97,10 @@
     "memory_resource": "cpp",
     "string_view": "cpp",
     "numbers": "cpp",
-    "filesystem": "cpp"
+    "filesystem": "cpp",
+    "bitset": "cpp",
+    "unordered_set": "cpp",
+    "ranges": "cpp"
   },
   // Disable automatic detection of file indent mode and indent size, that is, automatically change
   // the file to the indent format configured by VSCode after opening the file

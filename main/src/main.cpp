@@ -1,9 +1,9 @@
 #include <GLFWMainWindows.h>
-#include <logger.h>
+#include <Logger.h>
 
 int main() {
   Logger::Init();
-  Logger::Trace("Hello World!");
+  Logger::Trace("Welcome to the ImDFD");
 
   GLFWMainWindows::Init();
 
@@ -11,5 +11,6 @@ int main() {
 
   GLFWMainWindows::Shutdown();
 
+  Logger::Trace("Goodbye from the ImDFD");
   return 0;
 }
