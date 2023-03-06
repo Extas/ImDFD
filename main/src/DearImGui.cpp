@@ -69,13 +69,16 @@ void DearImGui::IoConfig() {
 
   // font
   constexpr float kFontSize = 26.0F;
-  // try to search font in data/fonts
-  for (const auto &font_path : std::filesystem::directory_iterator(
-           std::filesystem::current_path().parent_path() / "data" / "fonts")) {
-    if (font_path.path().extension() == ".ttf") {
-      imgui_io.Fonts->AddFontFromFileTTF(font_path.path().string().data(),
-          kFontSize, nullptr, imgui_io.Fonts->GetGlyphRangesChineseFull());
-      break;
+  const auto fonts_dir =
+      std::filesystem::current_path().parent_path() / "data" / "fonts";
+  if (std::filesystem::exists(fonts_dir)) {
+    for (const auto &font_path :
+        std::filesystem::directory_iterator(fonts_dir)) {
+      if (font_path.path().extension() == ".ttf") {
+        imgui_io.Fonts->AddFontFromFileTTF(font_path.path().string().data(),
+            kFontSize, nullptr, imgui_io.Fonts->GetGlyphRangesChineseFull());
+        break;
+      }
     }
   }
 }
