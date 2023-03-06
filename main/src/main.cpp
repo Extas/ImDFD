@@ -3,7 +3,7 @@
 
 int main() {
   Logger::Init();
-  Logger::Trace("Welcome to the ImDFD");
+  Logger::Info("Welcome to the ImDFD");
 
   GLFWMainWindows::Init();
 
@@ -11,6 +11,6 @@ int main() {
 
   GLFWMainWindows::Shutdown();
 
-  Logger::Trace("Goodbye from the ImDFD");
+  Logger::Info("Goodbye from the ImDFD");
   return 0;
 }
