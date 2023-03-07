@@ -1,3 +1,6 @@
+#ifndef IMGUIWINDOWSINTERFACE_H
+#define IMGUIWINDOWSINTERFACE_H
+
 #include <imgui.h>
 
 class ImGuiWindowsInterface {
@@ -14,3 +17,5 @@ ImGuiWindowsInterface::ImGuiWindowsInterface(const char *name) {
   kMName = new char[strlen(name) + 1];
   strcpy(kMName, name);
 }
+
+#endif // IMGUIWINDOWSINTERFACE_H

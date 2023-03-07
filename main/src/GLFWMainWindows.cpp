@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <string>
 
-void GLFWMainWindows::Init(int width, int height, const char *title) {
+void GLFWMainWindows::Init(int width, int height, const std::string &title) {
   Logger::Trace("Initializing GLFW");
   std::string info = "Window size: " + std::to_string(width) + "x" +
                      std::to_string(height) + ", title: " + title;
@@ -35,7 +35,8 @@ void GLFWMainWindows::Init(int width, int height, const char *title) {
 #endif
 
   // Create window with graphics context
-  window_ptr_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
+  window_ptr_ =
+      glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
   if (window_ptr_ == nullptr) {
     throw std::runtime_error("Failed to create GLFW window");
   }
@@ -80,6 +81,7 @@ void GLFWMainWindows::Shutdown() {
 }
 
 void GLFWMainWindows::ErrorCallback(int error, const char *description) {
-  fprintf(stderr, "Glfw Error %d: %s", error, description);
-  Logger::Error(description);
+  std::string error_msg = "GLFW Error: " + std::to_string(error) + " - " +
+                          std::string(description);
+  Logger::Error(error_msg.c_str());
 }

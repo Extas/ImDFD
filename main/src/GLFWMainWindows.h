@@ -1,19 +1,21 @@
-#ifndef IMDFD__WINDOWS_H_
-#define IMDFD__WINDOWS_H_
+#ifndef GLFWMAINWINDOWS_H
+#define GLFWMAINWINDOWS_H
+
 #include <glad/glad.h>
 
 #include <DearImGui.h>
+#include <string>
 
 #include <GLFW/glfw3.h>
 
 constexpr int kWidth = 1920;
 constexpr int kHeight = 1080;
-constexpr char kTitle[] = "Dear ImGui - ImDFD";
+const std::string kTitle = "Dear ImGui - ImDFD";
 
 class GLFWMainWindows {
 public:
-  static void Init(
-      int width = kWidth, int height = kHeight, const char *title = kTitle);
+  static void Init(int width = kWidth, int height = kHeight,
+      const std::string &title = kTitle);
   static void MainLoop();
   static void Shutdown();
   static void ErrorCallback(int error, const char *description);
@@ -23,4 +25,4 @@ private:
   static const inline char *glsl_version_ = "#version 130";
 };
 
-#endif // IMDFD__WINDOWS_H_
+#endif // GLFWMAINWINDOWS_H

@@ -44,6 +44,6 @@ void Logger::Critical(const char *message) {
   s_Logger->critical(message);
 }
 
-std::shared_ptr<spdlog::logger> &Logger::GetLogger() {
+auto Logger::GetLogger() -> std::shared_ptr<spdlog::logger> & {
   return s_Logger;
 }

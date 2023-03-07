@@ -8,7 +8,7 @@
 
 class Logger {
 public:
-  static std::shared_ptr<spdlog::logger> &GetLogger();
+  static auto GetLogger() -> std::shared_ptr<spdlog::logger> &;
 
   static void Init();
   static void Trace(const char *message);
