@@ -28,9 +28,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # Install ccache
 RUN apt-get -y install ccache
 
-# Update submodules
-RUN git submodule update --init --recursive
-
 # Install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev libxkbcommon-dev
 RUN apt-get -y install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev libxkbcommon-dev
 
