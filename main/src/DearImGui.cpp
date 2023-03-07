@@ -1,6 +1,7 @@
 #include <DearImGui.h>
 #include <Logger.h>
-#include <ui/NodeEditerDemo.hpp>
+
+#include <BaseWindow.h>
 
 #include <filesystem>
 #include <memory>
@@ -28,15 +29,15 @@ void DearImGui::NewFrame() {
   ImGui::DockSpaceOverViewport();
 }
 
-void DearImGui::Update() {
+void DearImGui::Draw() {
 
   ImGui::ShowDemoWindow();
 
   const std::string_view kTestText = "font test";
   ImGui::DebugTextEncoding(kTestText.data());
 
-  static NodeEditerDemo node_editer_demo;
-  node_editer_demo.Update();
+  BaseWindow window("test window", ImVec2(200, 200));
+  window.Show();
 }
 
 void DearImGui::Render() {

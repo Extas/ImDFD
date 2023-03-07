@@ -1,13 +1,13 @@
 # -----------------------------------------------------
-# Meta information about the this module
+# Meta information about the module
 # -----------------------------------------------------
-asap_push_module(logging)
+asap_push_module(ui)
 
 asap_declare_module(
   MODULE_NAME
-  "logging"
+  "ui"
   DESCRIPTION
-  "Logging utilities and functions"
+  "UI component library for ImGui"
   GITHUB_REPO
   "https://github.com/extas/ImDFD"
   AUTHOR_MAINTAINER
@@ -19,24 +19,23 @@ asap_declare_module(
   VERSION_PATCH
   "0")
 
-# =====================================================
-# Build instructions
-# =====================================================
-
 # -----------------------------------------------------
 # Main module target
 # -----------------------------------------------------
-set(MODULE_TARGET_NAME "logging")
+set(MODULE_TARGET_NAME "ui")
 
 asap_add_library(
-  logging STATIC WARNING SOURCES
+  ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
 
   # Sources
-  src/Logger.cpp)
+  src/BaseWindow.cpp)
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
-target_link_libraries(logging PUBLIC spdlog::spdlog)
+target_link_libraries(${MODULE_TARGET_NAME}
+  PRIVATE
+  imgui
+  imgui_node_editor)
 
 target_include_directories(
   ${MODULE_TARGET_NAME}
@@ -48,21 +47,11 @@ target_include_directories(${MODULE_TARGET_NAME}
 target_include_directories(${MODULE_TARGET_NAME}
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# =====================================================
-# Deployment instructions
-# =====================================================
-
-# Executable
-install(
-  TARGETS ${MODULE_TARGET_NAME}
-  RUNTIME DESTINATION ${INSTALL_BIN} COMPONENT programs
-  BUNDLE DESTINATION ${INSTALL_BIN} COMPONENT programs)
-
-# -----------------------------------------------
+# -----------------------------------------------------
 # Tests
-# -----------------------------------------------
+# -----------------------------------------------------
 if(ASAP_BUILD_TESTS)
-  add_subdirectory(test)
+  # add_subdirectory(test)
 endif()
 
-asap_pop_module(logging)
+asap_pop_module(ui)

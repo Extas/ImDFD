@@ -11,7 +11,7 @@ class DearImGui {
 public:
   static void Init(GLFWwindow *window, const char *glsl_version);
   static void NewFrame();
-  static void Update();
+  static void Draw();
   static void Render();
   static void Shutdown();
 
