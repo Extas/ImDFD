@@ -11,21 +11,43 @@ public:
 
   virtual ~BaseWindow() = default;
 
-  // Override this method in derived classes to add your own window content
-  virtual void DrawContents() {
+  virtual void DrawContents();
+
+  void Show();
+
+private:
+  std::string m_Title;
+  bool m_IsOpen = false;
+
+public:
+  [[nodiscard]] auto GetTitle() const -> const std::string & {
+    return m_Title;
   }
 
-  // Show the window
-  void Show();
+  void SetTitle(const std::string &title) {
+    m_Title = title;
+  }
+
+  [[nodiscard]] auto IsOpen() const -> bool {
+    return m_IsOpen;
+  }
+
+  void Close() {
+    m_IsOpen = false;
+  }
+
+  void Open() {
+    m_IsOpen = true;
+  }
+
+  void Toggle() {
+    m_IsOpen = !m_IsOpen;
+  }
 
   BaseWindow(BaseWindow &&) = delete;
   BaseWindow(const BaseWindow &) = delete;
   auto operator=(BaseWindow &&) -> BaseWindow & = delete;
   auto operator=(const BaseWindow &) -> BaseWindow & = delete;
-
-private:
-  std::string m_Title;
-  bool m_IsOpen = false;
 };
 
 #endif // BASEWINDOW_H

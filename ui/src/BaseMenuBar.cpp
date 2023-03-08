@@ -1,10 +1,7 @@
 #include "BaseMenuBar.h"
 #include "Menu.h"
 
-BaseMenuBar::BaseMenuBar() {
-}
-
-Menu &BaseMenuBar::GetOrAddMenu(const std::string &label) {
+auto BaseMenuBar::GetOrAddMenu(const std::string &label) -> Menu & {
   // Look for an existing menu with the specified label
   for (auto &menu : m_Menus) {
     if (menu.GetLabel() == label) {

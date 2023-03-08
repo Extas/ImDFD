@@ -10,10 +10,10 @@
 
 class BaseMenuBar {
 public:
-  BaseMenuBar();
+  BaseMenuBar() = default;
 
   // Get or add a menu to the menu bar
-  Menu &GetOrAddMenu(const std::string &label);
+  auto GetOrAddMenu(const std::string &label) -> Menu &;
 
   // Add a new menu item to the last added menu
   void AddMenuItem(const std::string &label,

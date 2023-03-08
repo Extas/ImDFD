@@ -1,6 +1,6 @@
 #include <Menu.h>
 
-Menu::Menu(const std::string &label) : m_Label(label) {
+Menu::Menu(std::string label) : m_Label(std::move(label)) {
 }
 
 void Menu::AddItem(
@@ -11,12 +11,8 @@ void Menu::AddItem(
 void Menu::Show() {
   if (ImGui::BeginMenu(m_Label.c_str())) {
     for (const auto &item : m_Items) {
-      if (item.second) {
-        if (ImGui::MenuItem(item.first.c_str())) {
-          item.second();
-        }
-      } else {
-        ImGui::MenuItem(item.first.c_str());
+      if (item.second != nullptr && ImGui::MenuItem(item.first.c_str())) {
+        item.second();
       }
     }
     ImGui::EndMenu();

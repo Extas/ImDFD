@@ -8,7 +8,7 @@
 
 class Menu {
 public:
-  Menu(const std::string &label);
+  explicit Menu(std::string label);
   ~Menu() = default;
 
   // Add a new menu item to this menu
@@ -19,13 +19,19 @@ public:
   void Show();
 
   // Get the label of this menu
-  const std::string &GetLabel() const {
+  [[nodiscard]] auto GetLabel() const -> const std::string & {
     return m_Label;
   }
 
 private:
   std::string m_Label;
   std::vector<std::pair<std::string, std::function<void()>>> m_Items;
+
+public:
+  Menu(Menu &&) = default;
+  Menu(const Menu &) = delete;
+  auto operator=(Menu &&) -> Menu & = delete;
+  auto operator=(const Menu &) -> Menu & = delete;
 };
 
 #endif // MENU_H
