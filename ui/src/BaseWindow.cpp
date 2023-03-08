@@ -1,11 +1,12 @@
 #include "BaseWindow.h"
 
-BaseWindow::BaseWindow(const std::string &title, const ImVec2 &size)
-    : m_Title(title), m_Size(size) {
+BaseWindow::BaseWindow(std::string title) : m_Title(std::move(title)) {
+}
+
+BaseWindow::BaseWindow() : BaseWindow("Untitled") {
 }
 
 void BaseWindow::Show() {
-  ImGui::SetNextWindowSize(m_Size, ImGuiCond_FirstUseEver);
   if (!ImGui::Begin(m_Title.c_str(), &m_IsOpen)) {
     ImGui::End();
     return;

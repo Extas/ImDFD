@@ -1,23 +1,30 @@
 #ifndef BASEWINDOW_H
 #define BASEWINDOW_H
 
-#include <string>
 #include <imgui.h>
+#include <string>
 
 class BaseWindow {
 public:
-  BaseWindow(const std::string& title, const ImVec2& size);
+  BaseWindow();
+  explicit BaseWindow(std::string title);
+
   virtual ~BaseWindow() = default;
 
   // Override this method in derived classes to add your own window content
-  virtual void DrawContents() {}
+  virtual void DrawContents() {
+  }
 
   // Show the window
   void Show();
 
-protected:
+  BaseWindow(BaseWindow &&) = delete;
+  BaseWindow(const BaseWindow &) = delete;
+  auto operator=(BaseWindow &&) -> BaseWindow & = delete;
+  auto operator=(const BaseWindow &) -> BaseWindow & = delete;
+
+private:
   std::string m_Title;
-  ImVec2 m_Size;
   bool m_IsOpen = false;
 };
 

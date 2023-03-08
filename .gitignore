@@ -237,3 +237,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# vscode local history
+.history/
