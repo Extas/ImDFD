@@ -31,6 +31,7 @@ asap_add_library(
   src/BaseWindow.cpp
   src/BaseMenuBar.cpp
   src/MainMenuBar.cpp
+  src/InfoWindow.cpp
   src/Menu.cpp)
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)

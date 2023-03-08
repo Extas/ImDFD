@@ -2,6 +2,7 @@
 #include <Logger.h>
 
 #include <BaseWindow.h>
+#include <InfoWindow.h>
 #include <MainMenuBar.h>
 
 #include <filesystem>
@@ -41,6 +42,9 @@ void DearImGui::Draw() {
   window.Show();
   MainMenuBar menu_bar;
   menu_bar.Show();
+  auto info = ElementInfo("test", "test");
+  auto info_window = InfoWindow(info);
+  info_window.DrawContents();
 }
 
 void DearImGui::Render() {
