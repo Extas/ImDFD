@@ -27,11 +27,10 @@ public:
 class InfoWindow : public BaseWindow {
 public:
   // 构造函数，传入元素信息类的引用
-  InfoWindow(ElementInfo &info) : info(info) {
+  InfoWindow(ElementInfo &info) : BaseWindow("Info"), info(info) {
   }
 
   void DrawContents() override {
-    ImGui::Begin("Element Info");
 
     // 显示元素名称和描述
     ImGui::Text("%s", info.name.c_str());
@@ -87,8 +86,6 @@ public:
         // 跳转到输出数据流定义窗口
       }
     }
-
-    ImGui::End();
   }
 
 private:

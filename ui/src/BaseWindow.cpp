@@ -1,5 +1,7 @@
 #include "BaseWindow.h"
 
+#include <Logger.h>
+
 BaseWindow::BaseWindow(std::string title) : m_Title(std::move(title)) {
 }
 

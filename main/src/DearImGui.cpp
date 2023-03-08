@@ -4,6 +4,7 @@
 #include <BaseWindow.h>
 #include <InfoWindow.h>
 #include <MainMenuBar.h>
+#include <NodeEditorWindow.h>
 
 #include <filesystem>
 #include <memory>
@@ -35,16 +36,15 @@ void DearImGui::Draw() {
 
   ImGui::ShowDemoWindow();
 
-  const std::string_view kTestText = "font test";
-  ImGui::DebugTextEncoding(kTestText.data());
-
   BaseWindow window("test window");
   window.Show();
   MainMenuBar menu_bar;
   menu_bar.Show();
   auto info = ElementInfo("test", "test");
   auto info_window = InfoWindow(info);
-  info_window.DrawContents();
+  info_window.Show();
+  auto node_editer = NodeEditerWindow("node editer");
+  node_editer.Show();
 }
 
 void DearImGui::Render() {

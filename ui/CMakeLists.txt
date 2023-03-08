@@ -32,6 +32,7 @@ asap_add_library(
   src/BaseMenuBar.cpp
   src/MainMenuBar.cpp
   src/InfoWindow.cpp
+  src/NodeEditorWindow.cpp
   src/Menu.cpp)
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
@@ -40,8 +41,9 @@ target_link_libraries(${MODULE_TARGET_NAME}
   PRIVATE
   logging
   imgui
-  imgui_node_editor)
+)
 
+target_link_libraries(${MODULE_TARGET_NAME} PUBLIC imgui_node_editor)
 target_include_directories(
   ${MODULE_TARGET_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
