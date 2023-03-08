@@ -28,12 +28,16 @@ asap_add_library(
   ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
 
   # Sources
-  src/BaseWindow.cpp)
+  src/BaseWindow.cpp
+  src/BaseMenuBar.cpp
+  src/MainMenuBar.cpp
+  src/Menu.cpp)
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
 target_link_libraries(${MODULE_TARGET_NAME}
   PRIVATE
+  logging
   imgui
   imgui_node_editor)
 

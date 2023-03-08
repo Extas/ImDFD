@@ -2,6 +2,7 @@
 #include <Logger.h>
 
 #include <BaseWindow.h>
+#include <MainMenuBar.h>
 
 #include <filesystem>
 #include <memory>
@@ -36,8 +37,10 @@ void DearImGui::Draw() {
   const std::string_view kTestText = "font test";
   ImGui::DebugTextEncoding(kTestText.data());
 
-  BaseWindow window("test window", ImVec2(200, 200));
+  BaseWindow window("test window");
   window.Show();
+  MainMenuBar menu_bar;
+  menu_bar.Show();
 }
 
 void DearImGui::Render() {
