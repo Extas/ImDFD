@@ -1,5 +1,5 @@
-#ifndef NODEEDITER_H
-#define NODEEDITER_H
+#ifndef NODEEDITORWINDOW_H
+#define NODEEDITORWINDOW_H
 
 #include <ui/BaseWindow.h>
 
@@ -23,4 +23,4 @@ private:
   auto operator=(const NodeEditerWindow &) -> NodeEditerWindow & = delete;
 };
 
-#endif // NODEEDITER_H
+#endif // NODEEDITORWINDOW_H

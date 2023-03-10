@@ -1,4 +1,4 @@
-#include <ui/NodeEditorWindow.h>
+#include <dfd_editor/NodeEditorWindow.h>
 
 NodeEditerWindow::NodeEditerWindow(std::string title)
     : BaseWindow(std::move(title)) {

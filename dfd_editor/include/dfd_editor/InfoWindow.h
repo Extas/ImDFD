@@ -1,3 +1,6 @@
+#ifndef INFOWINDOW_H
+#define INFOWINDOW_H
+
 #include <imgui.h>
 #include <ui/BaseWindow.h>
 
@@ -91,3 +94,5 @@ public:
 private:
   ElementInfo &info;
 };
+
+#endif // INFOWINDOW_H

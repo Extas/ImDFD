@@ -40,14 +40,11 @@ asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 target_link_libraries(${MODULE_TARGET_NAME}
   PRIVATE
   logging
-  imgui
-
-  # node_editor
 )
 
 target_link_libraries(${MODULE_TARGET_NAME}
   PUBLIC
-  node_editor
+  imgui
 )
 
 target_include_directories(
