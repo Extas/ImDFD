@@ -65,7 +65,7 @@ void GLFWMainWindows::MainLoop() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     DearImGui::NewFrame();
-    DearImGui::Update();
+    DearImGui::Draw();
     DearImGui::Render();
 
     glfwSwapBuffers(window_ptr_);
@@ -81,7 +81,7 @@ void GLFWMainWindows::Shutdown() {
 }
 
 void GLFWMainWindows::ErrorCallback(int error, const char *description) {
-  std::string error_msg = "GLFW Error: " + std::to_string(error) + " - " +
-                          std::string(description);
+  std::string error_msg =
+      "GLFW Error: " + std::to_string(error) + " - " + std::string(description);
   Logger::Error(error_msg.c_str());
 }
