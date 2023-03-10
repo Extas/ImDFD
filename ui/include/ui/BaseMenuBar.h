@@ -1,7 +1,7 @@
 #ifndef BASEMENUBAR_H
 #define BASEMENUBAR_H
 
-#include <Menu.h>
+#include <ui/Menu.h>
 
 #include <functional>
 #include <imgui.h>

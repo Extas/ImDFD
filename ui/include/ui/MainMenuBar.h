@@ -1,7 +1,7 @@
 #ifndef MAINMENUBAR_H
 #define MAINMENUBAR_H
 
-#include <BaseMenuBar.h>
+#include <ui/BaseMenuBar.h>
 
 #include <memory>
 

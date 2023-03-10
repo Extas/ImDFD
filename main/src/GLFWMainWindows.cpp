@@ -1,5 +1,5 @@
 #include <GLFWMainWindows.h>
-#include <Logger.h>
+#include <logging/Logger.h>
 
 #include <stdexcept>
 #include <string>

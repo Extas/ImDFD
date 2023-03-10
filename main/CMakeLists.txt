@@ -28,15 +28,13 @@ asap_declare_module(
 # -----------------------------------------------------
 set(MODULE_TARGET_NAME "ImDFD")
 
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp src/*.h)
 asap_add_executable(
   ${MODULE_TARGET_NAME}
   WARNING
   EXCEPTIONS
   SOURCES
-  src/main.cpp
-  src/GLFWMainWindows.cpp
-  src/DearImGui.cpp
-)
+  ${SOURCES})
 
 asap_set_language_standards(${MODULE_TARGET_NAME}
   CXX 17)

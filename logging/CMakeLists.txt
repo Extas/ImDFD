@@ -28,11 +28,15 @@ asap_declare_module(
 # -----------------------------------------------------
 set(MODULE_TARGET_NAME "logging")
 
-asap_add_library(
-  logging STATIC WARNING SOURCES
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp include/*.h)
 
-  # Sources
-  src/Logger.cpp)
+asap_add_library(
+  logging STATIC
+  WARNING
+  SOURCES
+
+  ${SOURCES}
+)
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 

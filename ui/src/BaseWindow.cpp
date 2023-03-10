@@ -1,6 +1,6 @@
-#include "BaseWindow.h"
+#include <ui/BaseWindow.h>
 
-#include <Logger.h>
+#include <logging/Logger.h>
 
 BaseWindow::BaseWindow(std::string title) : m_Title(std::move(title)) {
 }

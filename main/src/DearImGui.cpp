@@ -1,10 +1,10 @@
 #include <DearImGui.h>
-#include <Logger.h>
+#include <logging/Logger.h>
 
-#include <BaseWindow.h>
-#include <InfoWindow.h>
-#include <MainMenuBar.h>
-#include <NodeEditorWindow.h>
+#include <ui/BaseWindow.h>
+#include <ui/InfoWindow.h>
+#include <ui/MainMenuBar.h>
+#include <ui/NodeEditorWindow.h>
 
 #include <filesystem>
 #include <memory>

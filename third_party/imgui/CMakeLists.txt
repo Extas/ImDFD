@@ -31,7 +31,6 @@ set(MODULE_TARGET_NAME "imgui")
 find_package(GLFW REQUIRED)
 find_package(glad REQUIRED)
 find_package(imgui REQUIRED)
-find_package(imgui_node_editor REQUIRED)
 
 set(GLAD_PROFILE "core" CACHE STRING "" FORCE)
 
@@ -54,17 +53,40 @@ target_include_directories(${MODULE_TARGET_NAME} PUBLIC
   ${imgui_SOURCE_DIR}/backends
   ${GLFW_SOURCE_DIR}/include
 )
+asap_pop_module(imgui)
 
 # -----------------------------------------------------
 # imgui_node_editor
 # -----------------------------------------------------
-file(GLOB IMGUI_NODE_EDITOR_SRC ${imgui_node_editor_SOURCE_DIR}/*.cpp)
-asap_add_library(imgui_node_editor STATIC
+asap_push_module(node_editor)
+
+asap_declare_module(
+  MODULE_NAME
+  "node_editor"
+  DESCRIPTION
+  "The libraries about imgui"
+  GITHUB_REPO
+  "https://github.com/extas/ImDFD"
+  AUTHOR_MAINTAINER
+  "Extas"
+  VERSION_MAJOR
+  "1"
+  VERSION_MINOR
+  "0"
+  VERSION_PATCH
+  "0")
+
+set(MODULE_TARGET_NAME "node_editor")
+
+find_package(imgui_node_editor REQUIRED)
+file(GLOB IMGUI_NODE_EDITOR_SRC CONFIGURE_DEPENDS ${imgui_node_editor_SOURCE_DIR}/*.cpp)
+asap_add_library(node_editor STATIC
   WARNING
   SOURCES
   ${IMGUI_NODE_EDITOR_SRC}
 )
-target_link_libraries(imgui_node_editor PRIVATE imgui)
-target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_SOURCE_DIR})
+target_link_libraries(node_editor PRIVATE imgui)
+target_include_directories(node_editor PUBLIC
+  ${imgui_node_editor_SOURCE_DIR}/)
 
-asap_pop_module(imgui)
+asap_pop_module(node_editor)

@@ -1,5 +1,4 @@
-#include "BaseMenuBar.h"
-#include "Menu.h"
+#include <ui/BaseMenuBar.h>
 
 auto BaseMenuBar::GetOrAddMenu(const std::string &label) -> Menu & {
   // Look for an existing menu with the specified label

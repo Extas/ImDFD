@@ -1,5 +1,5 @@
 #include <GLFWMainWindows.h>
-#include <Logger.h>
+#include <logging/Logger.h>
 
 int main() {
   Logger::Init();

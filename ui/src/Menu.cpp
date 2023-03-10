@@ -1,4 +1,4 @@
-#include <Menu.h>
+#include <ui/Menu.h>
 
 Menu::Menu(std::string label) : m_Label(std::move(label)) {
 }

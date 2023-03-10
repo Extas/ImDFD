@@ -24,16 +24,16 @@ asap_declare_module(
 # -----------------------------------------------------
 set(MODULE_TARGET_NAME "ui")
 
+file(GLOB_RECURSE SOURCES
+  CONFIGURE_DEPENDS
+  src/*.cpp
+  include/*.h)
+
 asap_add_library(
   ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
 
-  # Sources
-  src/BaseWindow.cpp
-  src/BaseMenuBar.cpp
-  src/MainMenuBar.cpp
-  src/InfoWindow.cpp
-  src/NodeEditorWindow.cpp
-  src/Menu.cpp)
+  ${SOURCES}
+)
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
@@ -41,9 +41,15 @@ target_link_libraries(${MODULE_TARGET_NAME}
   PRIVATE
   logging
   imgui
+
+  # node_editor
 )
 
-target_link_libraries(${MODULE_TARGET_NAME} PUBLIC imgui_node_editor)
+target_link_libraries(${MODULE_TARGET_NAME}
+  PUBLIC
+  node_editor
+)
+
 target_include_directories(
   ${MODULE_TARGET_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

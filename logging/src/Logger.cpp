@@ -1,4 +1,4 @@
-#include <Logger.h>
+#include <logging/Logger.h>
 
 void Logger::Init() {
   // Create console sink

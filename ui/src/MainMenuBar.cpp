@@ -1,6 +1,6 @@
-#include <MainMenuBar.h>
+#include <ui/MainMenuBar.h>
 
-#include <Logger.h>
+#include <logging/Logger.h>
 
 MainMenuBar::MainMenuBar() {
   SetupFileMenu();

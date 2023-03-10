@@ -1,7 +1,7 @@
 #ifndef NODEEDITER_H
 #define NODEEDITER_H
 
-#include <BaseWindow.h>
+#include <ui/BaseWindow.h>
 
 #include <imgui_node_editor.h>
 namespace ed = ax::NodeEditor;

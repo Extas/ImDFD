@@ -1,5 +1,4 @@
-#include <BaseWindow.h>
-#include <NodeEditorWindow.h>
+#include <ui/NodeEditorWindow.h>
 
 NodeEditerWindow::NodeEditerWindow(std::string title)
     : BaseWindow(std::move(title)) {
