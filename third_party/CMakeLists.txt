@@ -71,3 +71,12 @@ asap_add_package(
   GITHUB_REPOSITORY
   gabime/spdlog
 )
+
+asap_add_package(
+  NAME
+  gsl
+  GIT_TAG
+  v4.0.0
+  GITHUB_REPOSITORY
+  microsoft/GSL
+)

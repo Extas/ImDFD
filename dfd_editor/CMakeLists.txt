@@ -33,7 +33,7 @@ file(GLOB_RECURSE SOURCES
   include/*.h)
 
 asap_add_library(
-  ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
+  ${MODULE_TARGET_NAME} STATIC WARNING EXCEPTIONS SOURCES
 
   ${SOURCES})
 
@@ -48,6 +48,8 @@ target_link_libraries(${MODULE_TARGET_NAME}
 target_link_libraries(${MODULE_TARGET_NAME}
   PUBLIC
   node_editor)
+
+target_include_directories(${MODULE_TARGET_NAME} PUBLIC ${gsl_SOURCE_DIR}/include)
 
 target_include_directories(
   ${MODULE_TARGET_NAME}

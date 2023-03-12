@@ -44,7 +44,9 @@ public:
     m_IsOpen = !m_IsOpen;
   }
 
-  BaseWindow(BaseWindow &&) = delete;
+  BaseWindow(BaseWindow &&other) noexcept
+      : m_Title(std::move(other.m_Title)), m_IsOpen(other.m_IsOpen) {
+  }
   BaseWindow(const BaseWindow &) = delete;
   auto operator=(BaseWindow &&) -> BaseWindow & = delete;
   auto operator=(const BaseWindow &) -> BaseWindow & = delete;
