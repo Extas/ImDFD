@@ -8,43 +8,36 @@
 
 class Link : public NodeObj {
 public:
-  Link(Pin *outputPin, Pin *inputPin)
-      : NodeObj("Link"), m_InputPin(inputPin), m_OutputPin(outputPin) {
-    m_InputPin->Connect(this);
-    m_OutputPin->Connect(this);
+  Link(uint64_t inputPinId, uint64_t outputPinId)
+      : NodeObj("Link"), m_InputPinId(inputPinId), m_OutputPinId(outputPinId) {
   }
 
-  ~Link() override {
-    m_InputPin->Disconnect(this);
-    m_OutputPin->Disconnect(this);
+  [[nodiscard]] auto GetInputPinId() const -> uint64_t {
+    return m_InputPinId;
   }
 
-  [[nodiscard]] auto GetInputPin() const -> const Pin * {
-    return m_InputPin;
-  }
-
-  [[nodiscard]] auto GetOutputPin() const -> const Pin * {
-    return m_OutputPin;
+  [[nodiscard]] auto GetOutputPinId() const -> uint64_t {
+    return m_OutputPinId;
   }
 
 private:
-  Pin *m_InputPin;
-  Pin *m_OutputPin;
+  uint64_t m_InputPinId;
+  uint64_t m_OutputPinId;
 
 public:
   Link(Link &&other) noexcept
-      : NodeObj(std::move(other)), m_InputPin(other.m_InputPin),
-        m_OutputPin(other.m_OutputPin) {
-    other.m_InputPin = nullptr;
-    other.m_OutputPin = nullptr;
+      : NodeObj(std::move(other)), m_InputPinId(other.m_InputPinId),
+        m_OutputPinId(other.m_OutputPinId) {
+    other.m_InputPinId = -1;
+    other.m_OutputPinId = -1;
   }
   auto operator=(Link &&other) noexcept -> Link & {
     if (this != &other) {
       NodeObj::operator=(std::move(other));
-      m_InputPin = other.m_InputPin;
-      m_OutputPin = other.m_OutputPin;
-      other.m_InputPin = nullptr;
-      other.m_OutputPin = nullptr;
+      m_InputPinId = other.m_InputPinId;
+      m_OutputPinId = other.m_OutputPinId;
+      other.m_InputPinId = -1;
+      other.m_OutputPinId = -1;
     }
     return *this;
   }
@@ -64,15 +57,15 @@ public:
     return m_Links;
   }
 
-  void AddLink(Pin *outputPin, Pin *inputPin) {
-    m_Links.emplace_back(outputPin, inputPin);
+  void AddLink(uint64_t inputPinId, uint64_t outputPinId) {
+    m_Links.emplace_back(inputPinId, outputPinId);
   }
 
-  void RemoveLink(Link &link) {
-    auto itor = std::find(m_Links.begin(), m_Links.end(), link);
-    if (itor != m_Links.end()) {
-      m_Links.erase(itor);
-    }
+  void RemoveLink(uint64_t linkId) {
+    m_Links.erase(
+        std::remove_if(m_Links.begin(), m_Links.end(),
+            [linkId](const Link &link) { return link.GetId() == linkId; }),
+        m_Links.end());
   }
 
 private:

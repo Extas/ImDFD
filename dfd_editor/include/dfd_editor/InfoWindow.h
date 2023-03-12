@@ -31,7 +31,7 @@ public:
 class InfoWindow : public BaseWindow {
 public:
   // 构造函数，传入元素信息类的引用
-  InfoWindow(ElementInfo &info) : BaseWindow("Info"), info(std::move(info)) {
+  explicit InfoWindow(ElementInfo &info) : BaseWindow("Info"), info(info) {
   }
 
   void DrawContents() override {

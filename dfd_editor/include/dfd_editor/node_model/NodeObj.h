@@ -1,6 +1,7 @@
 #ifndef NODEOBJ_H
 #define NODEOBJ_H
 
+#include <stdint.h>
 #include <string>
 #include <vector>
 
@@ -12,8 +13,8 @@ public:
 
   virtual ~NodeObj() = default;
 
-  static auto GetNextId() -> int {
-    static int s_NextId = 0;
+  static auto GetNextId() -> uint64_t {
+    static uint64_t s_NextId = 0;
     return s_NextId++;
   }
 
@@ -21,13 +22,13 @@ public:
     return m_Name;
   }
 
-  [[nodiscard]] auto GetId() const -> int {
+  [[nodiscard]] auto GetId() const -> uint64_t {
     return m_Id;
   }
 
 private:
   std::string m_Name;
-  int m_Id = -1;
+  uint64_t m_Id = -1;
 
 public:
   NodeObj(const NodeObj &) = delete;
