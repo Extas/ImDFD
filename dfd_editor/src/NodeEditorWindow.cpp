@@ -36,11 +36,9 @@ void NodeEditorWindow::DrawContents() {
   ed::Begin("My Editor", ImVec2(0.0, 0.0));
 
   if (IsFirstFrame()) {
-    Logger::Trace("First frame");
     FirstFrame();
   }
 
-  // Start drawing nodes.
   DrawNode();
   DrawLink();
   ed::End();

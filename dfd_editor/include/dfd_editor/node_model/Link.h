@@ -4,6 +4,8 @@
 #include "NodeObj.h"
 #include "Pin.h"
 
+#include <algorithm>
+
 class Link : public NodeObj {
 public:
   Link(Pin *outputPin, Pin *inputPin)

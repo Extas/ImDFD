@@ -2,8 +2,8 @@
 #define PIN_HPP
 
 #include "NodeObj.h"
+#include <algorithm>
 #include <string>
-#include <utility>
 #include <vector>
 
 class Node;

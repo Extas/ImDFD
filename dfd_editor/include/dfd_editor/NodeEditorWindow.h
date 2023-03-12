@@ -46,7 +46,7 @@ private:
     if (isInitialized) {
       return context;
     }
-    Logger::Trace("Initializing context");
+    Logger::Trace("dfd_editor: Initializing NodeEditor context");
     context = ed::CreateEditor();
     isInitialized = true;
     return context;
