@@ -104,7 +104,7 @@ void NodeEditorWindow::HandleDelete() {
       // If you agree that link can be deleted, accept deletion.
       if (ed::AcceptDeletedItem()) {
         // Then remove link from your data.
-        for (auto &link : m_LinkManager.GetLinks()) {
+        for (const auto &link : m_LinkManager.GetLinks()) {
           if (link.GetId() == deletedLinkId.Get()) {
             m_LinkManager.RemoveLink(link.GetId());
             break;
