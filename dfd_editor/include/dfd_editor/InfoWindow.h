@@ -1,7 +1,11 @@
+#ifndef INFOWINDOW_H
+#define INFOWINDOW_H
+
 #include <imgui.h>
 #include <ui/BaseWindow.h>
 
 #include <string>
+#include <utility>
 #include <vector>
 
 // 定义元素信息类
@@ -18,8 +22,8 @@ public:
   }
 
   // 构造函数，传入元素名称和描述
-  ElementInfo(const std::string &name, const std::string &description)
-      : name(name), description(description) {
+  ElementInfo(std::string name, const std::string &description)
+      : name(std::move(name)), description(description) {
   }
 };
 
@@ -27,7 +31,7 @@ public:
 class InfoWindow : public BaseWindow {
 public:
   // 构造函数，传入元素信息类的引用
-  InfoWindow(ElementInfo &info) : BaseWindow("Info"), info(info) {
+  explicit InfoWindow(ElementInfo &info) : BaseWindow("Info"), info(info) {
   }
 
   void DrawContents() override {
@@ -89,5 +93,7 @@ public:
   }
 
 private:
-  ElementInfo &info;
+  ElementInfo info;
 };
+
+#endif // INFOWINDOW_H

@@ -42,8 +42,8 @@ asap_set_language_standards(${MODULE_TARGET_NAME}
 target_link_libraries(
   ${MODULE_TARGET_NAME}
   PRIVATE
-  imgui
   ui
+  dfd_editor
   logging
 )
 

@@ -1,13 +1,16 @@
 # -----------------------------------------------------
 # Meta information about the module
 # -----------------------------------------------------
-asap_push_module(ui)
+asap_push_module(dfd_editor)
+
+add_subdirectory(ui)
+add_subdirectory(dfd_model)
 
 asap_declare_module(
   MODULE_NAME
-  "ui"
+  "dfd_editor"
   DESCRIPTION
-  "UI component library for ImGui"
+  "DFD editor component for ui module"
   GITHUB_REPO
   "https://github.com/extas/ImDFD"
   AUTHOR_MAINTAINER
@@ -22,7 +25,7 @@ asap_declare_module(
 # -----------------------------------------------------
 # Main module target
 # -----------------------------------------------------
-set(MODULE_TARGET_NAME "ui")
+set(MODULE_TARGET_NAME "dfd_editor")
 
 file(GLOB_RECURSE SOURCES
   CONFIGURE_DEPENDS
@@ -30,25 +33,23 @@ file(GLOB_RECURSE SOURCES
   include/*.h)
 
 asap_add_library(
-  ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
+  ${MODULE_TARGET_NAME} STATIC WARNING EXCEPTIONS SOURCES
 
-  ${SOURCES}
-)
+  ${SOURCES})
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
 target_link_libraries(${MODULE_TARGET_NAME}
   PRIVATE
   logging
-  imgui
-
-  # node_editor
-)
+  ui
+  dfd_model)
 
 target_link_libraries(${MODULE_TARGET_NAME}
   PUBLIC
-  node_editor
-)
+  node_editor)
+
+target_include_directories(${MODULE_TARGET_NAME} PUBLIC ${gsl_SOURCE_DIR}/include)
 
 target_include_directories(
   ${MODULE_TARGET_NAME}
@@ -67,4 +68,4 @@ if(ASAP_BUILD_TESTS)
   # add_subdirectory(test)
 endif()
 
-asap_pop_module(ui)
+asap_pop_module(dfd_editor)

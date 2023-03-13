@@ -1,13 +1,13 @@
 #include <DearImGui.h>
 #include <logging/Logger.h>
 
+#include <dfd_editor/InfoWindow.h>
+#include <dfd_editor/NodeEditorWindow.h>
+#include <memory>
 #include <ui/BaseWindow.h>
-#include <ui/InfoWindow.h>
 #include <ui/MainMenuBar.h>
-#include <ui/NodeEditorWindow.h>
 
 #include <filesystem>
-#include <memory>
 #include <string_view>
 
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
@@ -21,6 +21,11 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   ImGui_ImplOpenGL3_Init(glsl_version);
   ImGui::StyleColorsDark();
+
+  auto info = ElementInfo("test", "test");
+  AddWindow(std::make_unique<BaseWindow>("info"));
+  AddWindow(std::make_unique<InfoWindow>(info));
+  AddWindow(std::make_unique<NodeEditorWindow>("Node Editor"));
 }
 
 void DearImGui::NewFrame() {
@@ -36,15 +41,12 @@ void DearImGui::Draw() {
 
   ImGui::ShowDemoWindow();
 
-  BaseWindow window("test window");
-  window.Show();
   MainMenuBar menu_bar;
   menu_bar.Show();
-  auto info = ElementInfo("test", "test");
-  auto info_window = InfoWindow(info);
-  info_window.Show();
-  auto node_editer = NodeEditerWindow("node editer");
-  node_editer.Show();
+
+  for (auto &window : windows_) {
+    window->Show();
+  }
 }
 
 void DearImGui::Render() {
@@ -93,4 +95,8 @@ void DearImGui::IoConfig() {
       }
     }
   }
+}
+
+void DearImGui::AddWindow(std::unique_ptr<BaseWindow> window) {
+  windows_.push_back(std::move(window));
 }
