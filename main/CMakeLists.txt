@@ -22,6 +22,7 @@ asap_declare_module(
 # =====================================================
 # Build instructions
 # =====================================================
+add_subdirectory(application)
 
 # -----------------------------------------------------
 # Main module target
@@ -45,6 +46,7 @@ target_link_libraries(
   ui
   dfd_editor
   logging
+  application
 )
 
 target_include_directories(${MODULE_TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR}/include)

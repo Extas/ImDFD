@@ -1,9 +1,16 @@
 #include <GLFWMainWindows.h>
+#include <application/application.h>
 #include <logging/Logger.h>
 
 int main() {
   Logger::Init();
   Logger::Info("Welcome to the ImDFD");
+
+  Application app("ImDFD");
+
+  if (app.Create()) {
+    app.Run();
+  }
 
   GLFWMainWindows::Init();
 

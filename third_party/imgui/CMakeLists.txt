@@ -34,9 +34,16 @@ find_package(imgui REQUIRED)
 
 set(GLAD_PROFILE "core" CACHE STRING "" FORCE)
 
-asap_add_library(${MODULE_TARGET_NAME} STATIC
-  WARNING
-  SOURCES
+# ${imgui_SOURCE_DIR}/imgui.cpp
+# ${imgui_SOURCE_DIR}/imgui_draw.cpp
+# ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+# ${imgui_SOURCE_DIR}/imgui_demo.cpp
+# ${imgui_SOURCE_DIR}/imgui_tables.cpp
+# ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+# ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+
+
+set(IMGUI_SRC
   ${imgui_SOURCE_DIR}/imgui.cpp
   ${imgui_SOURCE_DIR}/imgui_draw.cpp
   ${imgui_SOURCE_DIR}/imgui_widgets.cpp
@@ -45,6 +52,19 @@ asap_add_library(${MODULE_TARGET_NAME} STATIC
   ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
+
+if(WIN32)
+  set(IMGUI_SRC
+    ${IMGUI_SRC}
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.cpp)
+endif()
+
+asap_add_library(${MODULE_TARGET_NAME} STATIC
+  WARNING
+  SOURCES
+
+  ${IMGUI_SRC})
 
 target_link_libraries(${MODULE_TARGET_NAME} PUBLIC glfw glad)
 

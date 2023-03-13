@@ -80,3 +80,12 @@ asap_add_package(
   GITHUB_REPOSITORY
   microsoft/GSL
 )
+
+asap_add_package(
+  NAME
+  stb
+  GIT_TAG
+  master
+  GITHUB_REPOSITORY
+  nothings/stb
+)
