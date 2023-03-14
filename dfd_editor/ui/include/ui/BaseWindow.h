@@ -13,7 +13,7 @@ public:
 
   virtual void DrawContents();
 
-  void Show();
+  virtual void Show();
 
 private:
   std::string m_Title;
@@ -26,6 +26,10 @@ public:
 
   void SetTitle(const std::string &title) {
     m_Title = title;
+  }
+
+  bool *GetIsOpenPtr() {
+    return &m_IsOpen;
   }
 
   [[nodiscard]] auto IsOpen() const -> bool {

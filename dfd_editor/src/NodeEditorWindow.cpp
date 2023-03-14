@@ -13,13 +13,13 @@ NodeEditorWindow::NodeEditorWindow(std::string title)
 NodeEditorWindow::NodeEditorWindow() : NodeEditorWindow("NodeEditor") {
 }
 
-void NodeEditorWindow::demo() {
-  m_NodeManager.AddNode("A", std::make_pair(10, 10));
-  m_NodeManager.AddInputPin("A In");
-  m_NodeManager.AddOutputPin("A Out");
-  m_NodeManager.AddNode("B", std::make_pair(210, 60));
-  m_NodeManager.AddInputPin("B In");
-  m_NodeManager.AddOutputPin("B Out");
+void NodeEditorWindow::Demo() {
+  m_node_manager_.AddNode("A", std::make_pair(10, 10));
+  m_node_manager_.AddInputPin("A In");
+  m_node_manager_.AddOutputPin("A Out");
+  m_node_manager_.AddNode("B", std::make_pair(210, 60));
+  m_node_manager_.AddInputPin("B In");
+  m_node_manager_.AddOutputPin("B Out");
 }
 
 void NodeEditorWindow::DrawContents() {
@@ -34,6 +34,7 @@ void NodeEditorWindow::DrawContents() {
   DrawLink();
   HandleInteractions();
   HandleDelete();
+
   ed::End();
   ed::SetCurrentEditor(nullptr);
 }
@@ -42,7 +43,7 @@ void NodeEditorWindow::DrawContents() {
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-vararg"
 void NodeEditorWindow::DrawNode() {
 
-  for (const auto &node : m_NodeManager.GetNodes()) {
+  for (const auto &node : m_node_manager_.GetNodes()) {
     ed::BeginNode(node.GetId());
     ImGui::Text("%s", node.GetName().c_str());
     for (const auto &pin : node.GetInputPins()) {
@@ -63,7 +64,7 @@ void NodeEditorWindow::DrawNode() {
 #pragma clang diagnostic pop
 
 void NodeEditorWindow::DrawLink() {
-  for (const auto &link : m_LinkManager.GetLinks()) {
+  for (const auto &link : m_link_manager_.GetLinks()) {
     ed::Link(link.GetId(), link.GetOutputPinId(), link.GetInputPinId());
   }
 }
@@ -84,9 +85,10 @@ void NodeEditorWindow::HandleInteractions() {
         // 当用户释放鼠标按钮时，ed::AcceptNewItem() 返回 true。
         if (ed::AcceptNewItem()) {
           // 接受了新链接，添加到链接列表中。
-          m_LinkManager.AddLink(inputPinId.Get(), outputPinId.Get());
+          m_link_manager_.AddLink(inputPinId.Get(), outputPinId.Get());
           Logger::Trace("dfd_editor: Accepted new link");
-          // Draw new link.
+
+          // Show new link.
           DrawLink();
         }
 
@@ -105,9 +107,9 @@ void NodeEditorWindow::HandleDelete() {
       // If you agree that link can be deleted, accept deletion.
       if (ed::AcceptDeletedItem()) {
         // Then remove link from your data.
-        for (const auto &link : m_LinkManager.GetLinks()) {
+        for (const auto &link : m_link_manager_.GetLinks()) {
           if (link.GetId() == deletedLinkId.Get()) {
-            m_LinkManager.RemoveLink(link.GetId());
+            m_link_manager_.RemoveLink(link.GetId());
             Logger::Trace("dfd_editor: Accepted deleted link");
             break;
           }
@@ -143,8 +145,8 @@ auto NodeEditorWindow::GetContext() -> ed::EditorContext * {
 }
 
 void NodeEditorWindow::FirstFrame() {
-  demo();
-  for (const auto &node : m_NodeManager.GetNodes()) {
+  Demo();
+  for (const auto &node : m_node_manager_.GetNodes()) {
     ed::SetNodePosition(node.GetId(),
         ImVec2(node.GetPosition().first, node.GetPosition().second));
   }
@@ -152,5 +154,5 @@ void NodeEditorWindow::FirstFrame() {
 }
 
 NodeEditorWindow::~NodeEditorWindow() {
-  ed::DestroyEditor(m_Context);
+  ed::DestroyEditor(m_context_);
 }

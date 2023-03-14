@@ -5,6 +5,7 @@
 #include "node_model/Link.h"
 #include "node_model/Node.h"
 
+#include <dfd_editor/NotificationWindow.h>
 #include <imgui_node_editor.h>
 #include <logging/Logger.h>
 #include <ui/BaseWindow.h>
@@ -20,12 +21,11 @@ public:
   void DrawContents() override;
 
 private:
-  int m_uniqueId = 0;
-  ed::EditorContext *m_Context = GetContext();
-  NodeManager m_NodeManager;
-  LinkManager m_LinkManager;
+  ed::EditorContext *m_context_ = GetContext();
+  NodeManager m_node_manager_;
+  LinkManager m_link_manager_;
 
-  void demo();
+  void Demo();
   void DrawNode();
   void DrawLink();
   void HandleInteractions();

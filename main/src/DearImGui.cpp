@@ -3,13 +3,12 @@
 
 #include <dfd_editor/InfoWindow.h>
 #include <dfd_editor/NodeEditorWindow.h>
+#include <dfd_editor/NotificationWindow.h>
 #include <memory>
 #include <ui/BaseWindow.h>
 #include <ui/MainMenuBar.h>
 
 #include <filesystem>
-#include <string_view>
-
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   Logger::Trace("Initializing Dear ImGui");
   IMGUI_CHECKVERSION();
@@ -26,6 +25,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   AddWindow(std::make_unique<BaseWindow>("info"));
   AddWindow(std::make_unique<InfoWindow>(info));
   AddWindow(std::make_unique<NodeEditorWindow>("Node Editor"));
+  AddWindow(std::make_unique<NotificationWindow>());
 }
 
 void DearImGui::NewFrame() {
@@ -43,7 +43,7 @@ void DearImGui::Draw() {
 
   MainMenuBar menu_bar;
   menu_bar.Show();
-
+  bool isopen;
   for (auto &window : windows_) {
     window->Show();
   }
