@@ -1,11 +1,8 @@
-#include "dfd_editor/node_model/Node.h"
 #include <dfd_editor/NodeEditorWindow.h>
-#include <dfd_editor/node_model/Link.h>
 #include <imgui.h>
 #include <imgui_node_editor.h>
 
 #include <logging/Logger.h>
-#include <memory>
 #include <string>
 #include <utility>
 
@@ -36,30 +33,34 @@ void NodeEditorWindow::DrawContents() {
   DrawNode();
   DrawLink();
   HandleInteractions();
+  HandleDelete();
   ed::End();
   ed::SetCurrentEditor(nullptr);
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-vararg"
 void NodeEditorWindow::DrawNode() {
 
   for (const auto &node : m_NodeManager.GetNodes()) {
     ed::BeginNode(node.GetId());
-    ImGui::Text(node.GetName().c_str());
+    ImGui::Text("%s", node.GetName().c_str());
     for (const auto &pin : node.GetInputPins()) {
       ed::BeginPin(pin.GetId(), ed::PinKind::Input);
-      ImGui::Text(pin.GetName().c_str());
+      ImGui::Text("%s", pin.GetName().c_str());
       ed::EndPin();
       ImGui::SameLine();
     }
     for (const auto &pin : node.GetOutputPins()) {
       ed::BeginPin(pin.GetId(), ed::PinKind::Output);
-      ImGui::Text(pin.GetName().c_str());
+      ImGui::Text("%s", pin.GetName().c_str());
       ed::EndPin();
       ImGui::SameLine();
     }
     ed::EndNode();
   }
 }
+#pragma clang diagnostic pop
 
 void NodeEditorWindow::DrawLink() {
   for (const auto &link : m_LinkManager.GetLinks()) {
@@ -107,6 +108,7 @@ void NodeEditorWindow::HandleDelete() {
         for (const auto &link : m_LinkManager.GetLinks()) {
           if (link.GetId() == deletedLinkId.Get()) {
             m_LinkManager.RemoveLink(link.GetId());
+            Logger::Trace("dfd_editor: Accepted deleted link");
             break;
           }
         }

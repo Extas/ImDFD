@@ -14,7 +14,7 @@ public:
   virtual ~NodeObj() = default;
 
   static auto GetNextId() -> uint64_t {
-    static uint64_t s_NextId = 0;
+    static uint64_t s_NextId = 100;
     return s_NextId++;
   }
 
