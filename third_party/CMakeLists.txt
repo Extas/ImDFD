@@ -49,7 +49,8 @@ asap_add_package(
   NAME
   imgui
   GIT_TAG
-  192196711a7d0d7c2d60454d42654cf090498a74 # docking branch
+#   192196711a7d0d7c2d60454d42654cf090498a74 # docking branch
+        9cd9c2eff99877a3f10a7f9c2a3a5b9c15ea36c6 # 1.88 docking
   GITHUB_REPOSITORY
   ocornut/imgui
 )
