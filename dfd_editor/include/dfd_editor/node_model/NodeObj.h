@@ -13,6 +13,8 @@ public:
 
   virtual ~NodeObj() = default;
 
+  virtual void Draw() const = 0;
+
   static auto GetNextId() -> uint64_t {
     static uint64_t s_NextId = 100;
     return s_NextId++;

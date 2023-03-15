@@ -22,7 +22,7 @@ public:
 
 private:
   ed::EditorContext *m_context_ = GetContext();
-  NodeManager m_node_manager_;
+  NodeManager node_manager_;
   LinkManager m_link_manager_;
 
   void Demo();

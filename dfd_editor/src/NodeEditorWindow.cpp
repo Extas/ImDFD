@@ -14,12 +14,12 @@ NodeEditorWindow::NodeEditorWindow() : NodeEditorWindow("NodeEditor") {
 }
 
 void NodeEditorWindow::Demo() {
-  m_node_manager_.AddNode("A", std::make_pair(10, 10));
-  m_node_manager_.AddInputPin("A In");
-  m_node_manager_.AddOutputPin("A Out");
-  m_node_manager_.AddNode("B", std::make_pair(210, 60));
-  m_node_manager_.AddInputPin("B In");
-  m_node_manager_.AddOutputPin("B Out");
+  node_manager_.AddNode("A", std::make_pair(10, 10));
+  node_manager_.AddInputPin("A In");
+  node_manager_.AddOutputPin("A Out");
+  node_manager_.AddNode("B", std::make_pair(210, 60));
+  node_manager_.AddInputPin("B In");
+  node_manager_.AddOutputPin("B Out");
 }
 
 void NodeEditorWindow::DrawContents() {
@@ -43,22 +43,8 @@ void NodeEditorWindow::DrawContents() {
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-vararg"
 void NodeEditorWindow::DrawNode() {
 
-  for (const auto &node : m_node_manager_.GetNodes()) {
-    ed::BeginNode(node.GetId());
-    ImGui::Text("%s", node.GetName().c_str());
-    for (const auto &pin : node.GetInputPins()) {
-      ed::BeginPin(pin.GetId(), ed::PinKind::Input);
-      ImGui::Text("%s", pin.GetName().c_str());
-      ed::EndPin();
-      ImGui::SameLine();
-    }
-    for (const auto &pin : node.GetOutputPins()) {
-      ed::BeginPin(pin.GetId(), ed::PinKind::Output);
-      ImGui::Text("%s", pin.GetName().c_str());
-      ed::EndPin();
-      ImGui::SameLine();
-    }
-    ed::EndNode();
+  for (const auto &node : node_manager_.GetNodes()) {
+    node.Draw();
   }
 }
 #pragma clang diagnostic pop
@@ -146,7 +132,7 @@ auto NodeEditorWindow::GetContext() -> ed::EditorContext * {
 
 void NodeEditorWindow::FirstFrame() {
   Demo();
-  for (const auto &node : m_node_manager_.GetNodes()) {
+  for (const auto &node : node_manager_.GetNodes()) {
     ed::SetNodePosition(node.GetId(),
         ImVec2(node.GetPosition().first, node.GetPosition().second));
   }

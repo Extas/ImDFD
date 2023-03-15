@@ -12,6 +12,9 @@ public:
       : NodeObj("Link"), m_InputPinId(inputPinId), m_OutputPinId(outputPinId) {
   }
 
+  void Draw() const override {
+  }
+
   [[nodiscard]] auto GetInputPinId() const -> uint64_t {
     return m_InputPinId;
   }

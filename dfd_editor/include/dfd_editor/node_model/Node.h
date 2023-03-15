@@ -5,6 +5,9 @@
 #include "Pin.h"
 #include "dfd_editor/node_model/Pin.h"
 
+#include <imgui_node_editor.h>
+namespace ed = ax::NodeEditor;
+
 #include <memory>
 #include <optional>
 #include <string>
@@ -15,6 +18,18 @@ class Node : public NodeObj {
 public:
   Node(std::string name, std::pair<float, float> position)
       : NodeObj(std::move(name)), m_Position(position) {
+  }
+
+  void Draw() const override {
+    ed::BeginNode(GetId());
+    ImGui::Text("%s", GetName().c_str());
+    for (const auto &pin : GetInputPins()) {
+      pin.Draw();
+    }
+    for (const auto &pin : GetOutputPins()) {
+      pin.Draw();
+    }
+    ed::EndNode();
   }
 
   ~Node() override = default;
