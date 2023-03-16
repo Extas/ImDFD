@@ -1,13 +1,13 @@
 # -----------------------------------------------------
 # Meta information about the module
 # -----------------------------------------------------
-asap_push_module(dfd_model)
+asap_push_module(node_model)
 
 asap_declare_module(
         MODULE_NAME
-        "dfd_model"
+        "node_model"
         DESCRIPTION
-        "Data structures for DFD modeling"
+        "Element component library for Node Editor"
         GITHUB_REPO
         "https://github.com/extas/ImDFD"
         AUTHOR_MAINTAINER
@@ -22,7 +22,7 @@ asap_declare_module(
 # -----------------------------------------------------
 # Main module target
 # -----------------------------------------------------
-set(MODULE_TARGET_NAME "dfd_model")
+set(MODULE_TARGET_NAME "node_model")
 
 file(GLOB_RECURSE SOURCES
         CONFIGURE_DEPENDS
@@ -32,15 +32,18 @@ file(GLOB_RECURSE SOURCES
 asap_add_library(
         ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
 
-        ${SOURCES}
-)
+        ${SOURCES})
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
 target_link_libraries(${MODULE_TARGET_NAME}
         PRIVATE
-        logging
-        )
+        logging)
+
+target_link_libraries(${MODULE_TARGET_NAME}
+        PUBLIC
+        node_editor
+        imgui)
 
 target_include_directories(
         ${MODULE_TARGET_NAME}
@@ -59,4 +62,4 @@ if (ASAP_BUILD_TESTS)
     # add_subdirectory(test)
 endif ()
 
-asap_pop_module(dfd_model)
+asap_pop_module(node_model)

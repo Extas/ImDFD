@@ -1,5 +1,5 @@
-#ifndef PIN_HPP
-#define PIN_HPP
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_PIN_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_PIN_H_
 
 #include "NodeObj.h"
 
@@ -53,4 +53,4 @@ public:
   // TODO(Pin): Add other functionality specific to in pin if necessary
 };
 
-#endif // PIN_HPP
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_PIN_H_

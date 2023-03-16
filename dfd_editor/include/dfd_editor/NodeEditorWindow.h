@@ -1,13 +1,11 @@
-#ifndef NODEEDITORWINDOW_H
-#define NODEEDITORWINDOW_H
-
-#include "dfd_editor/node_model/Node.h"
-#include "node_model/Link.h"
-#include "node_model/Node.h"
+#ifndef DFD_EDITOR_NODEEDITORWINDOW_H
+#define DFD_EDITOR_NODEEDITORWINDOW_H
 
 #include <dfd_editor/NotificationWindow.h>
 #include <imgui_node_editor.h>
 #include <logging/Logger.h>
+#include <node_model/Link.h>
+#include <node_model/NodeManager.h>
 #include <ui/BaseWindow.h>
 
 #include <vector>
@@ -44,4 +42,4 @@ public:
   ~NodeEditorWindow() override;
 };
 
-#endif // NODEEDITORWINDOW_H
+#endif // DFD_EDITOR_NODEEDITORWINDOW_H

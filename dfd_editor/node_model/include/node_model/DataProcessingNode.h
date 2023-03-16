@@ -3,16 +3,18 @@
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_DATAPROCESSINGNODE_H_
 
 #include "Node.h"
+
 #include "data/DataProcessing.h"
+#include <utility>
 
 class DataProcessingNode : public Node {
 public:
   DataProcessingNode(const std::string &name, std::pair<float, float> position,
-      const DataProcessing &dataProcessing)
-      : Node(name, position), m_dataProcessing(dataProcessing) {
+      DataProcessing dataProcessing)
+      : Node(name, position), m_dataProcessing(std::move(dataProcessing)) {
   }
 
-  const DataProcessing &GetDataProcessing() const {
+  [[nodiscard]] auto GetDataProcessing() const -> const DataProcessing & {
     return m_dataProcessing;
   }
 

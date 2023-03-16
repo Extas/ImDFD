@@ -1,5 +1,5 @@
-#ifndef NODEOBJ_H
-#define NODEOBJ_H
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEOBJ_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEOBJ_H_
 
 #include <cstdint>
 #include <string>
@@ -50,4 +50,4 @@ public:
   auto operator=(const NodeObj &) -> NodeObj & = delete;
 };
 
-#endif // NODEOBJ_H
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEOBJ_H_

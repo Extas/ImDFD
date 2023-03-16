@@ -3,16 +3,18 @@
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_NODE_MODEL_EXTERNALENTITYNODE_H_
 
 #include "Node.h"
+
 #include "data/ExternalEntity.h"
+#include <utility>
 
 class ExternalEntityNode : public Node {
 public:
   ExternalEntityNode(const std::string &name, std::pair<float, float> position,
-      const ExternalEntity &externalEntity)
-      : Node(name, position), m_externalEntity(externalEntity) {
+      ExternalEntity externalEntity)
+      : Node(name, position), m_externalEntity(std::move(externalEntity)) {
   }
 
-  const ExternalEntity &GetExternalEntity() const {
+  [[nodiscard]] auto GetExternalEntity() const -> const ExternalEntity & {
     return m_externalEntity;
   }
 

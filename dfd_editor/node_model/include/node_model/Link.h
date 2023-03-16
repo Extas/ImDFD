@@ -1,5 +1,5 @@
-#ifndef LINK_H
-#define LINK_H
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_LINK_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_LINK_H_
 
 #include "NodeObj.h"
 #include "Pin.h"
@@ -75,4 +75,4 @@ private:
   std::vector<Link> m_Links;
 };
 
-#endif // LINK_H
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_LINK_H_
