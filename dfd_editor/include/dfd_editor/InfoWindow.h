@@ -18,8 +18,7 @@ public:
   std::vector<std::string> output_streams;
 
   // 默认构造函数
-  ElementInfo() {
-  }
+  ElementInfo() = default;
 
   // 构造函数，传入元素名称和描述
   ElementInfo(std::string name, const std::string &description)

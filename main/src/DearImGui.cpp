@@ -22,9 +22,15 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui::StyleColorsDark();
 
   auto info = ElementInfo("test", "test");
-  AddWindow(std::make_unique<BaseWindow>("info"));
+  AddWindow(std::make_unique<BaseWindow>("BaseWindow"));
   AddWindow(std::make_unique<InfoWindow>(info));
-  AddWindow(std::make_unique<NodeEditorWindow>("Node Editor"));
+  NodeEditorWindow node_editor_window("Node Editor Window");
+  node_editor_window.AddNodeEditor(
+      std::make_shared<NodeEditor>("Data Flow Diagram 1"));
+  node_editor_window.AddNodeEditor(
+      std::make_shared<NodeEditor>("Data Flow Diagram 2"));
+  AddWindow(std::move(
+      std::make_unique<NodeEditorWindow>(std::move(node_editor_window))));
   AddWindow(std::make_unique<NotificationWindow>());
 }
 
@@ -43,7 +49,6 @@ void DearImGui::Draw() {
 
   MainMenuBar menu_bar;
   menu_bar.Show();
-  bool isopen;
   for (auto &window : windows_) {
     window->Draw();
   }
