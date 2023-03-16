@@ -13,7 +13,7 @@ public:
 
   virtual void DrawContents();
 
-  virtual void Show();
+  virtual void Draw();
 
 private:
   std::string m_Title;

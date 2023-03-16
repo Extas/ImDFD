@@ -15,7 +15,7 @@ public:
   void AddItem(const std::string &label,
       const std::function<void()> &callback = nullptr);
 
-  // Show this menu and its items
+  // Draw this menu and its items
   void Show();
 
   // Get the label of this menu

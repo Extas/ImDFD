@@ -45,7 +45,7 @@ void DearImGui::Draw() {
   menu_bar.Show();
   bool isopen;
   for (auto &window : windows_) {
-    window->Show();
+    window->Draw();
   }
 }
 

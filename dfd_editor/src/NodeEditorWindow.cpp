@@ -74,7 +74,7 @@ void NodeEditorWindow::HandleInteractions() {
           m_link_manager_.AddLink(inputPinId.Get(), outputPinId.Get());
           Logger::Trace("dfd_editor: Accepted new link");
 
-          // Show new link.
+          // Draw new link.
           DrawLink();
         }
 

@@ -11,7 +11,7 @@ BaseWindow::BaseWindow() : BaseWindow("Untitled") {
 void BaseWindow::DrawContents() {
 }
 
-void BaseWindow::Show() {
+void BaseWindow::Draw() {
   if (!ImGui::Begin(m_Title.c_str(), &m_IsOpen)) {
     ImGui::End();
     return;

@@ -6,11 +6,12 @@
 
 #include <chrono>
 #include <string>
+#include <vector>
 
 // Usage:
 //  static ExampleAppLog my_log;
 //  my_log.AddLog("Hello %d world\n", 123);
-//  my_log.Show("title");
+//  my_log.Draw("title");
 struct ExampleAppLog {
   ImGuiTextBuffer buf;
   ImGuiTextFilter filter;
@@ -28,17 +29,24 @@ struct ExampleAppLog {
     line_offsets.push_back(0);
   }
 
-  template <typename... Args> void AddLog(const char *fmt, ...) IM_FMTARGS(2) {
+  template <typename... Args> void AddLog(const char *fmt, Args... args) {
     int old_size = buf.size();
-    va_list args = nullptr;
-    va_start(args, fmt);
-    buf.appendfv(fmt, args);
-    va_end(args);
+    std::string formatted_string = FormatString(fmt, args...);
+    buf.append(formatted_string.c_str());
+
     for (int new_size = buf.size(); old_size < new_size; old_size++) {
       if (buf[old_size] == '\n') {
         line_offsets.push_back(old_size + 1);
       }
     }
+  }
+
+  template <typename... Args>
+  auto FormatString(const char *fmt, Args... args) -> std::string {
+    size_t buf_size = std::snprintf(nullptr, 0, fmt, args...) + 1;
+    std::vector<char> buffer(buf_size);
+    std::snprintf(buffer.data(), buf_size, fmt, args...);
+    return std::string(buffer.data(), buffer.size() - 1);
   }
 
   void Draw(const char *title, bool *p_open = nullptr) {
@@ -158,7 +166,7 @@ public:
   static void AddWarningNotification(const std::string &message);
   static void AddErrorNotification(const std::string &message);
 
-  void Show() override;
+  void DrawContents() override;
 
 private:
   inline static ExampleAppLog log_;
