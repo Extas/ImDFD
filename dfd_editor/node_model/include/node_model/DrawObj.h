@@ -8,7 +8,7 @@
 class DrawObj {
 public:
   explicit DrawObj(std::string name)
-      : m_Name(std::move(name)), m_Id(GetNextId()) {
+      : name_(std::move(name)), id_(GetNextId()) {
   }
 
   virtual ~DrawObj() = default;
@@ -21,28 +21,32 @@ public:
   }
 
   [[nodiscard]] auto GetName() const -> const std::string & {
-    return m_Name;
+    return name_;
+  }
+
+  void SetName(const std::string &name) {
+    name_ = name;
   }
 
   [[nodiscard]] auto GetId() const -> uint64_t {
-    return m_Id;
+    return id_;
   }
 
 private:
-  std::string m_Name;
-  uint64_t m_Id = -1;
+  std::string name_;
+  uint64_t id_ = -1;
 
 public:
   DrawObj(const DrawObj &) = delete;
   DrawObj(DrawObj &&other) noexcept
-      : m_Name(std::move(other.m_Name)), m_Id(other.m_Id) {
-    other.m_Id = -1;
+      : name_(std::move(other.name_)), id_(other.id_) {
+    other.id_ = -1;
   }
   auto operator=(DrawObj &&other) noexcept -> DrawObj & {
     if (this != &other) {
-      m_Name = std::move(other.m_Name);
-      m_Id = other.m_Id;
-      other.m_Id = -1;
+      name_ = std::move(other.name_);
+      id_ = other.id_;
+      other.id_ = -1;
     }
     return *this;
   }

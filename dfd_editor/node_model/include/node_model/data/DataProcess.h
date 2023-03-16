@@ -7,10 +7,10 @@
 class DataProcess {
 public:
   DataProcess(std::string name, std::string description)
-      : name_(std::move(name)), description_(std::move(description)) {
+      : name_(std::move(name)), processing_content_(std::move(description)) {
   }
 
-  DataProcess() : name_("DataProcess"), description_("") {
+  DataProcess() : name_("DataProcess"), processing_content_("") {
   }
 
   void AddInputDataFlow(int id) {
@@ -25,7 +25,7 @@ public:
 
 private:
   std::string name_;
-  std::string description_;
+  std::string processing_content_;
   std::vector<int> input_data_flows_;
   std::vector<int> output_data_flows_;
   int sub_data_flow_diagram_id_;
@@ -37,11 +37,11 @@ public:
   void SetName(const std::string &name) {
     name_ = name;
   }
-  const std::string &GetDescription() const {
-    return description_;
+  const std::string &GetContent() const {
+    return processing_content_;
   }
-  void SetDescription(const std::string &description) {
-    description_ = description;
+  void SetContent(const std::string &content) {
+    processing_content_ = content;
   }
 
   const std::vector<int> &GetInputDataFlows() const {
