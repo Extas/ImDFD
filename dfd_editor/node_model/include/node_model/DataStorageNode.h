@@ -2,7 +2,7 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATASTORAGENODE_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATASTORAGENODE_H_
 
-#include "Node.h"
+#include "element/Node.h"
 
 #include "data/DataStorage.h"
 #include <utility>

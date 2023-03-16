@@ -142,3 +142,8 @@ NodeEditor::~NodeEditor() {
 void NodeEditor::SetActive(bool active) {
   active_ = active;
 }
+
+void NodeEditor::SetNodeManagerCallback(
+    std::function<void()> open_dfd_callback_) {
+  node_manager_.SetOpenDFDCallback(std::move(open_dfd_callback_));
+}

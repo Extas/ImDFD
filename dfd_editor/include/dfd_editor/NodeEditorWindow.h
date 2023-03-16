@@ -7,12 +7,14 @@
 #include <string>
 #include <vector>
 
-class NodeEditorWindow : public BaseWindow {
+class NodeEditorWindow : public BaseWindow,
+                         public std::enable_shared_from_this<NodeEditorWindow> {
 public:
   explicit NodeEditorWindow(std::string title);
   void DrawContents() override;
 
   void AddNodeEditor(const std::shared_ptr<NodeEditor> &node_editor);
+  void CreateNewDataFlowDiagram();
 
 private:
   std::vector<std::shared_ptr<NodeEditor>> node_editors_;

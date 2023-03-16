@@ -57,22 +57,22 @@ public:
   LinkManager() = default;
 
   [[nodiscard]] auto GetLinks() const -> const std::vector<Link> & {
-    return m_Links;
+    return links_;
   }
 
   void AddLink(uint64_t inputPinId, uint64_t outputPinId) {
-    m_Links.emplace_back(inputPinId, outputPinId);
+    links_.emplace_back(inputPinId, outputPinId);
   }
 
   void RemoveLink(uint64_t linkId) {
-    m_Links.erase(
-        std::remove_if(m_Links.begin(), m_Links.end(),
+    links_.erase(
+        std::remove_if(links_.begin(), links_.end(),
             [linkId](const Link &link) { return link.GetId() == linkId; }),
-        m_Links.end());
+        links_.end());
   }
 
 private:
-  std::vector<Link> m_Links;
+  std::vector<Link> links_;
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_LINK_H_

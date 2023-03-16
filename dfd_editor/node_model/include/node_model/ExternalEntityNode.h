@@ -2,7 +2,7 @@
 #ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_NODE_MODEL_EXTERNALENTITYNODE_H_
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_NODE_MODEL_EXTERNALENTITYNODE_H_
 
-#include "Node.h"
+#include "element/Node.h"
 
 #include "data/ExternalEntity.h"
 #include <utility>

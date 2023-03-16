@@ -22,16 +22,16 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui::StyleColorsDark();
 
   auto info = ElementInfo("test", "test");
-  AddWindow(std::make_unique<BaseWindow>("BaseWindow"));
-  AddWindow(std::make_unique<InfoWindow>(info));
-  NodeEditorWindow node_editor_window("Node Editor Window");
-  node_editor_window.AddNodeEditor(
+  AddWindow(std::make_shared<BaseWindow>("BaseWindow"));
+  AddWindow(std::make_shared<InfoWindow>(info));
+  auto node_editor_window =
+      std::make_shared<NodeEditorWindow>("Node Editor Window");
+  node_editor_window->AddNodeEditor(
       std::make_shared<NodeEditor>("Data Flow Diagram 1"));
-  node_editor_window.AddNodeEditor(
+  node_editor_window->AddNodeEditor(
       std::make_shared<NodeEditor>("Data Flow Diagram 2"));
-  AddWindow(std::move(
-      std::make_unique<NodeEditorWindow>(std::move(node_editor_window))));
-  AddWindow(std::make_unique<NotificationWindow>());
+  AddWindow(node_editor_window);
+  AddWindow(std::make_shared<NotificationWindow>());
 }
 
 void DearImGui::NewFrame() {
@@ -102,6 +102,6 @@ void DearImGui::IoConfig() {
   }
 }
 
-void DearImGui::AddWindow(std::unique_ptr<BaseWindow> window) {
+void DearImGui::AddWindow(std::shared_ptr<BaseWindow> window) {
   windows_.push_back(std::move(window));
 }

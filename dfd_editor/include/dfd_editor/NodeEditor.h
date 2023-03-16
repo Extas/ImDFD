@@ -4,8 +4,8 @@
 #include <dfd_editor/NotificationWindow.h>
 #include <imgui_node_editor.h>
 #include <logging/Logger.h>
-#include <node_model/Link.h>
 #include <node_model/NodeManager.h>
+#include <node_model/element/Link.h>
 #include <ui/BaseWindow.h>
 
 #include <vector>
@@ -18,19 +18,22 @@ public:
   void AddNode(std::string name, std::pair<float, float> position);
   void DrawContents() override;
 
+  void SetNodeManagerCallback(std::function<void()> open_dfd_callback_);
+
 private:
   NodeManager node_manager_;
   LinkManager link_manager_;
-
-  bool active_ = false;
-  bool is_first_frame_ = true;
-  ed::EditorContext *context_ = nullptr;
 
   void Demo();
   void DrawNode();
   void DrawLink();
   void HandleInteractions();
   void HandleDelete();
+
+  // Editor state
+  bool active_ = false;
+  bool is_first_frame_ = true;
+  ed::EditorContext *context_ = nullptr;
 
   auto IsFirstFrame() -> bool;
   auto GetContext() -> ed::EditorContext *;

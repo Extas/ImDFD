@@ -6,11 +6,11 @@
 
 class DataProcess {
 public:
-  DataProcess(std::string name, std::string description)
-      : name_(std::move(name)), processing_content_(std::move(description)) {
+  DataProcess(std::string description)
+      : processing_content_(std::move(description)) {
   }
 
-  DataProcess() : name_("DataProcess"), processing_content_("") {
+  DataProcess() : DataProcess("no description") {
   }
 
   void AddInputDataFlow(int id) {
@@ -24,19 +24,12 @@ public:
   void RemoveOutputDataFlow(int id);
 
 private:
-  std::string name_;
   std::string processing_content_;
   std::vector<int> input_data_flows_;
   std::vector<int> output_data_flows_;
   int sub_data_flow_diagram_id_;
 
 public:
-  const std::string &GetName() const {
-    return name_;
-  }
-  void SetName(const std::string &name) {
-    name_ = name;
-  }
   const std::string &GetContent() const {
     return processing_content_;
   }

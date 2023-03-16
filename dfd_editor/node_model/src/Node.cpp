@@ -1,4 +1,4 @@
-#include <node_model/Node.h>
+#include <node_model/element/Node.h>
 void Node::Draw() const {
   ed::BeginNode(GetId());
   ImGui::Text("%s", GetName().c_str());
@@ -53,4 +53,18 @@ auto Node::operator=(Node &&other) noexcept -> Node & {
   m_OutputPins = std::move(other.m_OutputPins);
   m_Position = other.m_Position;
   return *this;
+}
+auto Node::AddInputPin(std::string name) -> InPin & {
+  m_InputPins.emplace_back(std::move(name));
+  return m_InputPins.back();
+}
+auto Node::AddOutputPin(std::string name) -> OutPin & {
+  m_OutputPins.emplace_back(std::move(name));
+  return m_OutputPins.back();
+}
+auto Node::GetInputPins() const -> const std::vector<InPin> & {
+  return m_InputPins;
+}
+auto Node::GetOutputPins() const -> const std::vector<OutPin> & {
+  return m_OutputPins;
 }

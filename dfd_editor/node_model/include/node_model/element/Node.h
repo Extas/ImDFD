@@ -23,37 +23,22 @@ public:
   virtual void DrawCustomContent() const {
   }
 
-  ~Node() override = default;
-
-  [[nodiscard]] auto GetInputPins() const -> const std::vector<InPin> & {
-    return m_InputPins;
-  }
-
-  [[nodiscard]] auto GetOutputPins() const -> const std::vector<OutPin> & {
-    return m_OutputPins;
-  }
-
+  [[nodiscard]] auto GetInputPins() const -> const std::vector<InPin> &;
+  [[nodiscard]] auto GetOutputPins() const -> const std::vector<OutPin> &;
   [[nodiscard]] auto GetPin(int pin_id) const
       -> std::optional<std::reference_wrapper<const Pin>>;
-
   [[nodiscard]] auto GetInputPin(int pin_id) const
       -> std::optional<std::reference_wrapper<const InPin>>;
-
   [[nodiscard]] auto GetOutputPin(int pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
-
-  auto AddInputPin(std::string name) -> InPin & {
-    m_InputPins.emplace_back(std::move(name));
-    return m_InputPins.back();
-  }
-
-  auto AddOutputPin(std::string name) -> OutPin & {
-    m_OutputPins.emplace_back(std::move(name));
-    return m_OutputPins.back();
-  }
+  auto AddInputPin(std::string name) -> InPin &;
+  auto AddOutputPin(std::string name) -> OutPin &;
 
   [[nodiscard]] auto GetPosition() const -> const std::pair<float, float> & {
     return m_Position;
+  }
+  void SetPosition(std::pair<float, float> position) {
+    m_Position = position;
   }
 
 private:
@@ -71,6 +56,8 @@ public:
   auto operator=(Node &&other) noexcept -> Node &;
   Node(const Node &) = delete;
   auto operator=(const Node &) -> Node & = delete;
+
+  ~Node() override = default;
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODE_H_

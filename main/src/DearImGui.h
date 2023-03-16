@@ -22,8 +22,8 @@ private:
   inline static ImGuiContext *context_ = nullptr;
   static void IoConfig();
 
-  inline static std::vector<std::unique_ptr<BaseWindow>> windows_;
-  static void AddWindow(std::unique_ptr<BaseWindow> window);
+  inline static std::vector<std::shared_ptr<BaseWindow>> windows_;
+  static void AddWindow(std::shared_ptr<BaseWindow> window);
 };
 
 #endif // IMDFD__DEARIMGUI_H_

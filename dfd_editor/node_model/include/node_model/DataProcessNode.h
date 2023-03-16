@@ -1,9 +1,10 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_
 
-#include "Node.h"
 #include "data/DataProcess.h"
+#include "element/Node.h"
 
+#include <functional>
 #include <utility>
 
 class DataProcessNode : public Node {
@@ -15,7 +16,7 @@ public:
 
   void DrawCustomContent() const override;
 
-  void SetName(const std::string &new_name);
+  void SetProcessName(const std::string &new_process_name);
   void SetProcessingContent(const std::string &new_processing_content);
   void NavigateToSubDataFlowDiagram();
   void NavigateToInputDataFlow(size_t index);
@@ -26,6 +27,8 @@ public:
 private:
   DataProcess data_processing_;
 
+  std::function<void()> open_dfd_callback_;
+
 public:
   [[nodiscard]] auto GetDataProcessing() const -> const DataProcess & {
     return data_processing_;
@@ -34,6 +37,8 @@ public:
   [[nodiscard]] auto GetDataProcessing() -> DataProcess & {
     return data_processing_;
   }
+
+  void SetOpenDFDCallback(std::function<void()> open_dfd_callback);
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_
