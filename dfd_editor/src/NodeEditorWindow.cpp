@@ -1,4 +1,5 @@
 #include <dfd_editor/NodeEditorWindow.h>
+
 #include <imgui.h>
 #include <imgui_node_editor.h>
 
@@ -20,6 +21,7 @@ void NodeEditorWindow::Demo() {
   node_manager_.AddNode("B", std::make_pair(210, 60));
   node_manager_.AddInputPin("B In");
   node_manager_.AddOutputPin("B Out");
+  node_manager_.AddDataProcessNode("C", std::make_pair(410, 10), DataProcess{});
 }
 
 void NodeEditorWindow::DrawContents() {
@@ -44,7 +46,7 @@ void NodeEditorWindow::DrawContents() {
 void NodeEditorWindow::DrawNode() {
 
   for (const auto &node : node_manager_.GetNodes()) {
-    node.Draw();
+    node->Draw();
   }
 }
 #pragma clang diagnostic pop
@@ -133,8 +135,8 @@ auto NodeEditorWindow::GetContext() -> ed::EditorContext * {
 void NodeEditorWindow::FirstFrame() {
   Demo();
   for (const auto &node : node_manager_.GetNodes()) {
-    ed::SetNodePosition(node.GetId(),
-        ImVec2(node.GetPosition().first, node.GetPosition().second));
+    ed::SetNodePosition(node->GetId(),
+        ImVec2(node->GetPosition().first, node->GetPosition().second));
   }
   ed::NavigateToContent(0.0f);
 }

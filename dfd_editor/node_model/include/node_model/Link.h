@@ -1,15 +1,15 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_LINK_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_LINK_H_
 
-#include "NodeObj.h"
+#include "DrawObj.h"
 #include "Pin.h"
 
 #include <algorithm>
 
-class Link : public NodeObj {
+class Link : public DrawObj {
 public:
   Link(uint64_t inputPinId, uint64_t outputPinId)
-      : NodeObj("Link"), m_InputPinId(inputPinId), m_OutputPinId(outputPinId) {
+      : DrawObj("Link"), m_InputPinId(inputPinId), m_OutputPinId(outputPinId) {
   }
 
   void Draw() const override {
@@ -29,14 +29,14 @@ private:
 
 public:
   Link(Link &&other) noexcept
-      : NodeObj(std::move(other)), m_InputPinId(other.m_InputPinId),
+      : DrawObj(std::move(other)), m_InputPinId(other.m_InputPinId),
         m_OutputPinId(other.m_OutputPinId) {
     other.m_InputPinId = -1;
     other.m_OutputPinId = -1;
   }
   auto operator=(Link &&other) noexcept -> Link & {
     if (this != &other) {
-      NodeObj::operator=(std::move(other));
+      DrawObj::operator=(std::move(other));
       m_InputPinId = other.m_InputPinId;
       m_OutputPinId = other.m_OutputPinId;
       other.m_InputPinId = -1;

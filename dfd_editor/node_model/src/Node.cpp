@@ -8,6 +8,7 @@ void Node::Draw() const {
   for (const auto &pin : GetOutputPins()) {
     pin.Draw();
   }
+  DrawCustomContent();
   ed::EndNode();
 }
 
@@ -44,4 +45,12 @@ auto Node::GetOutputPin(int pin_id) const
     }
   }
   return std::nullopt;
+}
+
+auto Node::operator=(Node &&other) noexcept -> Node & {
+  DrawObj::operator=(std::move(other));
+  m_InputPins = std::move(other.m_InputPins);
+  m_OutputPins = std::move(other.m_OutputPins);
+  m_Position = other.m_Position;
+  return *this;
 }

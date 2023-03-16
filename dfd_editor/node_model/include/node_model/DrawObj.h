@@ -1,17 +1,17 @@
-#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEOBJ_H_
-#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEOBJ_H_
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DRAWOBJ_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DRAWOBJ_H_
 
 #include <cstdint>
 #include <string>
 #include <vector>
 
-class NodeObj {
+class DrawObj {
 public:
-  explicit NodeObj(std::string name)
+  explicit DrawObj(std::string name)
       : m_Name(std::move(name)), m_Id(GetNextId()) {
   }
 
-  virtual ~NodeObj() = default;
+  virtual ~DrawObj() = default;
 
   virtual void Draw() const = 0;
 
@@ -33,12 +33,12 @@ private:
   uint64_t m_Id = -1;
 
 public:
-  NodeObj(const NodeObj &) = delete;
-  NodeObj(NodeObj &&other) noexcept
+  DrawObj(const DrawObj &) = delete;
+  DrawObj(DrawObj &&other) noexcept
       : m_Name(std::move(other.m_Name)), m_Id(other.m_Id) {
     other.m_Id = -1;
   }
-  auto operator=(NodeObj &&other) noexcept -> NodeObj & {
+  auto operator=(DrawObj &&other) noexcept -> DrawObj & {
     if (this != &other) {
       m_Name = std::move(other.m_Name);
       m_Id = other.m_Id;
@@ -47,7 +47,7 @@ public:
     return *this;
   }
 
-  auto operator=(const NodeObj &) -> NodeObj & = delete;
+  auto operator=(const DrawObj &) -> DrawObj & = delete;
 };
 
-#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEOBJ_H_
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DRAWOBJ_H_

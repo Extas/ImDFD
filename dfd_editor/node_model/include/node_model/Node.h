@@ -1,7 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODE_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODE_H_
 
-#include "NodeObj.h"
+#include "DrawObj.h"
 #include "Pin.h"
 
 #include <imgui_node_editor.h>
@@ -13,13 +13,15 @@ namespace ed = ax::NodeEditor;
 #include <utility>
 #include <vector>
 
-class Node : public NodeObj {
+class Node : public DrawObj {
 public:
   Node(std::string name, std::pair<float, float> position)
-      : NodeObj(std::move(name)), m_Position(position) {
+      : DrawObj(std::move(name)), m_Position(position) {
   }
 
   void Draw() const override;
+  virtual void DrawCustomContent() const {
+  }
 
   ~Node() override = default;
 
@@ -61,18 +63,12 @@ private:
 
 public:
   Node(Node &&other) noexcept
-      : NodeObj(std::move(other)), m_InputPins(std::move(other.m_InputPins)),
+      : DrawObj(std::move(other)), m_InputPins(std::move(other.m_InputPins)),
         m_OutputPins(std::move(other.m_OutputPins)),
         m_Position(other.m_Position) {
   }
 
-  auto operator=(Node &&other) noexcept -> Node & {
-    NodeObj::operator=(std::move(other));
-    m_InputPins = std::move(other.m_InputPins);
-    m_OutputPins = std::move(other.m_OutputPins);
-    m_Position = other.m_Position;
-    return *this;
-  }
+  auto operator=(Node &&other) noexcept -> Node &;
   Node(const Node &) = delete;
   auto operator=(const Node &) -> Node & = delete;
 };

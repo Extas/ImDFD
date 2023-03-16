@@ -2,6 +2,7 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_
 
+#include "DataProcessNode.h"
 #include "Node.h"
 
 class NodeManager {
@@ -9,15 +10,21 @@ public:
   NodeManager() = default;
 
   void AddNode(std::string name, std::pair<float, float> position) {
-    m_Nodes.emplace_back(std::move(name), position);
+    nodes_.push_back(std::make_unique<Node>(std::move(name), position));
   }
 
   void AddNode(std::string name) {
     AddNode(std::move(name), std::make_pair(0, 0));
   }
 
+  void AddDataProcessNode(const std::string &name,
+      std::pair<float, float> position, const DataProcess &data_processing) {
+    nodes_.push_back(
+        std::make_unique<DataProcessNode>(name, position, data_processing));
+  }
+
   void AddInputPin(std::string name) {
-    m_Nodes.back().AddInputPin(std::move(name));
+    nodes_.back()->AddInputPin(std::move(name));
   }
 
   void AddInputPin(std::string name, int node_id) {
@@ -29,7 +36,7 @@ public:
   }
 
   void AddOutputPin(std::string name) {
-    m_Nodes.back().AddOutputPin(std::move(name));
+    nodes_.back()->AddOutputPin(std::move(name));
   }
 
   void AddOutputPin(std::string name, int node_id) {
@@ -41,19 +48,21 @@ public:
   }
 
   void RemoveNode(int node_id) {
-    for (auto it = m_Nodes.begin(); it != m_Nodes.end(); ++it) {
-      if (it->GetId() == node_id) {
-        m_Nodes.erase(it);
+    for (auto &node_ptr : nodes_) {
+      if (node_ptr->GetId() == node_id) {
+        node_ptr = std::move(nodes_.back());
+        nodes_.pop_back();
         return;
       }
     }
   }
 
+  // 使用GetNode方法的地方，需要根据节点的类型进行相应的类型转换。可以使用dynamic_cast来实现。
   [[nodiscard]] auto GetNode(int node_id)
       -> std::optional<std::reference_wrapper<Node>> {
-    for (auto &node : m_Nodes) {
-      if (node.GetId() == node_id) {
-        return std::ref(node);
+    for (auto &node_ptr : nodes_) {
+      if (node_ptr->GetId() == node_id) {
+        return std::ref(*node_ptr);
       }
     }
     return std::nullopt;
@@ -61,8 +70,8 @@ public:
 
   [[nodiscard]] auto GetPinById(int pin_id) const
       -> std::optional<std::reference_wrapper<const Pin>> {
-    for (const auto &node : m_Nodes) {
-      if (auto pin = node.GetPin(pin_id)) {
+    for (const auto &kNodePtr : nodes_) {
+      if (auto pin = kNodePtr->GetPin(pin_id)) {
         return pin;
       }
     }
@@ -71,8 +80,8 @@ public:
 
   [[nodiscard]] auto GetInputPinById(int pin_id) const
       -> std::optional<std::reference_wrapper<const InPin>> {
-    for (const auto &node : m_Nodes) {
-      if (auto pin = node.GetInputPin(pin_id)) {
+    for (const auto &kNodePtr : nodes_) {
+      if (auto pin = kNodePtr->GetInputPin(pin_id)) {
         return pin;
       }
     }
@@ -81,20 +90,20 @@ public:
 
   [[nodiscard]] auto GetOutputPinById(int pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>> {
-    for (const auto &node : m_Nodes) {
-      if (auto pin = node.GetOutputPin(pin_id)) {
+    for (const auto &kNodePtr : nodes_) {
+      if (auto pin = kNodePtr->GetOutputPin(pin_id)) {
         return pin;
       }
     }
     return std::nullopt;
   }
 
-  [[nodiscard]] auto GetNodes() const -> const std::vector<Node> & {
-    return m_Nodes;
+  [[nodiscard]] auto GetNodes() const
+      -> const std::vector<std::unique_ptr<Node>> & {
+    return nodes_;
   }
 
 private:
-  std::vector<Node> m_Nodes;
+  std::vector<std::unique_ptr<Node>> nodes_;
 };
-
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_

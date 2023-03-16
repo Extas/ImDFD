@@ -1,7 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_PIN_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_PIN_H_
 
-#include "NodeObj.h"
+#include "DrawObj.h"
 
 #include <imgui_node_editor.h>
 namespace ed = ax::NodeEditor;
@@ -13,9 +13,9 @@ namespace ed = ax::NodeEditor;
 class Node;
 class Link;
 
-class Pin : public NodeObj {
+class Pin : public DrawObj {
 public:
-  explicit Pin(std::string name) : NodeObj(std::move(name)) {
+  explicit Pin(std::string name) : DrawObj(std::move(name)) {
   }
 
   virtual void Draw(ed::PinKind pin_kind) const {
