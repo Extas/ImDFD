@@ -1,12 +1,12 @@
-#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESS_H_
-#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESS_H_
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESSDATA_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESSDATA_H_
 
 #include <string>
 #include <vector>
 
-class DataProcess {
+class DataProcessData {
 public:
-  explicit DataProcess(int canvas_id)
+  explicit DataProcessData(int canvas_id)
       : processing_content_("no description"),
         sub_data_flow_diagram_id_(canvas_id) {
   }
@@ -49,7 +49,7 @@ public:
   }
 };
 
-// void DataProcess::RemoveOutputDataFlow(int node_id) {
+// void DataProcessData::RemoveOutputDataFlow(int node_id) {
 //   for (auto it = output_data_flows_.begin(); it != output_data_flows_.end();
 //        ++it) {
 //     if (*it == node_id) {
@@ -58,7 +58,7 @@ public:
 //     }
 //   }
 // }
-// void DataProcess::RemoveInputDataFlow(int node_id) {
+// void DataProcessData::RemoveInputDataFlow(int node_id) {
 //   for (auto it = input_data_flows_.begin(); it != input_data_flows_.end();
 //        ++it) {
 //     if (*it == node_id) {
@@ -68,4 +68,4 @@ public:
 //   }
 // }
 
-#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESS_H_
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESSDATA_H_

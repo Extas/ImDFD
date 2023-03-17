@@ -27,9 +27,9 @@ void DataProcessNode::SetProcessName(const std::string &new_process_name) {
   SetName(new_process_name);
 }
 
-auto DataProcessNode::GetDataProcessing() const -> const DataProcess & {
+auto DataProcessNode::GetDataProcessing() const -> const DataProcessData & {
   return data_processing_;
 }
-auto DataProcessNode::GetDataProcessing() -> DataProcess & {
+auto DataProcessNode::GetDataProcessing() -> DataProcessData & {
   return data_processing_;
 }

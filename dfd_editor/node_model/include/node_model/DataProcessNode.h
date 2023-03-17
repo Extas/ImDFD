@@ -1,7 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_
 
-#include "data/DataProcess.h"
+#include "data/DataProcessData.h"
 #include "element/Node.h"
 #include "signal/SignalHandel.h"
 
@@ -26,12 +26,12 @@ public:
   // Add more methods specific to DataProcessNode here
 
 private:
-  DataProcess data_processing_;
+  DataProcessData data_processing_;
 
 public:
-  [[nodiscard]] auto GetDataProcessing() const -> const DataProcess &;
+  [[nodiscard]] auto GetDataProcessing() const -> const DataProcessData &;
 
-  [[nodiscard]] auto GetDataProcessing() -> DataProcess &;
+  [[nodiscard]] auto GetDataProcessing() -> DataProcessData &;
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_
