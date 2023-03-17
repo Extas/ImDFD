@@ -8,11 +8,21 @@ void DataProcessNode::DrawCustomContent() const {
   ImGui::Text("Output Data Flows: %zu",
       GetDataProcessing().GetOutputDataFlows().size());
 
-  if (ImGui::Button("Open Data Flow Diagram")) {
-    if (open_dfd_callback_) {
-      open_dfd_callback_();
-    }
+  if (ImGui::Button("Navigate to Sub Data Flow Diagram")) {
+    NavigateToNodeEditorById(data_processing_.GetSubDataFlowDiagramId());
   }
+}
+
+void DataProcessNode::NavigateToNodeEditorById(int node_editor_id) const {
+  if (navigate_to_node_editor_callback_) {
+    navigate_to_node_editor_callback_(node_editor_id);
+  }
+}
+
+void DataProcessNode::SetNavigateToNodeEditorCallback(
+    std::function<void(int)> navigate_to_node_editor_callback) {
+  navigate_to_node_editor_callback_ =
+      std::move(navigate_to_node_editor_callback);
 }
 
 void DataProcessNode::SetProcessingContent(
@@ -20,12 +30,14 @@ void DataProcessNode::SetProcessingContent(
   GetDataProcessing().SetContent(new_processing_content);
 }
 
-void DataProcessNode::SetOpenDFDCallback(
-    std::function<void()> open_dfd_callback) {
-  open_dfd_callback_ = std::move(open_dfd_callback);
-}
-
 void DataProcessNode::SetProcessName(const std::string &new_process_name) {
 
   SetName(new_process_name);
+}
+
+auto DataProcessNode::GetDataProcessing() const -> const DataProcess & {
+  return data_processing_;
+}
+auto DataProcessNode::GetDataProcessing() -> DataProcess & {
+  return data_processing_;
 }

@@ -6,22 +6,19 @@
 
 class DataProcess {
 public:
-  DataProcess(std::string description)
-      : processing_content_(std::move(description)) {
+  explicit DataProcess(int canvas_id)
+      : processing_content_("no description"),
+        sub_data_flow_diagram_id_(canvas_id) {
   }
 
-  DataProcess() : DataProcess("no description") {
+  void AddInputDataFlow(int node_id) {
+    input_data_flows_.push_back(node_id);
   }
-
-  void AddInputDataFlow(int id) {
-    input_data_flows_.push_back(id);
+  void AddOutputDataFlow(int node_id) {
+    output_data_flows_.push_back(node_id);
   }
-  void RemoveInputDataFlow(int id);
-
-  void AddOutputDataFlow(int id) {
-    output_data_flows_.push_back(id);
-  }
-  void RemoveOutputDataFlow(int id);
+  void RemoveInputDataFlow(int node_id);
+  void RemoveOutputDataFlow(int node_id);
 
 private:
   std::string processing_content_;
@@ -30,25 +27,45 @@ private:
   int sub_data_flow_diagram_id_;
 
 public:
-  const std::string &GetContent() const {
+  [[nodiscard]] auto GetInputDataFlows() const -> const std::vector<int> & {
+    return input_data_flows_;
+  }
+  [[nodiscard]] auto GetOutputDataFlows() const -> const std::vector<int> & {
+    return output_data_flows_;
+  }
+
+  [[nodiscard]] auto GetContent() const -> const std::string & {
     return processing_content_;
   }
   void SetContent(const std::string &content) {
     processing_content_ = content;
   }
 
-  const std::vector<int> &GetInputDataFlows() const {
-    return input_data_flows_;
+  void SetSubDataFlowDiagramId(int canvas_id) {
+    sub_data_flow_diagram_id_ = canvas_id;
   }
-  const std::vector<int> &GetOutputDataFlows() const {
-    return output_data_flows_;
-  }
-  void SetSubDataFlowDiagramId(int id) {
-    sub_data_flow_diagram_id_ = id;
-  }
-  int GetSubDataFlowDiagramId() const {
+  [[nodiscard]] auto GetSubDataFlowDiagramId() const -> int {
     return sub_data_flow_diagram_id_;
   }
 };
+
+void DataProcess::RemoveOutputDataFlow(int node_id) {
+  for (auto it = output_data_flows_.begin(); it != output_data_flows_.end();
+       ++it) {
+    if (*it == node_id) {
+      output_data_flows_.erase(it);
+      break;
+    }
+  }
+}
+void DataProcess::RemoveInputDataFlow(int node_id) {
+  for (auto it = input_data_flows_.begin(); it != input_data_flows_.end();
+       ++it) {
+    if (*it == node_id) {
+      input_data_flows_.erase(it);
+      break;
+    }
+  }
+}
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESS_H_

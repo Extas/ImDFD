@@ -2,7 +2,7 @@
 #include <logging/Logger.h>
 
 #include <dfd_editor/InfoWindow.h>
-#include <dfd_editor/NodeEditorWindow.h>
+#include <dfd_editor/MultCanvasWindow.h>
 #include <dfd_editor/NotificationWindow.h>
 #include <memory>
 #include <ui/BaseWindow.h>
@@ -24,13 +24,12 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   auto info = ElementInfo("test", "test");
   AddWindow(std::make_shared<BaseWindow>("BaseWindow"));
   AddWindow(std::make_shared<InfoWindow>(info));
-  auto node_editor_window =
-      std::make_shared<NodeEditorWindow>("Node Editor Window");
-  node_editor_window->AddNodeEditor(
-      std::make_shared<NodeEditor>("Data Flow Diagram 1"));
-  node_editor_window->AddNodeEditor(
-      std::make_shared<NodeEditor>("Data Flow Diagram 2"));
-  AddWindow(node_editor_window);
+  auto mult_canvas_window =
+      std::make_shared<MultCanvasWindow>("Node Editor Window");
+  int new_canvas_1 = mult_canvas_window->CreateNewCanvas("Data Flow Diagram 1");
+  mult_canvas_window->CreateNewCanvas("Data Flow Diagram 2");
+  mult_canvas_window->OpenCanvas(new_canvas_1);
+  AddWindow(mult_canvas_window);
   AddWindow(std::make_shared<NotificationWindow>());
 }
 

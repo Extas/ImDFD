@@ -1,4 +1,3 @@
-
 #ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_
 
@@ -9,12 +8,17 @@ class NodeManager {
 public:
   NodeManager() = default;
 
-  void SetOpenDFDCallback(std::function<void()> callback);
+  // 当点击按钮跳转到子数据流图的时候调用
+  std::function<void(int editor_id)> navigate_to_editor_callback_;
+  // 当创建新的数据处理过程节点的时候调用
+  std::function<int(std::string title)> get_new_editor_id_callback_;
 
   void AddNode(std::string name, std::pair<float, float> position);
   void AddNode(std::string name);
-  void AddDataProcessNode(const std::string &name,
-      std::pair<float, float> position, const DataProcess &data_processing);
+
+  void AddDataProcessNode(
+      const std::string &name, std::pair<float, float> position);
+
   void AddInputPin(std::string name);
   void AddInputPin(std::string name, int node_id);
   void AddOutputPin(std::string name);
@@ -36,6 +40,5 @@ public:
 
 private:
   std::vector<std::unique_ptr<Node>> nodes_;
-  std::function<void()> open_dfd_callback_;
 };
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_
