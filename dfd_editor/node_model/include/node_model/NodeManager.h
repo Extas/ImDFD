@@ -3,15 +3,11 @@
 
 #include "DataProcessNode.h"
 #include "element/Node.h"
+#include <signal/SignalHandel.h>
 
 class NodeManager {
 public:
   NodeManager() = default;
-
-  // 当点击按钮跳转到子数据流图的时候调用
-  std::function<void(int editor_id)> navigate_to_editor_callback_;
-  // 当创建新的数据处理过程节点的时候调用
-  std::function<int(std::string title)> get_new_editor_id_callback_;
 
   void AddNode(std::string name, std::pair<float, float> position);
   void AddNode(std::string name);

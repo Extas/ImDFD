@@ -17,10 +17,6 @@ public:
 
   void DrawContents() override;
 
-  void SetCanvasCallback(
-      std::function<void(int canvas_id)> navigate_to_canvas_callback,
-      std::function<int(std::string title)> create_new_canvas_callback);
-
   [[nodiscard]] auto GetId() const -> int;
 
   bool open_ = false;

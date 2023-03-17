@@ -124,15 +124,6 @@ void EditorCanvas::FirstFrame() {
   ed::NavigateToContent(0.0F);
 }
 
-void EditorCanvas::SetCanvasCallback(
-    std::function<void(int canvas_id)> navigate_to_canvas_callback,
-    std::function<int(std::string title)> create_new_canvas_callback) {
-  node_manager_.navigate_to_editor_callback_ =
-      std::move(navigate_to_canvas_callback);
-  node_manager_.get_new_editor_id_callback_ =
-      std::move(create_new_canvas_callback);
-}
-
 auto EditorCanvas::GetContext() -> ed::EditorContext * {
   if (context_ == nullptr) {
     Logger::Trace("dfd_editor: Initializing EditorCanvas context");

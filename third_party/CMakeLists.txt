@@ -27,57 +27,59 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 asap_add_package(
-  NAME
-  GLFW
-  GIT_TAG
-  3.3.8
-  GITHUB_REPOSITORY
-  glfw/glfw
-)
+        NAME
+        GLFW
+        GIT_TAG
+        3.3.8
+        GITHUB_REPOSITORY
+        glfw/glfw)
 
 set(GLAD_INSTALL OFF CACHE BOOL "" FORCE)
 asap_add_package(
-  NAME
-  glad
-  GIT_TAG
-  v0.1.36
-  GITHUB_REPOSITORY
-  Dav1dde/glad
-)
+        NAME
+        glad
+        GIT_TAG
+        v0.1.36
+        GITHUB_REPOSITORY
+        Dav1dde/glad)
 
 asap_add_package(
-  NAME
-  imgui
-  GIT_TAG
-  # 192196711a7d0d7c2d60454d42654cf090498a74 # docking branch
-  9cd9c2eff99877a3f10a7f9c2a3a5b9c15ea36c6 # 1.88 docking
-  GITHUB_REPOSITORY
-  ocornut/imgui
-)
+        NAME
+        imgui
+        GIT_TAG
+        # 192196711a7d0d7c2d60454d42654cf090498a74 # docking branch
+        9cd9c2eff99877a3f10a7f9c2a3a5b9c15ea36c6 # 1.88 docking
+        GITHUB_REPOSITORY
+        ocornut/imgui)
 
 asap_add_package(
-  NAME
-  imgui_node_editor
-  GIT_TAG
-  99ec923a39062f556ec7676fb9ba6d302d109f76
-  GITHUB_REPOSITORY
-  thedmd/imgui-node-editor
-)
+        NAME
+        imgui_node_editor
+        GIT_TAG
+        99ec923a39062f556ec7676fb9ba6d302d109f76
+        GITHUB_REPOSITORY
+        thedmd/imgui-node-editor)
 
 asap_add_package(
-  NAME
-  spdlog
-  GIT_TAG
-  v1.11.0
-  GITHUB_REPOSITORY
-  gabime/spdlog
-)
+        NAME
+        spdlog
+        GIT_TAG
+        v1.11.0
+        GITHUB_REPOSITORY
+        gabime/spdlog)
 
 asap_add_package(
-  NAME
-  gsl
-  GIT_TAG
-  v4.0.0
-  GITHUB_REPOSITORY
-  microsoft/GSL
-)
+        NAME
+        gsl
+        GIT_TAG
+        v4.0.0
+        GITHUB_REPOSITORY
+        microsoft/GSL)
+
+asap_add_package(
+        NAME
+        sigslot
+        GIT_TAG
+        v1.2.2
+        GITHUB_REPOSITORY
+        palacaze/sigslot)

@@ -49,23 +49,23 @@ public:
   }
 };
 
-void DataProcess::RemoveOutputDataFlow(int node_id) {
-  for (auto it = output_data_flows_.begin(); it != output_data_flows_.end();
-       ++it) {
-    if (*it == node_id) {
-      output_data_flows_.erase(it);
-      break;
-    }
-  }
-}
-void DataProcess::RemoveInputDataFlow(int node_id) {
-  for (auto it = input_data_flows_.begin(); it != input_data_flows_.end();
-       ++it) {
-    if (*it == node_id) {
-      input_data_flows_.erase(it);
-      break;
-    }
-  }
-}
+// void DataProcess::RemoveOutputDataFlow(int node_id) {
+//   for (auto it = output_data_flows_.begin(); it != output_data_flows_.end();
+//        ++it) {
+//     if (*it == node_id) {
+//       output_data_flows_.erase(it);
+//       break;
+//     }
+//   }
+// }
+// void DataProcess::RemoveInputDataFlow(int node_id) {
+//   for (auto it = input_data_flows_.begin(); it != input_data_flows_.end();
+//        ++it) {
+//     if (*it == node_id) {
+//       input_data_flows_.erase(it);
+//       break;
+//     }
+//   }
+// }
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESS_H_

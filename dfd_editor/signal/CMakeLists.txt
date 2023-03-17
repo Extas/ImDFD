@@ -1,13 +1,13 @@
 # -----------------------------------------------------
 # Meta information about the module
 # -----------------------------------------------------
-asap_push_module(node_model)
+asap_push_module(signal)
 
 asap_declare_module(
         MODULE_NAME
-        "node_model"
+        "signal"
         DESCRIPTION
-        "Element component library for Node Editor"
+        "Signal module"
         GITHUB_REPO
         "https://github.com/extas/ImDFD"
         AUTHOR_MAINTAINER
@@ -22,7 +22,7 @@ asap_declare_module(
 # -----------------------------------------------------
 # Main module target
 # -----------------------------------------------------
-set(MODULE_TARGET_NAME "node_model")
+set(MODULE_TARGET_NAME "signal")
 
 file(GLOB_RECURSE SOURCES
         CONFIGURE_DEPENDS
@@ -42,9 +42,7 @@ target_link_libraries(${MODULE_TARGET_NAME}
 
 target_link_libraries(${MODULE_TARGET_NAME}
         PUBLIC
-        node_editor
-        imgui
-        signal)
+        sigslot)
 
 target_include_directories(
         ${MODULE_TARGET_NAME}
@@ -63,4 +61,4 @@ if (ASAP_BUILD_TESTS)
     # add_subdirectory(test)
 endif ()
 
-asap_pop_module(node_model)
+asap_pop_module(signal)

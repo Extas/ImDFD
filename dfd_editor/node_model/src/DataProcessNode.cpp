@@ -14,15 +14,7 @@ void DataProcessNode::DrawCustomContent() const {
 }
 
 void DataProcessNode::NavigateToNodeEditorById(int node_editor_id) const {
-  if (navigate_to_node_editor_callback_) {
-    navigate_to_node_editor_callback_(node_editor_id);
-  }
-}
-
-void DataProcessNode::SetNavigateToNodeEditorCallback(
-    std::function<void(int)> navigate_to_node_editor_callback) {
-  navigate_to_node_editor_callback_ =
-      std::move(navigate_to_node_editor_callback);
+  SignalHandel::Instance().navigate_sub_diagram_onclick_(node_editor_id);
 }
 
 void DataProcessNode::SetProcessingContent(

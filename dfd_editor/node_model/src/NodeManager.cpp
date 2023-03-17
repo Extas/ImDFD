@@ -11,13 +11,11 @@ void NodeManager::AddNode(std::string name) {
 void NodeManager::AddDataProcessNode(
     const std::string &name, std::pair<float, float> position) {
 
-  nodes_.push_back(std::make_unique<DataProcessNode>(
-      name, position, get_new_editor_id_callback_(name)));
+  int new_canvas_id = -1;
+  SignalHandel::Instance().create_new_canvas_(name, new_canvas_id);
 
-  auto *node = dynamic_cast<DataProcessNode *>(nodes_.back().get());
-  if (node != nullptr) {
-    node->SetNavigateToNodeEditorCallback(navigate_to_editor_callback_);
-  }
+  nodes_.push_back(
+      std::make_unique<DataProcessNode>(name, position, new_canvas_id));
 }
 
 void NodeManager::AddInputPin(std::string name) {

@@ -3,6 +3,7 @@
 
 #include "data/DataProcess.h"
 #include "element/Node.h"
+#include "signal/SignalHandel.h"
 
 #include <functional>
 #include <utility>
@@ -27,15 +28,10 @@ public:
 private:
   DataProcess data_processing_;
 
-  std::function<void(int)> navigate_to_node_editor_callback_;
-
 public:
   [[nodiscard]] auto GetDataProcessing() const -> const DataProcess &;
 
   [[nodiscard]] auto GetDataProcessing() -> DataProcess &;
-
-  void SetNavigateToNodeEditorCallback(
-      std::function<void(int)> navigate_to_node_editor_callback);
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATAPROCESSNODE_H_

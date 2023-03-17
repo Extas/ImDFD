@@ -3,6 +3,8 @@
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_MULTCANVASWINDOW_H_
 
 #include "EditorCanvas.h"
+#include "signal/SignalHandel.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -23,9 +25,6 @@ private:
 
   bool has_build_callback_ = false;
   void InitCallback();
-  std::function<void(int canvas_id)> navigate_to_canvas_callback_;
-  std::function<int(std::string title)> create_new_canvas_callback_;
-
   int selected_canvas_id_ = 0; // 选择完之后会取负数，获取当前选择取绝对值
 
 public:

@@ -37,28 +37,32 @@ void MultCanvasWindow::DrawContents() {
 }
 
 void MultCanvasWindow::InitCallback() {
-  navigate_to_canvas_callback_ = [self = shared_from_this()](int canvas_id) {
-    auto mult_canvas_window = std::static_pointer_cast<MultCanvasWindow>(self);
+  SignalHandel::Instance().navigate_sub_diagram_onclick_.connect(
+      [self = shared_from_this()](int canvas_id) {
+        auto mult_canvas_window =
+            std::static_pointer_cast<MultCanvasWindow>(self);
 
-    // 查找具有给定ID的NodeEditor
-    auto found_editor = std::find_if(mult_canvas_window->canvas_.begin(),
-        mult_canvas_window->canvas_.end(),
-        [canvas_id](const std::shared_ptr<EditorCanvas> &editor) {
-          return editor->GetId() == canvas_id;
-        });
+        // 查找具有给定ID的NodeEditor
+        auto found_editor = std::find_if(mult_canvas_window->canvas_.begin(),
+            mult_canvas_window->canvas_.end(),
+            [canvas_id](const std::shared_ptr<EditorCanvas> &editor) {
+              return editor->GetId() == canvas_id;
+            });
 
-    // 如果找到具有给定ID的NodeEditor，则将其设置为当前激活的选项卡
-    if (found_editor != mult_canvas_window->canvas_.end()) {
-      (*found_editor)->open_ = true;
-    }
-    mult_canvas_window->selected_canvas_id_ = canvas_id;
-  };
+        // 如果找到具有给定ID的NodeEditor，则将其设置为当前激活的选项卡
+        if (found_editor != mult_canvas_window->canvas_.end()) {
+          (*found_editor)->open_ = true;
+        }
+        mult_canvas_window->selected_canvas_id_ = canvas_id;
+      });
 
-  create_new_canvas_callback_ = [self = shared_from_this()](
-                                    const std::string &title) {
-    auto mult_canvas_window = std::static_pointer_cast<MultCanvasWindow>(self);
-    return mult_canvas_window->CreateNewCanvas(title);
-  };
+  SignalHandel::Instance().create_new_canvas_.connect(
+      [self = shared_from_this()](
+          const std::string &title, int &new_canvas_id) {
+        auto mult_canvas_window =
+            std::static_pointer_cast<MultCanvasWindow>(self);
+        new_canvas_id = mult_canvas_window->CreateNewCanvas(title);
+      });
 }
 
 auto MultCanvasWindow::CreateNewCanvas(
@@ -93,8 +97,6 @@ auto MultCanvasWindow::AddCanvas(
     const std::shared_ptr<EditorCanvas> &node_editor) -> int {
   Logger::Trace("Adding node editor to window");
   canvas_.push_back(node_editor);
-  canvas_.back()->SetCanvasCallback(
-      navigate_to_canvas_callback_, create_new_canvas_callback_);
   int new_canvas_id = canvas_.back()->GetId();
   return new_canvas_id;
 }

@@ -3,8 +3,10 @@
 # -----------------------------------------------------
 asap_push_module(dfd_editor)
 
+add_subdirectory(signal)
 add_subdirectory(dfd_model)
 add_subdirectory(node_model)
+
 
 asap_declare_module(
         MODULE_NAME
@@ -36,27 +38,23 @@ asap_add_library(
         ${MODULE_TARGET_NAME} STATIC WARNING EXCEPTIONS SOURCES
 
         ${SOURCES})
-
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
+
 
 target_link_libraries(${MODULE_TARGET_NAME}
         PRIVATE
         logging
         ui
-        dfd_model)
+        dfd_model
+        signal)
 
 
-target_link_libraries(${MODULE_TARGET_NAME} PUBLIC
-        node_model)
-
-
-target_include_directories(${MODULE_TARGET_NAME} PUBLIC ${gsl_SOURCE_DIR}/include)
+target_link_libraries(${MODULE_TARGET_NAME} PUBLIC node_model)
 
 target_include_directories(
         ${MODULE_TARGET_NAME}
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
-
 target_include_directories(${MODULE_TARGET_NAME}
         PRIVATE ${CMAKE_BINARY_DIR}/include)
 target_include_directories(${MODULE_TARGET_NAME}
