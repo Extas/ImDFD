@@ -8,14 +8,20 @@
 #include <memory>
 #include <vector>
 
-class DFDElement;
+class DfdElement;
 
 class DataFlow : public Serializable {
-  std::string name;
-  std::vector<std::shared_ptr<DataItem>> data_items;
-  std::shared_ptr<DFDElement> source;
-  std::shared_ptr<DFDElement> target;
-  // ... 其他方法，实现序列化和合法性检查
+public:
+  DataFlow(std::string name, const std::shared_ptr<DfdElement> &source,
+      const std::shared_ptr<DfdElement> &destination);
+
+  std::string name_;
+  std::vector<std::shared_ptr<DataItem>> data_items_;
+  std::shared_ptr<DfdElement> source_;
+  std::shared_ptr<DfdElement> destination_;
+
+  [[nodiscard]] auto serialize() const -> std::string override;
+  [[nodiscard]] auto is_valid() const -> bool override;
 };
 
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DATAFLOW_H_
