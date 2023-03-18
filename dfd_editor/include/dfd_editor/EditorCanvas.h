@@ -2,6 +2,7 @@
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_
 
 #include <dfd_editor/NotificationWindow.h>
+#include <dfd_model/Dfd.h>
 #include <imgui_node_editor.h>
 #include <logging/Logger.h>
 #include <node_model/NodeManager.h>
@@ -13,7 +14,7 @@ namespace ed = ax::NodeEditor;
 
 class EditorCanvas : public BaseWindow {
 public:
-  explicit EditorCanvas(std::string title);
+  explicit EditorCanvas(std::shared_ptr<Dfd> dfd);
 
   void DrawContents() override;
 
@@ -24,6 +25,7 @@ public:
 private:
   int canvas_id_ = 0;
   ed::EditorContext *context_ = nullptr;
+  std::shared_ptr<Dfd> dfd_;
   NodeManager node_manager_;
   LinkManager link_manager_;
 
@@ -42,7 +44,6 @@ private:
   auto GetContext() -> ed::EditorContext *;
 
 public:
-  EditorCanvas();
   EditorCanvas(EditorCanvas &&) = delete;
   EditorCanvas(const EditorCanvas &) = delete;
   auto operator=(EditorCanvas &&) -> EditorCanvas & = delete;

@@ -2,13 +2,13 @@
 #ifndef IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DATAPROCESS_H_
 #define IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DATAPROCESS_H_
 
-#include "DfdElement.h"
+#include "DfdNode.h"
 
 class Dfd;
 
-class DataProcess : public DfdElement {
+class DataProcess : public DfdNode {
 public:
-  DataProcess(std::string name);
+  DataProcess(std::string name, std::pair<float, float> pos);
   std::string process_description_;
   std::shared_ptr<Dfd> sub_dfd_;
 };

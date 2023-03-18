@@ -7,11 +7,19 @@
 #include <string>
 #include <utility>
 
-EditorCanvas::EditorCanvas(std::string title)
-    : BaseWindow(std::move(title)), canvas_id_(GetNewCanvasId()) {
-}
-
-EditorCanvas::EditorCanvas() : EditorCanvas("EditorCanvas") {
+EditorCanvas::EditorCanvas(std::shared_ptr<Dfd> dfd)
+    : BaseWindow(dfd->name_), canvas_id_(GetNewCanvasId()) {
+  dfd_ = dfd;
+  // 一共五个元素
+  // DataFlow AddNode
+  // DataItem
+  // DataProcess AddDataProcessNode
+  // ExternalEntity AddDataProcessNode
+  // DataStorage  AddDataProcessNode
+  for (auto data_process_ptr : dfd->data_processes_) {
+    node_manager_.AddDataProcessNode(
+        data_process_ptr->name_, data_process_ptr->position_);
+  }
 }
 
 void EditorCanvas::Demo() {
@@ -116,7 +124,6 @@ auto EditorCanvas::IsFirstFrame() -> bool {
 }
 
 void EditorCanvas::FirstFrame() {
-  Demo();
   for (const auto &kNode : node_manager_.GetNodes()) {
     ed::SetNodePosition(kNode->GetId(),
         ImVec2(kNode->GetPosition().first, kNode->GetPosition().second));

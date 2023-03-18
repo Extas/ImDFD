@@ -7,6 +7,10 @@ MultCanvasWindow::MultCanvasWindow(std::string title)
     : BaseWindow(std::move(title)) {
 }
 
+void MultCanvasWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
+  CreateNewCanvas(dfd);
+}
+
 void MultCanvasWindow::DrawContents() {
   static ImGuiTabBarFlags tab_bar_flags =
       ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs;
@@ -36,7 +40,7 @@ void MultCanvasWindow::DrawContents() {
   }
 }
 
-void MultCanvasWindow::InitCallback() {
+void MultCanvasWindow::ConnectSignal() {
   SignalHandel::Instance().navigate_sub_diagram_onclick_.connect(
       [self = shared_from_this()](int canvas_id) {
         auto mult_canvas_window =
@@ -61,16 +65,17 @@ void MultCanvasWindow::InitCallback() {
           const std::string &title, int &new_canvas_id) {
         auto mult_canvas_window =
             std::static_pointer_cast<MultCanvasWindow>(self);
-        new_canvas_id = mult_canvas_window->CreateNewCanvas(title);
+        //        new_canvas_id =
+        //        mult_canvas_window->CreateNewCanvas(<#initializer #>);
       });
 }
 
-auto MultCanvasWindow::CreateNewCanvas(
-    const std::string &title = "New Data Flow Diagram") -> int {
-  if (!has_build_callback_) {
-    InitCallback();
-    has_build_callback_ = true;
+auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd) -> int {
+  if (!has_connect_signal_) {
+    ConnectSignal();
+    has_connect_signal_ = true;
   }
+  std::string title = dfd->name_;
   auto found_editor = std::find_if(canvas_.begin(), canvas_.end(),
       [title](const std::shared_ptr<EditorCanvas> &editor) {
         return editor->GetTitle() == title;
@@ -79,7 +84,7 @@ auto MultCanvasWindow::CreateNewCanvas(
     Logger::Info(("Canvas with title " + title + " already exists").c_str());
     return (*found_editor)->GetId();
   }
-  return AddCanvas(std::make_shared<EditorCanvas>(title));
+  return AddCanvas(std::make_shared<EditorCanvas>(dfd));
 }
 
 void MultCanvasWindow::OpenCanvas(int canvas_id) {

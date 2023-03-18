@@ -2,13 +2,14 @@
 
 #include <utility>
 
-DataFlow::DataFlow(std::string name, const std::shared_ptr<DfdElement> &source,
-    const std::shared_ptr<DfdElement> &destination)
-    : name_(std::move(name)), source_(source), destination_(destination) {
+DataFlow::DataFlow(std::string name, const std::shared_ptr<DfdNode> &source,
+    const std::shared_ptr<DfdNode> &destination, std::pair<float, float> pos)
+    : Element(pos), name_(std::move(name)), source_(source),
+      destination_(destination) {
 }
-auto DataFlow::serialize() const -> std::string {
+auto DataFlow::Serialize() const -> std::string {
   return {};
 }
-auto DataFlow::is_valid() const -> bool {
+auto DataFlow::IsValid() const -> bool {
   return true;
 }

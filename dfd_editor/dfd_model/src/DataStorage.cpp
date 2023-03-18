@@ -1,3 +1,6 @@
 #include <dfd_model/DataStorage.h>
-DataStorage::DataStorage(std::string name) : DfdElement(name) {
+
+#include <utility>
+DataStorage::DataStorage(std::string name, std::pair<float, float> pos)
+    : DfdNode(std::move(name), pos) {
 }

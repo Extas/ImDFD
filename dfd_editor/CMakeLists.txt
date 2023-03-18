@@ -45,11 +45,11 @@ target_link_libraries(${MODULE_TARGET_NAME}
         PRIVATE
         logging
         ui
-        dfd_model
+
         signal)
 
 
-target_link_libraries(${MODULE_TARGET_NAME} PUBLIC node_model)
+target_link_libraries(${MODULE_TARGET_NAME} PUBLIC node_model dfd_model)
 
 target_include_directories(
         ${MODULE_TARGET_NAME}
