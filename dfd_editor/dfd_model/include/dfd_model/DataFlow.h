@@ -3,14 +3,14 @@
 #define IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DATAFLOW_H_
 
 #include "DataItem.h"
-#include "Element.h"
+#include "DfdNode.h"
 
 #include <memory>
 #include <vector>
 
 class DfdNode;
 
-class DataFlow : public Element {
+class DataFlow : public DfdNode {
 public:
   DataFlow(std::string name, const std::shared_ptr<DfdNode> &source,
       const std::shared_ptr<DfdNode> &destination, std::pair<float, float> pos);

@@ -5,8 +5,7 @@
 
 class Element {
 public:
-  explicit Element(std::pair<float, float> pos)
-      : element_id_(GetNewElementId()), position_(pos) {
+  explicit Element() : element_id_(GetNewElementId()) {
   }
   [[nodiscard]] virtual auto Serialize() const -> std::string = 0;
   [[nodiscard]] virtual auto IsValid() const -> bool = 0;
@@ -21,8 +20,6 @@ public:
   auto operator=(Element &&other) noexcept -> Element & = default;
 
   virtual ~Element() = default;
-
-  std::pair<float, float> position_;
 
 private:
   static auto GetNewElementId() -> int {

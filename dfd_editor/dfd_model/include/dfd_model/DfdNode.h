@@ -13,7 +13,7 @@ class DataFlow;
 class DfdNode : public Element {
 public:
   explicit DfdNode(std::string name, std::pair<float, float> pos)
-      : Element(pos), name_(std::move(name)) {
+      : position_(pos), name_(std::move(name)) {
   }
 
   [[nodiscard]] auto Serialize() const -> std::string override {
@@ -24,6 +24,7 @@ public:
   }
 
   std::string name_;
+  std::pair<float, float> position_;
   std::string description_{};
   std::vector<std::shared_ptr<DataFlow>> input_data_flows_;
   std::vector<std::shared_ptr<DataFlow>> output_data_flows_;
