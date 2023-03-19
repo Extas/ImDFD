@@ -31,9 +31,10 @@ void Dfd::CreateTestData() {
       "DataFlow2", data_process, data_storage, std::make_pair(300, 0));
   data_flows_.push_back(data_flow_2);
 }
-auto Dfd::Serialize() -> std::string {
+
+auto Dfd::Serialize() const -> std::string {
   return {};
 }
-auto Dfd::IsValid() -> bool {
+auto Dfd::IsValid() const -> bool {
   return false;
 }

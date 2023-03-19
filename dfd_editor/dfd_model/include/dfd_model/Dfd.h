@@ -9,9 +9,9 @@
 #include "DataStorage.h"
 #include "ExternalEntity.h"
 
-class Dfd {
+class Dfd : public Element {
 public:
-  Dfd(std::string name);
+  explicit Dfd(std::string name);
   std::vector<std::shared_ptr<DataFlow>> data_flows_;
   std::vector<std::shared_ptr<DataItem>> data_items_;
   std::vector<std::shared_ptr<DataProcess>> data_processes_;
@@ -20,9 +20,11 @@ public:
 
   void CreateTestData(); // 从外部实体到数据处理到数据存储
 
-  [[nodiscard]] static auto Serialize() -> std::string;
-  [[nodiscard]] static auto IsValid() -> bool;
+private:
+  [[nodiscard]] auto Serialize() const -> std::string override;
+  [[nodiscard]] auto IsValid() const -> bool override;
 
+public:
   std::string name_;
 };
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DFD_H_

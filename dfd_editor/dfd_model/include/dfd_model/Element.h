@@ -10,16 +10,16 @@ public:
   [[nodiscard]] virtual auto Serialize() const -> std::string = 0;
   [[nodiscard]] virtual auto IsValid() const -> bool = 0;
 
-  [[nodiscard]] auto GetElementId() const -> int {
-    return element_id_;
-  }
-
   Element(const Element &other) = delete;
   Element(Element &&other) noexcept = default;
   auto operator=(const Element &other) -> Element & = delete;
   auto operator=(Element &&other) noexcept -> Element & = default;
 
   virtual ~Element() = default;
+
+  [[nodiscard]] auto GetElementId() const -> int {
+    return element_id_;
+  }
 
 private:
   static auto GetNewElementId() -> int {
