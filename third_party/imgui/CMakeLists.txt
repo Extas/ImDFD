@@ -44,6 +44,7 @@ asap_add_library(${MODULE_TARGET_NAME} STATIC
         ${imgui_SOURCE_DIR}/imgui_tables.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+        ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
         )
 
 target_link_libraries(${MODULE_TARGET_NAME} PUBLIC glfw glad)
@@ -51,6 +52,7 @@ target_link_libraries(${MODULE_TARGET_NAME} PUBLIC glfw glad)
 target_include_directories(${MODULE_TARGET_NAME} PUBLIC
         ${imgui_SOURCE_DIR}
         ${imgui_SOURCE_DIR}/backends
+        ${imgui_SOURCE_DIR}/misc/cpp
         ${GLFW_SOURCE_DIR}/include)
 
 asap_pop_module(imgui)

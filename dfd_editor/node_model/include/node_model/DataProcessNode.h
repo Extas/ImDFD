@@ -10,16 +10,16 @@
 
 class DataProcessNode : public Node {
 public:
-  DataProcessNode(
-      std::string *name, std::pair<float, float> *position, int node_editor_id)
-      : Node(name, position), data_processing_(node_editor_id) {
+  DataProcessNode(std::string *name, std::pair<float, float> *position,
+      std::string *description, int node_editor_id)
+      : Node(name, position), data_processing_(description, node_editor_id) {
   }
 
   void DrawCustomContent() const override;
 
+  static void NavigateToNodeEditorById(int node_editor_id);
   void SetProcessName(const std::string &new_process_name);
   void SetProcessingContent(const std::string &new_processing_content);
-  void NavigateToNodeEditorById(int node_editor_id) const;
   void NavigateToInputDataFlow(size_t index);
   void NavigateToOutputDataFlow(size_t index);
 

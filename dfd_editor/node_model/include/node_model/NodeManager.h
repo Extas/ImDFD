@@ -15,7 +15,7 @@ public:
   void AddNode(std::string *name);
 
   void AddDataProcessNode(std::string *name, std::pair<float, float> *position,
-      const std::shared_ptr<Dfd> &sub_dfd);
+      std::string *decription, const std::shared_ptr<Dfd> &sub_dfd);
 
   void AddInputPin(std::string *name);
   void AddInputPin(std::string *name, int node_id);

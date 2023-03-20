@@ -15,7 +15,8 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
   // DataStorage  AddDataProcessNode
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
     node_manager_.AddDataProcessNode(&kDataProcessPtr->name_,
-        &kDataProcessPtr->position_, kDataProcessPtr->sub_dfd_);
+        &kDataProcessPtr->position_, &kDataProcessPtr->process_description_,
+        kDataProcessPtr->sub_dfd_);
   }
 }
 

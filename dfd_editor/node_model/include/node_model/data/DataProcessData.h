@@ -6,8 +6,8 @@
 
 class DataProcessData {
 public:
-  explicit DataProcessData(int canvas_id)
-      : processing_content_("no description"),
+  DataProcessData(std::string *description, int canvas_id)
+      : processing_description_(description),
         sub_data_flow_diagram_id_(canvas_id) {
   }
 
@@ -21,9 +21,9 @@ public:
   void RemoveOutputDataFlow(int node_id);
 
 private:
-  std::string processing_content_;
   std::vector<int> input_data_flows_;
   std::vector<int> output_data_flows_;
+  std::string *processing_description_;
   int sub_data_flow_diagram_id_;
 
 public:
@@ -34,11 +34,14 @@ public:
     return output_data_flows_;
   }
 
-  [[nodiscard]] auto GetContent() const -> const std::string & {
-    return processing_content_;
+  [[nodiscard]] auto GetDescription() const -> const std::string & {
+    return *processing_description_;
   }
-  void SetContent(const std::string &content) {
-    processing_content_ = content;
+  [[nodiscard]] auto GetDescriptionPtr() const -> std::string * {
+    return processing_description_;
+  }
+  void SetContent(const std::string &content) const {
+    *processing_description_ = content;
   }
 
   void SetSubDataFlowDiagramId(int canvas_id) {
@@ -48,24 +51,5 @@ public:
     return sub_data_flow_diagram_id_;
   }
 };
-
-// void DataProcessData::RemoveOutputDataFlow(int node_id) {
-//   for (auto it = output_data_flows_.begin(); it != output_data_flows_.end();
-//        ++it) {
-//     if (*it == node_id) {
-//       output_data_flows_.erase(it);
-//       break;
-//     }
-//   }
-// }
-// void DataProcessData::RemoveInputDataFlow(int node_id) {
-//   for (auto it = input_data_flows_.begin(); it != input_data_flows_.end();
-//        ++it) {
-//     if (*it == node_id) {
-//       input_data_flows_.erase(it);
-//       break;
-//     }
-//   }
-// }
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATA_DATAPROCESSDATA_H_
