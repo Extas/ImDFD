@@ -6,20 +6,22 @@
 
 class DataStorage {
 public:
-  DataStorage(const std::string &name) : m_name(name) {
+  DataStorage(const std::string &name) : name_(name) {
+  }
+  DataStorage() : name_("DaaStorage.name") {
   }
 
   const std::string &GetName() const {
-    return m_name;
+    return name_;
   }
   void SetName(const std::string &name) {
-    m_name = name;
+    name_ = name;
   }
 
   // Add more accessors, mutators, and other methods as needed
 
 private:
-  std::string m_name;
+  std::string name_;
   // Add more member variables as needed
 };
 

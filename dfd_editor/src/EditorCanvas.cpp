@@ -8,8 +8,8 @@
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
   // 一共五个元素
-  // DataFlow AddNode
-  // DataItem
+  // DataFlow
+  // DataItem 不画
   // DataProcess AddDataProcessNode
   // ExternalEntity AddDataProcessNode
   // DataStorage  AddDataProcessNode
@@ -17,6 +17,14 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     node_manager_.AddDataProcessNode(&kDataProcessPtr->name_,
         &kDataProcessPtr->position_, &kDataProcessPtr->process_description_,
         kDataProcessPtr->sub_dfd_);
+  }
+  for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
+    node_manager_.AddExternalEntityNode(
+        &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
+  }
+  for (const auto &kDataStoragePtr : dfd_->data_storages_) {
+    node_manager_.AddDataStorageNode(
+        &kDataStoragePtr->name_, &kDataStoragePtr->position_);
   }
 }
 

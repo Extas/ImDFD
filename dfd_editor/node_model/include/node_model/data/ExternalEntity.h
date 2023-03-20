@@ -9,6 +9,9 @@ public:
   ExternalEntity(const std::string &name) : m_name(name) {
   }
 
+  ExternalEntity() : m_name("ExternalEntity.name") {
+  }
+
   const std::string &GetName() const {
     return m_name;
   }

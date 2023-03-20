@@ -9,19 +9,18 @@
 
 class DataStorageNode : public Node {
 public:
-  DataStorageNode(const std::string &name, std::pair<float, float> position,
-      DataStorage dataStorage)
-      : Node(name, position), m_dataStorage(std::move(dataStorage)) {
+  DataStorageNode(std::string *name, std::pair<float, float> *position)
+      : Node(name, position) {
   }
 
   [[nodiscard]] auto GetDataStorage() const -> const DataStorage & {
-    return m_dataStorage;
+    return data_storage_;
   }
 
   // Add more methods specific to DataStorageNode here
 
 private:
-  DataStorage m_dataStorage;
+  DataStorage data_storage_;
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATASTORAGENODE_H_

@@ -1,4 +1,6 @@
 #include <functional>
+#include <node_model/DataStorageNode.h>
+#include <node_model/ExternalEntityNode.h>
 #include <node_model/NodeManager.h>
 
 class Dfd;
@@ -12,14 +14,22 @@ void NodeManager::AddNode(std::string *name) {
 }
 
 void NodeManager::AddDataProcessNode(std::string *name,
-    std::pair<float, float> *position, std::string *decription,
+    std::pair<float, float> *position, std::string *description,
     const std::shared_ptr<Dfd> &sub_dfd) {
 
   int get_canvas_id = -1;
   SignalHandel::Instance().create_new_dfd_(sub_dfd, get_canvas_id);
 
   nodes_.push_back(std::make_unique<DataProcessNode>(
-      name, position, decription, get_canvas_id));
+      name, position, description, get_canvas_id));
+}
+void NodeManager::AddExternalEntityNode(
+    std::string *name, std::pair<float, float> *position) {
+  nodes_.push_back(std::make_unique<ExternalEntityNode>(name, position));
+}
+void NodeManager::AddDataStorageNode(
+    std::string *name, std::pair<float, float> *position) {
+  nodes_.push_back(std::make_unique<DataStorageNode>(name, position));
 }
 
 void NodeManager::AddInputPin(std::string *name) {
@@ -62,6 +72,7 @@ auto NodeManager::GetNode(int node_id)
   }
   return std::nullopt;
 }
+
 auto NodeManager::GetNodes() const
     -> const std::vector<std::unique_ptr<Node>> & {
   return nodes_;

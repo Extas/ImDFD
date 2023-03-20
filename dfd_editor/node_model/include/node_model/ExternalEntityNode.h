@@ -1,6 +1,6 @@
 
-#ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_NODE_MODEL_EXTERNALENTITYNODE_H_
-#define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_NODE_MODEL_EXTERNALENTITYNODE_H_
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_EXTERNALENTITYNODE_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_EXTERNALENTITYNODE_H_
 
 #include "element/Node.h"
 
@@ -9,18 +9,17 @@
 
 class ExternalEntityNode : public Node {
 public:
-  ExternalEntityNode(const std::string &name, std::pair<float, float> position,
-      ExternalEntity externalEntity)
-      : Node(name, position), m_externalEntity(std::move(externalEntity)) {
+  ExternalEntityNode(std::string *name, std::pair<float, float> *position)
+      : Node(name, position) {
   }
 
   [[nodiscard]] auto GetExternalEntity() const -> const ExternalEntity & {
-    return m_externalEntity;
+    return external_entity_;
   }
 
   // Add more methods specific to ExternalEntityNode here
 
 private:
-  ExternalEntity m_externalEntity;
+  ExternalEntity external_entity_;
 };
-#endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_NODE_MODEL_EXTERNALENTITYNODE_H_
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_EXTERNALENTITYNODE_H_
