@@ -4,6 +4,8 @@
 
 #include <sigslot/signal.hpp>
 
+class Dfd;
+
 class SignalHandel {
 public:
   // 获取SignalManager实例
@@ -18,7 +20,7 @@ public:
 
   sigslot::signal<int, const std::string &> processing_content_changed_;
   sigslot::signal<int> navigate_sub_diagram_onclick_;
-  sigslot::signal<const std::string &, int &> create_new_canvas_;
+  sigslot::signal<const std::shared_ptr<Dfd> &, int &> create_new_dfd_;
 
 private:
   SignalHandel() = default;

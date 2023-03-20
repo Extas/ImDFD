@@ -14,7 +14,7 @@ namespace ed = ax::NodeEditor;
 
 class EditorCanvas : public BaseWindow {
 public:
-  explicit EditorCanvas(std::shared_ptr<Dfd> dfd);
+  explicit EditorCanvas(const std::shared_ptr<Dfd> &dfd);
 
   void DrawContents() override;
 
@@ -29,7 +29,6 @@ private:
   NodeManager node_manager_;
   LinkManager link_manager_;
 
-  void Demo();
   void DrawNode() const;
   void DrawLink();
   void HandleInteractions();

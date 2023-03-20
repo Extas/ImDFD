@@ -4,32 +4,19 @@
 #include <imgui_node_editor.h>
 
 #include <logging/Logger.h>
-#include <string>
-#include <utility>
 
-EditorCanvas::EditorCanvas(std::shared_ptr<Dfd> dfd)
-    : BaseWindow(dfd->name_), canvas_id_(GetNewCanvasId()) {
-  dfd_ = dfd;
+EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
+    : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
   // 一共五个元素
   // DataFlow AddNode
   // DataItem
   // DataProcess AddDataProcessNode
   // ExternalEntity AddDataProcessNode
   // DataStorage  AddDataProcessNode
-  for (auto data_process_ptr : dfd->data_processes_) {
-    node_manager_.AddDataProcessNode(
-        data_process_ptr->name_, data_process_ptr->position_);
+  for (const auto &kDataProcessPtr : dfd_->data_processes_) {
+    node_manager_.AddDataProcessNode(&kDataProcessPtr->name_,
+        &kDataProcessPtr->position_, kDataProcessPtr->sub_dfd_);
   }
-}
-
-void EditorCanvas::Demo() {
-  node_manager_.AddNode("A", std::make_pair(10, 10));
-  node_manager_.AddInputPin("A In");
-  node_manager_.AddOutputPin("A Out");
-  node_manager_.AddNode("B", std::make_pair(210, 60));
-  node_manager_.AddInputPin("B In");
-  node_manager_.AddOutputPin("B Out");
-  node_manager_.AddDataProcessNode("C", std::make_pair(410, 10));
 }
 
 void EditorCanvas::DrawContents() {
@@ -137,11 +124,6 @@ auto EditorCanvas::GetContext() -> ed::EditorContext * {
     context_ = ed::CreateEditor();
   }
   return context_;
-}
-
-auto EditorCanvas::GetNewCanvasId() -> int {
-  static int node_editor_id = 0;
-  return node_editor_id++;
 }
 
 auto EditorCanvas::GetId() const -> int {

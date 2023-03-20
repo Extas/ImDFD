@@ -1,40 +1,43 @@
 #include <functional>
 #include <node_model/NodeManager.h>
 
-void NodeManager::AddNode(std::string name, std::pair<float, float> position) {
-  nodes_.push_back(std::make_unique<Node>(std::move(name), position));
+class Dfd;
+
+void NodeManager::AddNode(
+    std::string *name, std::pair<float, float> *position) {
+  nodes_.push_back(std::make_unique<Node>(name, position));
 }
-void NodeManager::AddNode(std::string name) {
-  AddNode(std::move(name), std::make_pair(0, 0));
+void NodeManager::AddNode(std::string *name) {
+  AddNode(name, new std::pair<float, float>(0, 0));
 }
 
-void NodeManager::AddDataProcessNode(
-    const std::string &name, std::pair<float, float> position) {
+void NodeManager::AddDataProcessNode(std::string *name,
+    std::pair<float, float> *position, const std::shared_ptr<Dfd> &sub_dfd) {
 
-  int new_canvas_id = -1;
-  SignalHandel::Instance().create_new_canvas_(name, new_canvas_id);
+  int get_canvas_id = -1;
+  SignalHandel::Instance().create_new_dfd_(sub_dfd, get_canvas_id);
 
   nodes_.push_back(
-      std::make_unique<DataProcessNode>(name, position, new_canvas_id));
+      std::make_unique<DataProcessNode>(name, position, get_canvas_id));
 }
 
-void NodeManager::AddInputPin(std::string name) {
-  nodes_.back()->AddInputPin(std::move(name));
+void NodeManager::AddInputPin(std::string *name) {
+  nodes_.back()->AddInputPin(name);
 }
-void NodeManager::AddInputPin(std::string name, int node_id) {
+void NodeManager::AddInputPin(std::string *name, int node_id) {
   if (auto node = GetNode(node_id)) {
     if (node.has_value()) {
-      node->get().AddInputPin(std::move(name));
+      node->get().AddInputPin(name);
     }
   }
 }
-void NodeManager::AddOutputPin(std::string name) {
-  nodes_.back()->AddOutputPin(std::move(name));
+void NodeManager::AddOutputPin(std::string *name) {
+  nodes_.back()->AddOutputPin(name);
 }
-void NodeManager::AddOutputPin(std::string name, int node_id) {
+void NodeManager::AddOutputPin(std::string *name, int node_id) {
   if (auto node = GetNode(node_id)) {
     if (node.has_value()) {
-      node->get().AddOutputPin(std::move(name));
+      node->get().AddOutputPin(name);
     }
   }
 }

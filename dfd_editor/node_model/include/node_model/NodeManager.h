@@ -5,20 +5,22 @@
 #include "element/Node.h"
 #include <signal/SignalHandel.h>
 
+class Dfd;
+
 class NodeManager {
 public:
   NodeManager() = default;
 
-  void AddNode(std::string name, std::pair<float, float> position);
-  void AddNode(std::string name);
+  void AddNode(std::string *name, std::pair<float, float> *position);
+  void AddNode(std::string *name);
 
-  void AddDataProcessNode(
-      const std::string &name, std::pair<float, float> position);
+  void AddDataProcessNode(std::string *name, std::pair<float, float> *position,
+      const std::shared_ptr<Dfd> &sub_dfd);
 
-  void AddInputPin(std::string name);
-  void AddInputPin(std::string name, int node_id);
-  void AddOutputPin(std::string name);
-  void AddOutputPin(std::string name, int node_id);
+  void AddInputPin(std::string *name);
+  void AddInputPin(std::string *name, int node_id);
+  void AddOutputPin(std::string *name);
+  void AddOutputPin(std::string *name, int node_id);
 
   void RemoveNode(int node_id);
 

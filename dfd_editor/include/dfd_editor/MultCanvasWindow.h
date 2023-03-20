@@ -23,6 +23,7 @@ public:
   void LoadDfd(const std::shared_ptr<Dfd> &dfd);
 
 private:
+  std::vector<std::shared_ptr<Dfd>> dfds_;
   std::vector<std::shared_ptr<EditorCanvas>> canvas_;
   auto AddCanvas(const std::shared_ptr<EditorCanvas> &node_editor) -> int;
 

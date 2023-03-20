@@ -2,11 +2,11 @@
 void Node::Draw() const {
   ed::BeginNode(GetId());
   ImGui::Text("%s", GetName().c_str());
-  for (const auto &pin : GetInputPins()) {
-    pin.Draw();
+  for (const auto &kPin : GetInputPins()) {
+    kPin.Draw();
   }
-  for (const auto &pin : GetOutputPins()) {
-    pin.Draw();
+  for (const auto &kPin : GetOutputPins()) {
+    kPin.Draw();
   }
   DrawCustomContent();
   ed::EndNode();
@@ -14,14 +14,14 @@ void Node::Draw() const {
 
 auto Node::GetPin(int pin_id) const
     -> std::optional<std::reference_wrapper<const Pin>> {
-  for (const auto &pin : m_InputPins) {
-    if (pin.GetId() == pin_id) {
-      return std::cref(pin);
+  for (const auto &kPin : input_pins_) {
+    if (kPin.GetId() == pin_id) {
+      return std::cref(kPin);
     }
   }
-  for (const auto &pin : m_OutputPins) {
-    if (pin.GetId() == pin_id) {
-      return std::cref(pin);
+  for (const auto &kPin : output_pins_) {
+    if (kPin.GetId() == pin_id) {
+      return std::cref(kPin);
     }
   }
   return std::nullopt;
@@ -29,9 +29,9 @@ auto Node::GetPin(int pin_id) const
 
 auto Node::GetInputPin(int pin_id) const
     -> std::optional<std::reference_wrapper<const InPin>> {
-  for (const auto &pin : m_InputPins) {
-    if (pin.GetId() == pin_id) {
-      return std::cref(pin);
+  for (const auto &kPin : input_pins_) {
+    if (kPin.GetId() == pin_id) {
+      return std::cref(kPin);
     }
   }
   return std::nullopt;
@@ -39,9 +39,9 @@ auto Node::GetInputPin(int pin_id) const
 
 auto Node::GetOutputPin(int pin_id) const
     -> std::optional<std::reference_wrapper<const OutPin>> {
-  for (const auto &pin : m_OutputPins) {
-    if (pin.GetId() == pin_id) {
-      return std::cref(pin);
+  for (const auto &kPin : output_pins_) {
+    if (kPin.GetId() == pin_id) {
+      return std::cref(kPin);
     }
   }
   return std::nullopt;
@@ -49,22 +49,22 @@ auto Node::GetOutputPin(int pin_id) const
 
 auto Node::operator=(Node &&other) noexcept -> Node & {
   DrawObj::operator=(std::move(other));
-  m_InputPins = std::move(other.m_InputPins);
-  m_OutputPins = std::move(other.m_OutputPins);
-  m_Position = other.m_Position;
+  input_pins_ = std::move(other.input_pins_);
+  output_pins_ = std::move(other.output_pins_);
+  position_ = other.position_;
   return *this;
 }
-auto Node::AddInputPin(std::string name) -> InPin & {
-  m_InputPins.emplace_back(std::move(name));
-  return m_InputPins.back();
+auto Node::AddInputPin(std::string *name) -> InPin & {
+  input_pins_.emplace_back(name);
+  return input_pins_.back();
 }
-auto Node::AddOutputPin(std::string name) -> OutPin & {
-  m_OutputPins.emplace_back(std::move(name));
-  return m_OutputPins.back();
+auto Node::AddOutputPin(std::string *name) -> OutPin & {
+  output_pins_.emplace_back(name);
+  return output_pins_.back();
 }
 auto Node::GetInputPins() const -> const std::vector<InPin> & {
-  return m_InputPins;
+  return input_pins_;
 }
 auto Node::GetOutputPins() const -> const std::vector<OutPin> & {
-  return m_OutputPins;
+  return output_pins_;
 }

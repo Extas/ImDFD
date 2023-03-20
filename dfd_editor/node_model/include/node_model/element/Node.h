@@ -1,5 +1,5 @@
-#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODE_H_
-#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODE_H_
+#ifndef IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_ELEMENT_NODE_H_
+#define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_ELEMENT_NODE_H_
 
 #include "DrawObj.h"
 #include "Pin.h"
@@ -15,8 +15,8 @@ namespace ed = ax::NodeEditor;
 
 class Node : public DrawObj {
 public:
-  Node(std::string name, std::pair<float, float> position)
-      : DrawObj(std::move(name)), m_Position(position) {
+  Node(std::string *name, std::pair<float, float> *position)
+      : DrawObj(name), position_(position) {
   }
 
   void Draw() const override;
@@ -31,26 +31,26 @@ public:
       -> std::optional<std::reference_wrapper<const InPin>>;
   [[nodiscard]] auto GetOutputPin(int pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
-  auto AddInputPin(std::string name) -> InPin &;
-  auto AddOutputPin(std::string name) -> OutPin &;
+  auto AddInputPin(std::string *name) -> InPin &;
+  auto AddOutputPin(std::string *name) -> OutPin &;
 
   [[nodiscard]] auto GetPosition() const -> const std::pair<float, float> & {
-    return m_Position;
+    return *position_;
   }
-  void SetPosition(std::pair<float, float> position) {
-    m_Position = position;
+  void SetPosition(const std::pair<float, float> &position) {
+    *position_ = position;
   }
 
 private:
-  std::vector<InPin> m_InputPins;
-  std::vector<OutPin> m_OutputPins;
-  std::pair<float, float> m_Position;
+  std::vector<InPin> input_pins_;
+  std::vector<OutPin> output_pins_;
+  std::pair<float, float> *position_;
 
 public:
   Node(Node &&other) noexcept
-      : DrawObj(std::move(other)), m_InputPins(std::move(other.m_InputPins)),
-        m_OutputPins(std::move(other.m_OutputPins)),
-        m_Position(other.m_Position) {
+      : DrawObj(std::move(other)), input_pins_(std::move(other.input_pins_)),
+        output_pins_(std::move(other.output_pins_)),
+        position_(other.position_) {
   }
 
   auto operator=(Node &&other) noexcept -> Node &;
@@ -60,4 +60,4 @@ public:
   ~Node() override = default;
 };
 
-#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODE_H_
+#endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_ELEMENT_NODE_H_

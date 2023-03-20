@@ -9,6 +9,7 @@ MultCanvasWindow::MultCanvasWindow(std::string title)
 
 void MultCanvasWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   CreateNewCanvas(dfd);
+  dfds_.push_back(dfd);
 }
 
 void MultCanvasWindow::DrawContents() {
@@ -60,13 +61,12 @@ void MultCanvasWindow::ConnectSignal() {
         mult_canvas_window->selected_canvas_id_ = canvas_id;
       });
 
-  SignalHandel::Instance().create_new_canvas_.connect(
+  SignalHandel::Instance().create_new_dfd_.connect(
       [self = shared_from_this()](
-          const std::string &title, int &new_canvas_id) {
+          const std::shared_ptr<Dfd> &sub_dfd, int &new_canvas_id) {
         auto mult_canvas_window =
             std::static_pointer_cast<MultCanvasWindow>(self);
-        //        new_canvas_id =
-        //        mult_canvas_window->CreateNewCanvas(<#initializer #>);
+        new_canvas_id = mult_canvas_window->CreateNewCanvas(sub_dfd);
       });
 }
 
@@ -75,6 +75,7 @@ auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd) -> int {
     ConnectSignal();
     has_connect_signal_ = true;
   }
+
   std::string title = dfd->name_;
   auto found_editor = std::find_if(canvas_.begin(), canvas_.end(),
       [title](const std::shared_ptr<EditorCanvas> &editor) {
@@ -84,6 +85,7 @@ auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd) -> int {
     Logger::Info(("Canvas with title " + title + " already exists").c_str());
     return (*found_editor)->GetId();
   }
+
   return AddCanvas(std::make_shared<EditorCanvas>(dfd));
 }
 

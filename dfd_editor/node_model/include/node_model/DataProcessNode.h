@@ -10,8 +10,8 @@
 
 class DataProcessNode : public Node {
 public:
-  DataProcessNode(const std::string &name, std::pair<float, float> position,
-      int node_editor_id)
+  DataProcessNode(
+      std::string *name, std::pair<float, float> *position, int node_editor_id)
       : Node(name, position), data_processing_(node_editor_id) {
   }
 

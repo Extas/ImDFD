@@ -13,7 +13,7 @@ class DataFlow;
 class DfdNode : public Element {
 public:
   explicit DfdNode(std::string name, std::pair<float, float> pos)
-      : position_(pos), name_(std::move(name)) {
+      : name_(std::move(name)), position_(pos) {
   }
 
   [[nodiscard]] auto Serialize() const -> std::string override {
@@ -31,17 +31,16 @@ public:
 
   DfdNode(const DfdNode &other) = delete;
   DfdNode(DfdNode &&other) noexcept
-      : Element(std::move(other)),
-        output_data_flows_(std::move(other.output_data_flows_)),
+      : Element(std::move(other)), name_(std::move(other.name_)),
         input_data_flows_(std::move(other.input_data_flows_)),
-        name_(std::move(other.name_)) {
+        output_data_flows_(std::move(other.output_data_flows_)) {
   }
   auto operator=(const DfdNode &other) -> DfdNode & = delete;
   auto operator=(DfdNode &&other) noexcept -> DfdNode & {
     Element::operator=(std::move(other));
-    output_data_flows_ = std::move(other.output_data_flows_);
-    input_data_flows_ = std::move(other.input_data_flows_);
     name_ = std::move(other.name_);
+    input_data_flows_ = std::move(other.input_data_flows_);
+    output_data_flows_ = std::move(other.output_data_flows_);
     return *this;
   }
 

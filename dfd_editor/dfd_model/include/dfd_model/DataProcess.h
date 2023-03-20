@@ -8,7 +8,7 @@ class Dfd;
 
 class DataProcess : public DfdNode {
 public:
-  DataProcess(std::string name, std::pair<float, float> pos);
+  DataProcess(const std::string &name, std::pair<float, float> pos);
   std::string process_description_;
   std::shared_ptr<Dfd> sub_dfd_;
 };
