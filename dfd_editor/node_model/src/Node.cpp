@@ -54,12 +54,12 @@ auto Node::operator=(Node &&other) noexcept -> Node & {
   position_ = other.position_;
   return *this;
 }
-auto Node::AddInputPin(std::string *name) -> InPin & {
-  input_pins_.emplace_back(name);
+auto Node::AddInputPin(uint64_t pin_id, std::string *name) -> InPin & {
+  input_pins_.emplace_back(pin_id, name);
   return input_pins_.back();
 }
-auto Node::AddOutputPin(std::string *name) -> OutPin & {
-  output_pins_.emplace_back(name);
+auto Node::AddOutputPin(uint64_t pin_id, std::string *name) -> OutPin & {
+  output_pins_.emplace_back(pin_id, name);
   return output_pins_.back();
 }
 auto Node::GetInputPins() const -> const std::vector<InPin> & {

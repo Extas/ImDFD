@@ -10,7 +10,7 @@
 
 class DfdNode;
 
-class DataFlow : public DfdNode {
+class DataFlow : public DfdNode, public std::enable_shared_from_this<DataFlow> {
 public:
   DataFlow(std::string name, std::shared_ptr<DfdNode> source,
       std::shared_ptr<DfdNode> destination, std::pair<float, float> pos);
@@ -18,6 +18,8 @@ public:
   std::vector<std::shared_ptr<DataItem>> data_items_;
   std::shared_ptr<DfdNode> source_;
   std::shared_ptr<DfdNode> destination_;
+
+  void Connect();
 
   [[nodiscard]] auto Serialize() const -> std::string override;
   [[nodiscard]] auto IsValid() const -> bool override;

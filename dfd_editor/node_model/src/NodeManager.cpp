@@ -5,50 +5,36 @@
 
 class Dfd;
 
-void NodeManager::AddNode(
+auto NodeManager::AddNode(
     uint64_t node_id, std::string *name, std::pair<float, float> *position) {
-  nodes_.push_back(std::make_unique<Node>(node_id, name, position));
+  auto node = std::make_shared<Node>(node_id, name, position);
+  nodes_.push_back(node);
+  return node;
 }
 
-void NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
+auto NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position, std::string *description,
-    const std::shared_ptr<Dfd> &sub_dfd) {
+    const std::shared_ptr<Dfd> &sub_dfd) -> std::shared_ptr<DataProcessNode> {
 
   int64_t get_canvas_id = -1;
   SignalHandel::Instance().create_new_dfd_(sub_dfd, get_canvas_id);
 
-  nodes_.push_back(std::make_unique<DataProcessNode>(
-      node_id, name, position, description, get_canvas_id));
+  auto node = std::make_shared<DataProcessNode>(
+      node_id, name, position, description, get_canvas_id);
+  nodes_.push_back(node);
+  return node;
 }
-void NodeManager::AddExternalEntityNode(
-    uint64_t node_id, std::string *name, std::pair<float, float> *position) {
-  nodes_.push_back(
-      std::make_unique<ExternalEntityNode>(node_id, name, position));
+auto NodeManager::AddExternalEntityNode(uint64_t node_id, std::string *name,
+    std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode> {
+  auto node = std::make_shared<ExternalEntityNode>(node_id, name, position);
+  nodes_.push_back(node);
+  return node;
 }
-void NodeManager::AddDataStorageNode(
-    uint64_t node_id, std::string *name, std::pair<float, float> *position) {
-  nodes_.push_back(std::make_unique<DataStorageNode>(node_id, name, position));
-}
-
-void NodeManager::AddInputPin(std::string *name) {
-  nodes_.back()->AddInputPin(name);
-}
-void NodeManager::AddInputPin(std::string *name, uint64_t node_id) {
-  if (auto node = GetNode(node_id)) {
-    if (node.has_value()) {
-      node->get().AddInputPin(name);
-    }
-  }
-}
-void NodeManager::AddOutputPin(std::string *name) {
-  nodes_.back()->AddOutputPin(name);
-}
-void NodeManager::AddOutputPin(std::string *name, uint64_t node_id) {
-  if (auto node = GetNode(node_id)) {
-    if (node.has_value()) {
-      node->get().AddOutputPin(name);
-    }
-  }
+auto NodeManager::AddDataStorageNode(uint64_t node_id, std::string *name,
+    std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode> {
+  auto node = std::make_shared<DataStorageNode>(node_id, name, position);
+  nodes_.push_back(node);
+  return node;
 }
 
 void NodeManager::RemoveNode(uint64_t node_id) {
@@ -71,8 +57,7 @@ auto NodeManager::GetNode(uint64_t node_id)
   return std::nullopt;
 }
 
-auto NodeManager::GetNodes() const
-    -> const std::vector<std::unique_ptr<Node>> & {
+auto NodeManager::GetNodes() const -> const std::vector<std::shared_ptr<Node>> {
   return nodes_;
 }
 auto NodeManager::GetPinById(uint64_t pin_id) const

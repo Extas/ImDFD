@@ -28,7 +28,7 @@ public:
 
 class OutPin : public Pin {
 public:
-  explicit OutPin(std::string *name) : Pin(0, name) {
+  explicit OutPin(uint64_t pin_id, std::string *name) : Pin(pin_id, name) {
   }
 
   void Draw() const override {
@@ -38,7 +38,7 @@ public:
 
 class InPin : public Pin {
 public:
-  explicit InPin(std::string *name) : Pin(0, name) {
+  explicit InPin(uint64_t pin_id, std::string *name) : Pin(pin_id, name) {
   }
 
   void Draw() const override {

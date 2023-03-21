@@ -13,14 +13,14 @@ void Dfd::CreateTestData() {
   external_entities_.push_back(external_entity);
 
   auto data_storage =
-      std::make_shared<DataStorage>("DataStorage", std::make_pair(400, 0));
+      std::make_shared<DataStorage>("DataStorage", std::make_pair(1000, 0));
   data_storages_.push_back(data_storage);
 
   auto data_item = std::make_shared<DataItem>("DataItem", StringDataType());
   data_storage->stored_data_items_.push_back(data_item);
 
   auto data_process =
-      std::make_shared<DataProcess>("DataProcess", std::make_pair(200, 0));
+      std::make_shared<DataProcess>("DataProcess", std::make_pair(400, 0));
   data_processes_.push_back(data_process);
 
   auto data_flow_1 = std::make_shared<DataFlow>(

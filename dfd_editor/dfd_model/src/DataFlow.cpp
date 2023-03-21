@@ -7,6 +7,12 @@ DataFlow::DataFlow(std::string name, std::shared_ptr<DfdNode> source,
     : DfdNode(std::move(name), pos), source_(std::move(source)),
       destination_(std::move(destination)) {
 }
+
+void DataFlow::Connect() {
+  source_->output_data_flows_.push_back(shared_from_this());
+  destination_->input_data_flows_.push_back(shared_from_this());
+}
+
 auto DataFlow::Serialize() const -> std::string {
   return {};
 }

@@ -2,6 +2,8 @@
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_
 
 #include "DataProcessNode.h"
+#include "DataStorageNode.h"
+#include "ExternalEntityNode.h"
 #include "element/Node.h"
 #include <signal/SignalHandel.h>
 
@@ -11,21 +13,16 @@ class NodeManager {
 public:
   NodeManager() = default;
 
-  void AddNode(
+  auto AddNode(
       uint64_t node_id, std::string *name, std::pair<float, float> *position);
 
-  void AddDataProcessNode(uint64_t node_id, std::string *name,
+  auto AddDataProcessNode(uint64_t node_id, std::string *name,
       std::pair<float, float> *position, std::string *description,
-      const std::shared_ptr<Dfd> &sub_dfd);
-  void AddExternalEntityNode(
-      uint64_t node_id, std::string *name, std::pair<float, float> *position);
-  void AddDataStorageNode(
-      uint64_t node_id, std::string *name, std::pair<float, float> *position);
-
-  void AddInputPin(std::string *name);
-  void AddInputPin(std::string *name, uint64_t node_id);
-  void AddOutputPin(std::string *name);
-  void AddOutputPin(std::string *name, uint64_t node_id);
+      const std::shared_ptr<Dfd> &sub_dfd) -> std::shared_ptr<DataProcessNode>;
+  auto AddExternalEntityNode(uint64_t node_id, std::string *name,
+      std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode>;
+  auto AddDataStorageNode(uint64_t node_id, std::string *name,
+      std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode>;
 
   void RemoveNode(uint64_t node_id);
 
@@ -39,9 +36,9 @@ public:
   [[nodiscard]] auto GetOutputPinById(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
   [[nodiscard]] auto GetNodes() const
-      -> const std::vector<std::unique_ptr<Node>> &;
+      -> const std::vector<std::shared_ptr<Node>>;
 
 private:
-  std::vector<std::unique_ptr<Node>> nodes_;
+  std::vector<std::shared_ptr<Node>> nodes_;
 };
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_NODEMANAGER_H_

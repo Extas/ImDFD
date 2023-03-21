@@ -7,24 +7,39 @@
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
-  // 一共五个元素
-  // DataFlow
-  // DataItem 不画
-  // DataProcess AddDataProcessNode
-  // ExternalEntity AddDataProcessNode
-  // DataStorage  AddDataProcessNode
+  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
+    link_manager_.AddLink(kDataFlowPtr->source_->GetElementId(),
+        kDataFlowPtr->destination_->GetElementId());
+    kDataFlowPtr->Connect();
+  }
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
-    node_manager_.AddDataProcessNode(kDataProcessPtr->GetElementId(),
-        &kDataProcessPtr->name_, &kDataProcessPtr->position_,
-        &kDataProcessPtr->process_description_, kDataProcessPtr->sub_dfd_);
+    auto data_process_node =
+        node_manager_.AddDataProcessNode(kDataProcessPtr->GetElementId(),
+            &kDataProcessPtr->name_, &kDataProcessPtr->position_,
+            &kDataProcessPtr->process_description_, kDataProcessPtr->sub_dfd_);
+    AddPin(kDataProcessPtr, data_process_node);
   }
   for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
-    node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
-        &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
+    auto external_entity_node =
+        node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
+            &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
+    AddPin(kExternalEntityPtr, external_entity_node);
   }
   for (const auto &kDataStoragePtr : dfd_->data_storages_) {
-    node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
-        &kDataStoragePtr->name_, &kDataStoragePtr->position_);
+    auto data_storage_node =
+        node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
+            &kDataStoragePtr->name_, &kDataStoragePtr->position_);
+    AddPin(kDataStoragePtr, data_storage_node);
+  }
+}
+
+void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
+    const std::shared_ptr<Node> &node) {
+  for (const auto &kOutputPin : dfd_model_ptr->output_data_flows_) {
+    node->AddOutputPin(kOutputPin->GetElementId(), &kOutputPin->name_);
+  }
+  for (const auto &kInputPin : dfd_model_ptr->input_data_flows_) {
+    node->AddInputPin(kInputPin->GetElementId(), &kInputPin->name_);
   }
 }
 

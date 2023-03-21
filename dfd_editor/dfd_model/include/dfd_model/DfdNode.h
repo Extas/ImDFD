@@ -16,6 +16,10 @@ public:
       : name_(std::move(name)), position_(pos) {
   }
 
+  std::string name_;
+  std::pair<float, float> position_;
+  std::string description_{};
+
   [[nodiscard]] auto Serialize() const -> std::string override {
     return {};
   }
@@ -23,9 +27,6 @@ public:
     return false;
   }
 
-  std::string name_;
-  std::pair<float, float> position_;
-  std::string description_{};
   std::vector<std::shared_ptr<DataFlow>> input_data_flows_;
   std::vector<std::shared_ptr<DataFlow>> output_data_flows_;
 
@@ -44,7 +45,7 @@ public:
     return *this;
   }
 
-  virtual ~DfdNode() = default;
+  ~DfdNode() override = default;
 };
 
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DFDNODE_H_

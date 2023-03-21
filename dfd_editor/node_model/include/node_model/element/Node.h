@@ -31,8 +31,8 @@ public:
       -> std::optional<std::reference_wrapper<const InPin>>;
   [[nodiscard]] auto GetOutputPin(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
-  auto AddInputPin(std::string *name) -> InPin &;
-  auto AddOutputPin(std::string *name) -> OutPin &;
+  auto AddInputPin(uint64_t pin_id, std::string *name) -> InPin &;
+  auto AddOutputPin(uint64_t pin_id, std::string *name) -> OutPin &;
 
   [[nodiscard]] auto GetPosition() const -> const std::pair<float, float> & {
     return *position_;

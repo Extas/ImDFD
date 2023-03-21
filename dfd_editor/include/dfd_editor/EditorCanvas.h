@@ -39,7 +39,6 @@ private:
   auto IsFirstFrame() -> bool;
   void FirstFrame();
 
-  static auto GetNewCanvasId() -> int64_t;
   auto GetContext() -> ed::EditorContext *;
 
 public:
@@ -48,6 +47,8 @@ public:
   auto operator=(EditorCanvas &&) -> EditorCanvas & = delete;
   auto operator=(const EditorCanvas &) -> EditorCanvas & = delete;
   ~EditorCanvas() override;
+  static void AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
+      const std::shared_ptr<Node> &node);
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_
