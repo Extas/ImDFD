@@ -6,36 +6,34 @@
 class Dfd;
 
 void NodeManager::AddNode(
-    std::string *name, std::pair<float, float> *position) {
-  nodes_.push_back(std::make_unique<Node>(name, position));
-}
-void NodeManager::AddNode(std::string *name) {
-  AddNode(name, new std::pair<float, float>(0, 0));
+    uint64_t node_id, std::string *name, std::pair<float, float> *position) {
+  nodes_.push_back(std::make_unique<Node>(node_id, name, position));
 }
 
-void NodeManager::AddDataProcessNode(std::string *name,
+void NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position, std::string *description,
     const std::shared_ptr<Dfd> &sub_dfd) {
 
-  int get_canvas_id = -1;
+  int64_t get_canvas_id = -1;
   SignalHandel::Instance().create_new_dfd_(sub_dfd, get_canvas_id);
 
   nodes_.push_back(std::make_unique<DataProcessNode>(
-      name, position, description, get_canvas_id));
+      node_id, name, position, description, get_canvas_id));
 }
 void NodeManager::AddExternalEntityNode(
-    std::string *name, std::pair<float, float> *position) {
-  nodes_.push_back(std::make_unique<ExternalEntityNode>(name, position));
+    uint64_t node_id, std::string *name, std::pair<float, float> *position) {
+  nodes_.push_back(
+      std::make_unique<ExternalEntityNode>(node_id, name, position));
 }
 void NodeManager::AddDataStorageNode(
-    std::string *name, std::pair<float, float> *position) {
-  nodes_.push_back(std::make_unique<DataStorageNode>(name, position));
+    uint64_t node_id, std::string *name, std::pair<float, float> *position) {
+  nodes_.push_back(std::make_unique<DataStorageNode>(node_id, name, position));
 }
 
 void NodeManager::AddInputPin(std::string *name) {
   nodes_.back()->AddInputPin(name);
 }
-void NodeManager::AddInputPin(std::string *name, int node_id) {
+void NodeManager::AddInputPin(std::string *name, uint64_t node_id) {
   if (auto node = GetNode(node_id)) {
     if (node.has_value()) {
       node->get().AddInputPin(name);
@@ -45,7 +43,7 @@ void NodeManager::AddInputPin(std::string *name, int node_id) {
 void NodeManager::AddOutputPin(std::string *name) {
   nodes_.back()->AddOutputPin(name);
 }
-void NodeManager::AddOutputPin(std::string *name, int node_id) {
+void NodeManager::AddOutputPin(std::string *name, uint64_t node_id) {
   if (auto node = GetNode(node_id)) {
     if (node.has_value()) {
       node->get().AddOutputPin(name);
@@ -53,7 +51,7 @@ void NodeManager::AddOutputPin(std::string *name, int node_id) {
   }
 }
 
-void NodeManager::RemoveNode(int node_id) {
+void NodeManager::RemoveNode(uint64_t node_id) {
   for (auto &node_ptr : nodes_) {
     if (node_ptr->GetId() == node_id) {
       node_ptr = std::move(nodes_.back());
@@ -63,7 +61,7 @@ void NodeManager::RemoveNode(int node_id) {
   }
 }
 
-auto NodeManager::GetNode(int node_id)
+auto NodeManager::GetNode(uint64_t node_id)
     -> std::optional<std::reference_wrapper<Node>> {
   for (auto &node_ptr : nodes_) {
     if (node_ptr->GetId() == node_id) {
@@ -77,7 +75,7 @@ auto NodeManager::GetNodes() const
     -> const std::vector<std::unique_ptr<Node>> & {
   return nodes_;
 }
-auto NodeManager::GetPinById(int pin_id) const
+auto NodeManager::GetPinById(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const Pin>> {
   for (const auto &kNodePtr : nodes_) {
     if (auto pin = kNodePtr->GetPin(pin_id)) {
@@ -86,7 +84,7 @@ auto NodeManager::GetPinById(int pin_id) const
   }
   return std::nullopt;
 }
-auto NodeManager::GetInputPinById(int pin_id) const
+auto NodeManager::GetInputPinById(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const InPin>> {
   for (const auto &kNodePtr : nodes_) {
     if (auto pin = kNodePtr->GetInputPin(pin_id)) {
@@ -95,7 +93,7 @@ auto NodeManager::GetInputPinById(int pin_id) const
   }
   return std::nullopt;
 }
-auto NodeManager::GetOutputPinById(int pin_id) const
+auto NodeManager::GetOutputPinById(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const OutPin>> {
   for (const auto &kNodePtr : nodes_) {
     if (auto pin = kNodePtr->GetOutputPin(pin_id)) {

@@ -17,16 +17,17 @@ public:
 
   virtual ~Element() = default;
 
-  [[nodiscard]] auto GetElementId() const -> int {
+  [[nodiscard]] auto GetElementId() const -> uint64_t {
     return element_id_;
   }
 
 private:
-  static auto GetNewElementId() -> int {
-    static int element_id = 0;
+  static auto GetNewElementId() -> uint64_t {
+    static uint64_t element_id = static_cast<uint64_t>(100);
+    ;
     return element_id++;
   }
-  int element_id_;
+  uint64_t element_id_;
 };
 
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_ELEMENT_H_

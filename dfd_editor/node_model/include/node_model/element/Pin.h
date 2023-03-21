@@ -15,10 +15,10 @@ class Link;
 
 class Pin : public DrawObj {
 public:
-  explicit Pin(std::string *name) : DrawObj(name) {
+  Pin(uint64_t pin_id, std::string *name) : DrawObj(pin_id, name) {
   }
 
-  virtual void Draw(ed::PinKind pin_kind) const {
+  virtual void DrawCustom(ed::PinKind pin_kind) const {
     ed::BeginPin(GetId(), pin_kind);
     ImGui::Text("%s", GetName().c_str());
     ed::EndPin();
@@ -28,21 +28,21 @@ public:
 
 class OutPin : public Pin {
 public:
-  explicit OutPin(std::string *name) : Pin(name) {
+  explicit OutPin(std::string *name) : Pin(0, name) {
   }
 
   void Draw() const override {
-    Pin::Draw(ed::PinKind::Output);
+    Pin::DrawCustom(ed::PinKind::Output);
   }
 };
 
 class InPin : public Pin {
 public:
-  explicit InPin(std::string *name) : Pin(name) {
+  explicit InPin(std::string *name) : Pin(0, name) {
   }
 
   void Draw() const override {
-    Pin::Draw(ed::PinKind::Input);
+    Pin::DrawCustom(ed::PinKind::Input);
   }
 };
 

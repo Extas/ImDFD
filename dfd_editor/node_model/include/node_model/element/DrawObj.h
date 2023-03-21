@@ -7,20 +7,15 @@
 
 class DrawObj {
 public:
-  explicit DrawObj(std::string *name) : name_(name), id_(GetNextId()) {
+  explicit DrawObj(uint64_t obj_id, std::string *name)
+      : id_(obj_id), name_(name) {
   }
 
   virtual void Draw() const = 0;
 
-  static auto GetNextId() -> uint64_t {
-    static uint64_t s_next_id = 100;
-    return s_next_id++;
-  }
-
   [[nodiscard]] auto GetName() const -> const std::string & {
     return *name_;
   }
-
   void SetName(const std::string &name) {
     *name_ = name;
   }
@@ -30,18 +25,20 @@ public:
   }
 
 private:
+  uint64_t id_ = static_cast<uint64_t>(0);
   std::string *name_;
-  uint64_t id_ = -1;
 
 public:
-  DrawObj(DrawObj &&other) noexcept : name_(other.name_), id_(other.id_) {
-    other.id_ = -1;
+  DrawObj(DrawObj &&other) noexcept : id_(other.id_), name_(other.name_) {
+    other.id_ = static_cast<uint64_t>(0);
+    ;
   }
   auto operator=(DrawObj &&other) noexcept -> DrawObj & {
     if (this != &other) {
       name_ = other.name_;
       id_ = other.id_;
-      other.id_ = -1;
+      other.id_ = static_cast<uint64_t>(0);
+      ;
       other.name_ = nullptr;
     }
     return *this;

@@ -11,7 +11,7 @@
 // Usage:
 //  static ExampleAppLog my_log;
 //  my_log.AddLog("Hello %d world\n", 123);
-//  my_log.Draw("title");
+//  my_log.DrawCustom("title");
 struct ExampleAppLog {
   ImGuiTextBuffer buf;
   ImGuiTextFilter filter;

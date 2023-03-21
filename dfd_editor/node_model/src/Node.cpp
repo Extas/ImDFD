@@ -12,7 +12,7 @@ void Node::Draw() const {
   ed::EndNode();
 }
 
-auto Node::GetPin(int pin_id) const
+auto Node::GetPin(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const Pin>> {
   for (const auto &kPin : input_pins_) {
     if (kPin.GetId() == pin_id) {
@@ -27,7 +27,7 @@ auto Node::GetPin(int pin_id) const
   return std::nullopt;
 }
 
-auto Node::GetInputPin(int pin_id) const
+auto Node::GetInputPin(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const InPin>> {
   for (const auto &kPin : input_pins_) {
     if (kPin.GetId() == pin_id) {
@@ -37,7 +37,7 @@ auto Node::GetInputPin(int pin_id) const
   return std::nullopt;
 }
 
-auto Node::GetOutputPin(int pin_id) const
+auto Node::GetOutputPin(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const OutPin>> {
   for (const auto &kPin : output_pins_) {
     if (kPin.GetId() == pin_id) {

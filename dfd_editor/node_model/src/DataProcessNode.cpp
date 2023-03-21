@@ -9,7 +9,7 @@ void DataProcessNode::DrawCustomContent() const {
   }
 }
 
-void DataProcessNode::NavigateToNodeEditorById(int node_editor_id) {
+void DataProcessNode::NavigateToNodeEditorById(int64_t node_editor_id) {
   SignalHandel::Instance().navigate_sub_diagram_onclick_(node_editor_id);
 }
 

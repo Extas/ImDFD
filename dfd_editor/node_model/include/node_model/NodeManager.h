@@ -11,30 +11,32 @@ class NodeManager {
 public:
   NodeManager() = default;
 
-  void AddNode(std::string *name, std::pair<float, float> *position);
-  void AddNode(std::string *name);
+  void AddNode(
+      uint64_t node_id, std::string *name, std::pair<float, float> *position);
 
-  void AddDataProcessNode(std::string *name, std::pair<float, float> *position,
-      std::string *description, const std::shared_ptr<Dfd> &sub_dfd);
+  void AddDataProcessNode(uint64_t node_id, std::string *name,
+      std::pair<float, float> *position, std::string *description,
+      const std::shared_ptr<Dfd> &sub_dfd);
   void AddExternalEntityNode(
-      std::string *name, std::pair<float, float> *position);
-  void AddDataStorageNode(std::string *name, std::pair<float, float> *position);
+      uint64_t node_id, std::string *name, std::pair<float, float> *position);
+  void AddDataStorageNode(
+      uint64_t node_id, std::string *name, std::pair<float, float> *position);
 
   void AddInputPin(std::string *name);
-  void AddInputPin(std::string *name, int node_id);
+  void AddInputPin(std::string *name, uint64_t node_id);
   void AddOutputPin(std::string *name);
-  void AddOutputPin(std::string *name, int node_id);
+  void AddOutputPin(std::string *name, uint64_t node_id);
 
-  void RemoveNode(int node_id);
+  void RemoveNode(uint64_t node_id);
 
   // 使用GetNode方法的地方，需要根据节点的类型进行相应的类型转换。可以使用dynamic_cast来实现。
-  [[nodiscard]] auto GetNode(int node_id)
+  [[nodiscard]] auto GetNode(uint64_t node_id)
       -> std::optional<std::reference_wrapper<Node>>;
-  [[nodiscard]] auto GetPinById(int pin_id) const
+  [[nodiscard]] auto GetPinById(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const Pin>>;
-  [[nodiscard]] auto GetInputPinById(int pin_id) const
+  [[nodiscard]] auto GetInputPinById(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const InPin>>;
-  [[nodiscard]] auto GetOutputPinById(int pin_id) const
+  [[nodiscard]] auto GetOutputPinById(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
   [[nodiscard]] auto GetNodes() const
       -> const std::vector<std::unique_ptr<Node>> &;

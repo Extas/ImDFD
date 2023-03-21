@@ -15,8 +15,8 @@ namespace ed = ax::NodeEditor;
 
 class Node : public DrawObj {
 public:
-  Node(std::string *name, std::pair<float, float> *position)
-      : DrawObj(name), position_(position) {
+  Node(uint64_t node_id, std::string *name, std::pair<float, float> *position)
+      : DrawObj(node_id, name), position_(position) {
   }
 
   void Draw() const override;
@@ -25,11 +25,11 @@ public:
 
   [[nodiscard]] auto GetInputPins() const -> const std::vector<InPin> &;
   [[nodiscard]] auto GetOutputPins() const -> const std::vector<OutPin> &;
-  [[nodiscard]] auto GetPin(int pin_id) const
+  [[nodiscard]] auto GetPin(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const Pin>>;
-  [[nodiscard]] auto GetInputPin(int pin_id) const
+  [[nodiscard]] auto GetInputPin(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const InPin>>;
-  [[nodiscard]] auto GetOutputPin(int pin_id) const
+  [[nodiscard]] auto GetOutputPin(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
   auto AddInputPin(std::string *name) -> InPin &;
   auto AddOutputPin(std::string *name) -> OutPin &;

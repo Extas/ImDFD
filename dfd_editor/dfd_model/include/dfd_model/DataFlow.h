@@ -12,8 +12,8 @@ class DfdNode;
 
 class DataFlow : public DfdNode {
 public:
-  DataFlow(std::string name, const std::shared_ptr<DfdNode> &source,
-      const std::shared_ptr<DfdNode> &destination, std::pair<float, float> pos);
+  DataFlow(std::string name, std::shared_ptr<DfdNode> source,
+      std::shared_ptr<DfdNode> destination, std::pair<float, float> pos);
 
   std::vector<std::shared_ptr<DataItem>> data_items_;
   std::shared_ptr<DfdNode> source_;

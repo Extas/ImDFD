@@ -18,12 +18,12 @@ public:
 
   void DrawContents() override;
 
-  [[nodiscard]] auto GetId() const -> int;
+  [[nodiscard]] auto GetId() const -> int64_t;
 
   bool open_ = false;
 
 private:
-  int canvas_id_ = 0;
+  int64_t canvas_id_ = static_cast<int64_t>(0);
   ed::EditorContext *context_ = nullptr;
   std::shared_ptr<Dfd> dfd_;
   NodeManager node_manager_;
@@ -39,7 +39,7 @@ private:
   auto IsFirstFrame() -> bool;
   void FirstFrame();
 
-  static auto GetNewCanvasId() -> int;
+  static auto GetNewCanvasId() -> int64_t;
   auto GetContext() -> ed::EditorContext *;
 
 public:

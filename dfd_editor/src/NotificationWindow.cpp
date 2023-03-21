@@ -4,8 +4,6 @@ NotificationWindow::NotificationWindow() : BaseWindow("Notifications") {
   log_.Clear();
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-vararg"
 void NotificationWindow::AddInfoNotification(const std::string &message) {
   Notification notification = {
       NotificationType::INFO, message, std::chrono::system_clock::now()};
@@ -29,7 +27,6 @@ void NotificationWindow::AddErrorNotification(const std::string &message) {
       std::chrono::system_clock::to_time_t(notification.timestamp),
       notification.message.c_str());
 }
-#pragma clang diagnostic pop
 
 void NotificationWindow::DrawContents() {
   if (ImGui::SmallButton("[Debug] Add 5 entries")) {

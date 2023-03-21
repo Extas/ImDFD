@@ -10,18 +10,20 @@
 
 class DataProcessNode : public Node {
 public:
-  DataProcessNode(std::string *name, std::pair<float, float> *position,
-      std::string *description, int node_editor_id)
-      : Node(name, position), data_processing_(description, node_editor_id) {
+  DataProcessNode(uint64_t node_id, std::string *name,
+      std::pair<float, float> *position, std::string *description,
+      int64_t node_editor_id)
+      : Node(node_id, name, position),
+        data_processing_(description, node_editor_id) {
   }
 
   void DrawCustomContent() const override;
 
-  static void NavigateToNodeEditorById(int node_editor_id);
+  static void NavigateToNodeEditorById(int64_t node_editor_id);
   void SetProcessName(const std::string &new_process_name);
   void SetProcessingContent(const std::string &new_processing_content);
-  void NavigateToInputDataFlow(size_t index);
-  void NavigateToOutputDataFlow(size_t index);
+  void NavigateToInputDataFlow(int64_t index);
+  void NavigateToOutputDataFlow(int64_t index);
 
   // Add more methods specific to DataProcessNode here
 

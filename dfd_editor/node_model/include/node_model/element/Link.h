@@ -36,15 +36,16 @@ public:
   Link(Link &&other) noexcept
       : input_pin_id_(other.input_pin_id_),
         output_pin_id_(other.output_pin_id_) {
-    other.input_pin_id_ = -1;
-    other.output_pin_id_ = -1;
+    other.input_pin_id_ = static_cast<uint64_t>(0);
+    ;
+    other.output_pin_id_ = static_cast<uint64_t>(0);
   }
   auto operator=(Link &&other) noexcept -> Link & {
     if (this != &other) {
       input_pin_id_ = other.input_pin_id_;
       output_pin_id_ = other.output_pin_id_;
-      other.input_pin_id_ = -1;
-      other.output_pin_id_ = -1;
+      other.input_pin_id_ = static_cast<uint64_t>(0);
+      other.output_pin_id_ = static_cast<uint64_t>(0);
     }
     return *this;
   }

@@ -14,16 +14,16 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
   // ExternalEntity AddDataProcessNode
   // DataStorage  AddDataProcessNode
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
-    node_manager_.AddDataProcessNode(&kDataProcessPtr->name_,
-        &kDataProcessPtr->position_, &kDataProcessPtr->process_description_,
-        kDataProcessPtr->sub_dfd_);
+    node_manager_.AddDataProcessNode(kDataProcessPtr->GetElementId(),
+        &kDataProcessPtr->name_, &kDataProcessPtr->position_,
+        &kDataProcessPtr->process_description_, kDataProcessPtr->sub_dfd_);
   }
   for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
-    node_manager_.AddExternalEntityNode(
+    node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
         &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
   }
   for (const auto &kDataStoragePtr : dfd_->data_storages_) {
-    node_manager_.AddDataStorageNode(
+    node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
         &kDataStoragePtr->name_, &kDataStoragePtr->position_);
   }
 }
@@ -76,7 +76,7 @@ void EditorCanvas::HandleInteractions() {
           link_manager_.AddLink(input_pin_id.Get(), output_pin_id.Get());
           Logger::Trace("dfd_editor: Accepted new link");
 
-          // Draw new link.
+          // DrawCustom new link.
           DrawLink();
         }
 
@@ -135,7 +135,7 @@ auto EditorCanvas::GetContext() -> ed::EditorContext * {
   return context_;
 }
 
-auto EditorCanvas::GetId() const -> int {
+auto EditorCanvas::GetId() const -> int64_t {
   return canvas_id_;
 }
 

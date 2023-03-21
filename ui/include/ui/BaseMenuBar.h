@@ -19,7 +19,7 @@ public:
   void AddMenuItem(const std::string &label,
       const std::function<void()> &callback = nullptr);
 
-  // Draw the menu bar
+  // DrawCustom the menu bar
   void Show();
 
 private:
