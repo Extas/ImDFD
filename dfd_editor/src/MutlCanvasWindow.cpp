@@ -2,12 +2,16 @@
 
 #include <imgui.h>
 #include <logging/Logger.h>
+#include <string>
 
 MultCanvasWindow::MultCanvasWindow(std::string title)
     : BaseWindow(std::move(title)) {
 }
 
 void MultCanvasWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
+  Logger::Trace(
+      ("Loading DFD into NodeEditor: " + std::to_string(dfd->GetElementId()))
+          .c_str());
   CreateNewCanvas(dfd);
   dfds_.push_back(dfd);
 
@@ -74,6 +78,7 @@ void MultCanvasWindow::ConnectSignal() {
 
 auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd)
     -> int64_t {
+  Logger::Trace(("Creating new canvas for DFD: " + dfd->name_).c_str());
   if (!has_connect_signal_) {
     ConnectSignal();
     has_connect_signal_ = true;
@@ -105,8 +110,9 @@ void MultCanvasWindow::OpenCanvas(int64_t canvas_id) {
 
 auto MultCanvasWindow::AddCanvas(
     const std::shared_ptr<EditorCanvas> &node_editor) -> int64_t {
-  Logger::Trace("Adding node editor to window");
   canvas_.push_back(node_editor);
   int64_t new_canvas_id = canvas_.back()->GetId();
+  Logger::Trace(("New canvas created with ID: " + std::to_string(new_canvas_id))
+                    .c_str());
   return new_canvas_id;
 }
