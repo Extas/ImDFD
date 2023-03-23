@@ -38,11 +38,9 @@ void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
     const std::shared_ptr<Node> &node) {
   for (const auto &kOutputPin : dfd_model_ptr->output_data_flows_) {
     node->AddOutputPin(kOutputPin->GetElementId(), &kOutputPin->name_);
-    Logger::Trace(("Add output pin: " + std::to_string(kOutputPin->GetElementId()) + kOutputPin->name_ + " to node: " + node->GetName()).c_str());
   }
   for (const auto &kInputPin : dfd_model_ptr->input_data_flows_) {
     node->AddInputPin(kInputPin->GetElementId(), &kInputPin->name_);
-    Logger::Trace(("Add input pin: " + std::to_string(kInputPin->GetElementId()) + kInputPin->name_ + " to node: " + node->GetName()).c_str());
   }
 }
 

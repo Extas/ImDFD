@@ -1,4 +1,6 @@
+#include <logging/Logger.h>
 #include <node_model/element/Node.h>
+
 void Node::Draw() const {
   ed::BeginNode(GetId());
   ImGui::Text("%s", GetName().c_str());
@@ -56,10 +58,16 @@ auto Node::operator=(Node &&other) noexcept -> Node & {
 }
 auto Node::AddInputPin(uint64_t pin_id, std::string *name) -> InPin & {
   input_pins_.emplace_back(pin_id, name);
+  Logger::Trace(
+      (GetName() + "Add input pin (" + std::to_string(pin_id) + *name + " )")
+          .c_str());
   return input_pins_.back();
 }
 auto Node::AddOutputPin(uint64_t pin_id, std::string *name) -> OutPin & {
   output_pins_.emplace_back(pin_id, name);
+  Logger::Trace(
+      (GetName() + "Add output pin (" + std::to_string(pin_id) + *name + " )")
+          .c_str());
   return output_pins_.back();
 }
 auto Node::GetInputPins() const -> const std::vector<InPin> & {
