@@ -8,13 +8,11 @@ class Dfd;
 
 class SignalHandel {
 public:
-  // 获取SignalManager实例
   static auto Instance() -> SignalHandel & {
     static SignalHandel instance;
     return instance;
   }
 
-  // 禁止复制和赋值
   SignalHandel(const SignalHandel &) = delete;
   auto operator=(const SignalHandel &) -> SignalHandel & = delete;
 

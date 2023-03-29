@@ -30,7 +30,8 @@ private:
   bool has_connect_signal_ = false;
   void ConnectSignal();
   int64_t selected_canvas_id_ =
-      0; // 选择完之后会取负数，获取当前选择 tab 取绝对值
+      0; // After selection, a negative number will be obtained. To obtain the
+         // current selected tab, take the absolute value.
 
 public:
   MultCanvasWindow(MultCanvasWindow &&) = default;

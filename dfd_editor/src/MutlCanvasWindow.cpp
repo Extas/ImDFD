@@ -23,7 +23,6 @@ void MultCanvasWindow::DrawContents() {
       ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_AutoSelectNewTabs;
   if (ImGui::BeginTabBar("NodeEditorTabBar", tab_bar_flags)) {
 
-    // 不要用范围 for 循环遍历，读取的引用不正确
     for (size_t i = 0; i < canvas_.size(); ++i) {
       std::shared_ptr<EditorCanvas> &canvas = canvas_[i];
 
@@ -53,14 +52,12 @@ void MultCanvasWindow::ConnectSignal() {
         auto mult_canvas_window =
             std::static_pointer_cast<MultCanvasWindow>(self);
 
-        // 查找具有给定ID的NodeEditor
         auto found_editor = std::find_if(mult_canvas_window->canvas_.begin(),
             mult_canvas_window->canvas_.end(),
             [canvas_id](const std::shared_ptr<EditorCanvas> &editor) {
               return editor->GetId() == canvas_id;
             });
 
-        // 如果找到具有给定ID的NodeEditor，则将其设置为当前激活的选项卡
         if (found_editor != mult_canvas_window->canvas_.end()) {
           (*found_editor)->open_ = true;
         }
@@ -112,7 +109,7 @@ auto MultCanvasWindow::AddCanvas(
     const std::shared_ptr<EditorCanvas> &node_editor) -> int64_t {
   canvas_.push_back(node_editor);
   int64_t new_canvas_id = canvas_.back()->GetId();
-  Logger::Trace(("New canvas created with ID: " + std::to_string(new_canvas_id))
-                    .c_str());
+  Logger::Trace(
+      ("New canvas created with ID: " + std::to_string(new_canvas_id)).c_str());
   return new_canvas_id;
 }

@@ -6,8 +6,6 @@ Dfd::Dfd(std::string name) : name_(std::move(name)) {
 }
 
 void Dfd::CreateTestData() {
-  // 创建DataFlow, DataItem, DataProcessData, ExternalEntity和DataStorage实例
-  // 并将它们添加到相应的容器中
   auto external_entity =
       std::make_shared<ExternalEntity>("ExternalEntity", std::make_pair(0, 0));
   external_entities_.push_back(external_entity);

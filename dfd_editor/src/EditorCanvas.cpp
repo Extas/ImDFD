@@ -80,15 +80,9 @@ void EditorCanvas::HandleInteractions() {
     ed::PinId input_pin_id;
     ed::PinId output_pin_id;
     if (ed::QueryNewLink(&input_pin_id, &output_pin_id)) {
-      // 如果编辑器想要在两个针脚之间创建新链接，QueryNewLink() 就会返回 true。
-
-      // TODO(HandleInteractions):
-      // 链接只能在两个有效的针脚之间创建，判断连接是否有意义。
       if (input_pin_id && output_pin_id) // both are valid, let's accept link
       {
-        // 当用户释放鼠标按钮时，ed::AcceptNewItem() 返回 true。
         if (ed::AcceptNewItem()) {
-          // 接受了新链接，添加到链接列表中。
           link_manager_.AddLink(input_pin_id.Get(), output_pin_id.Get());
           Logger::Trace("dfd_editor: Accepted new link");
 
@@ -96,7 +90,7 @@ void EditorCanvas::HandleInteractions() {
           DrawLink();
         }
 
-        // 通过调用 ed::RejectNewItem() 拒绝这些节点之间的连接。
+        // ed::RejectNewItem()
       }
     }
   }

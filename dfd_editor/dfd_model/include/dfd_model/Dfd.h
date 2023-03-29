@@ -18,7 +18,7 @@ public:
   std::vector<std::shared_ptr<ExternalEntity>> external_entities_;
   std::vector<std::shared_ptr<DataStorage>> data_storages_;
 
-  void CreateTestData(); // 从外部实体到数据处理到数据存储
+  void CreateTestData();
 
 private:
   [[nodiscard]] auto Serialize() const -> std::string override;

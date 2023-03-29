@@ -26,7 +26,6 @@ public:
 
   void RemoveNode(uint64_t node_id);
 
-  // 使用GetNode方法的地方，需要根据节点的类型进行相应的类型转换。可以使用dynamic_cast来实现。
   [[nodiscard]] auto GetNode(uint64_t node_id)
       -> std::optional<std::reference_wrapper<Node>>;
   [[nodiscard]] auto GetPinById(uint64_t pin_id) const
