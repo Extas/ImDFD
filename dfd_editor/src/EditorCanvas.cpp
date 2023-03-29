@@ -8,29 +8,41 @@
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
-  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
-    link_manager_.AddLink(kDataFlowPtr->source_->GetElementId(),
-        kDataFlowPtr->destination_->GetElementId());
-  }
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
     auto data_process_node =
         node_manager_.AddDataProcessNode(kDataProcessPtr->GetElementId(),
             &kDataProcessPtr->name_, &kDataProcessPtr->position_,
             &kDataProcessPtr->process_description_, kDataProcessPtr->sub_dfd_);
-    AddPin(kDataProcessPtr, data_process_node);
   }
   for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
     auto external_entity_node =
         node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
             &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
-    AddPin(kExternalEntityPtr, external_entity_node);
   }
   for (const auto &kDataStoragePtr : dfd_->data_storages_) {
     auto data_storage_node =
         node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
             &kDataStoragePtr->name_, &kDataStoragePtr->position_);
-    AddPin(kDataStoragePtr, data_storage_node);
   }
+  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
+    Connect(kDataFlowPtr);
+  }
+}
+
+void EditorCanvas::Connect(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
+  auto from_node = node_manager_.GetNode(kDataFlowPtr->source_->GetElementId());
+  auto to_node =
+      node_manager_.GetNode(kDataFlowPtr->destination_->GetElementId());
+  if (!from_node.has_value() || !to_node.has_value()) {
+    Logger::Error("Data flow is not valid");
+  }
+
+  const auto& from_pins = from_node.value().get().GetInputPins();
+  const auto& to_pins = to_node.value().get().GetInputPins();
+  if (from_pins.size() != 1 || to_pins.size() != 1) {
+    Logger::Error("Data flow is not valid");
+  }
+  link_manager_.AddLink(from_pins[0].GetId(), to_pins[0].GetId());
 }
 
 void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,

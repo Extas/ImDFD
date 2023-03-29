@@ -21,6 +21,10 @@ auto NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
 
   auto node = std::make_shared<DataProcessNode>(
       node_id, name, position, description, get_canvas_id);
+  uint64_t input_pin_id = (node_id << 32) + 1;
+  node->AddInputPin(input_pin_id, &node.get()->GetName());
+  uint64_t output_pin_id = (node_id << 32) + 2;
+  node->AddOutputPin(output_pin_id, &node.get()->GetName());
   nodes_.push_back(node);
   return node;
 }
