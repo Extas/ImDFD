@@ -11,7 +11,6 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
   for (const auto &kDataFlowPtr : dfd_->data_flows_) {
     link_manager_.AddLink(kDataFlowPtr->source_->GetElementId(),
         kDataFlowPtr->destination_->GetElementId());
-    kDataFlowPtr->Connect();
   }
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
     auto data_process_node =
@@ -37,10 +36,20 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
 void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
     const std::shared_ptr<Node> &node) {
   for (const auto &kOutputPin : dfd_model_ptr->output_data_flows_) {
-    node->AddOutputPin(kOutputPin->GetElementId(), &kOutputPin->name_);
+    if (kOutputPin.expired()) {
+      Logger::Error("Output pin is expired");
+      continue;
+    }
+    auto output_pin_ptr = kOutputPin.lock();
+    node->AddOutputPin(output_pin_ptr->GetElementId(), &output_pin_ptr->name_);
   }
   for (const auto &kInputPin : dfd_model_ptr->input_data_flows_) {
-    node->AddInputPin(kInputPin->GetElementId(), &kInputPin->name_);
+        if (kInputPin.expired()) {
+          Logger::Error("Input pin is expired");
+          continue;
+        }
+        auto input_pin_ptr = kInputPin.lock();
+        node->AddInputPin(input_pin_ptr->GetElementId(), &input_pin_ptr->name_);
   }
 }
 

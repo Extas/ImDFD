@@ -24,10 +24,12 @@ void Dfd::CreateTestData() {
   auto data_flow_1 = std::make_shared<DataFlow>(
       "DataFlow1", external_entity, data_process, std::make_pair(100, 0));
   data_flows_.push_back(data_flow_1);
+  data_flow_1->Connect();
 
   auto data_flow_2 = std::make_shared<DataFlow>(
       "DataFlow2", data_process, data_storage, std::make_pair(300, 0));
   data_flows_.push_back(data_flow_2);
+  data_flow_2->Connect();
 }
 
 auto Dfd::Serialize() const -> std::string {

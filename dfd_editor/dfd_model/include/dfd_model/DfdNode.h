@@ -27,8 +27,8 @@ public:
     return false;
   }
 
-  std::vector<std::shared_ptr<DataFlow>> input_data_flows_;
-  std::vector<std::shared_ptr<DataFlow>> output_data_flows_;
+  std::vector<std::weak_ptr<DataFlow>> input_data_flows_;
+  std::vector<std::weak_ptr<DataFlow>> output_data_flows_;
 
   DfdNode(const DfdNode &other) = delete;
   DfdNode(DfdNode &&other) noexcept
