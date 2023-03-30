@@ -16,8 +16,8 @@ public:
   [[nodiscard]] auto GetName() const -> const std::string & {
     return *name_;
   }
-  void SetName(const std::string &name) {
-    *name_ = name;
+  void SetName(std::string *name) {
+    name_ = name;
   }
 
   [[nodiscard]] auto GetId() const -> uint64_t {

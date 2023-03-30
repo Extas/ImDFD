@@ -20,7 +20,7 @@ public:
   void DrawCustomContent() const override;
 
   static void NavigateToNodeEditorById(int64_t node_editor_id);
-  void SetProcessName(const std::string &new_process_name);
+  void SetProcessName(std::string *new_process_name);
   void SetProcessingContent(const std::string &new_processing_content);
   void NavigateToInputDataFlow(int64_t index);
   void NavigateToOutputDataFlow(int64_t index);

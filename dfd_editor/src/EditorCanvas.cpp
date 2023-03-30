@@ -37,7 +37,7 @@ void EditorCanvas::Connect(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
     Logger::Error("Data flow is not valid");
   }
 
-  const auto& from_pins = from_node.value().get().GetInputPins();
+  const auto& from_pins = from_node.value().get().GetOutputPins();
   const auto& to_pins = to_node.value().get().GetInputPins();
   if (from_pins.size() != 1 || to_pins.size() != 1) {
     Logger::Error("Data flow is not valid");

@@ -18,7 +18,7 @@ void DataProcessNode::SetProcessingContent(
   data_processing_.SetContent(new_processing_content);
 }
 
-void DataProcessNode::SetProcessName(const std::string &new_process_name) {
+void DataProcessNode::SetProcessName(std::string *new_process_name) {
 
   SetName(new_process_name);
 }

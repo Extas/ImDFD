@@ -13,8 +13,7 @@ class NodeManager {
 public:
   NodeManager() = default;
 
-  auto AddNode(
-      uint64_t node_id, std::string *name, std::pair<float, float> *position);
+  auto AddNode(std::shared_ptr<Node>) -> std::shared_ptr<Node> ;
 
   auto AddDataProcessNode(uint64_t node_id, std::string *name,
       std::pair<float, float> *position, std::string *description,

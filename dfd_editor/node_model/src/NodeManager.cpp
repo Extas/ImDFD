@@ -3,12 +3,13 @@
 #include <node_model/ExternalEntityNode.h>
 #include <node_model/NodeManager.h>
 
+#include <logging/Logger.h>
+
 class Dfd;
 
-auto NodeManager::AddNode(
-    uint64_t node_id, std::string *name, std::pair<float, float> *position) {
-  auto node = std::make_shared<Node>(node_id, name, position);
+auto NodeManager::AddNode(std::shared_ptr<Node> node) -> std::shared_ptr<Node> {
   nodes_.push_back(node);
+  Logger::Info(("Add node: " + std::to_string(node->GetId())).c_str());
   return node;
 }
 
@@ -21,23 +22,25 @@ auto NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
 
   auto node = std::make_shared<DataProcessNode>(
       node_id, name, position, description, get_canvas_id);
-  uint64_t input_pin_id = (node_id << 32) + 1;
-  node->AddInputPin(input_pin_id, &node.get()->GetName());
-  uint64_t output_pin_id = (node_id << 32) + 2;
-  node->AddOutputPin(output_pin_id, &node.get()->GetName());
-  nodes_.push_back(node);
+  uint64_t input_pin_id = (node_id << 16) + 1ULL;
+  node->AddInputPin(input_pin_id, nullptr);
+  uint64_t output_pin_id = input_pin_id + 1ULL;
+  node->AddOutputPin(output_pin_id, nullptr);
+  AddNode(node);
   return node;
 }
 auto NodeManager::AddExternalEntityNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode> {
   auto node = std::make_shared<ExternalEntityNode>(node_id, name, position);
-  nodes_.push_back(node);
+  node->AddOutputPin((node_id << 16) + 1ULL, nullptr);
+  AddNode(node);
   return node;
 }
 auto NodeManager::AddDataStorageNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode> {
   auto node = std::make_shared<DataStorageNode>(node_id, name, position);
-  nodes_.push_back(node);
+  node->AddInputPin((node_id << 16) + 1ULL, nullptr);
+  AddNode(node);
   return node;
 }
 
