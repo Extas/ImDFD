@@ -6,9 +6,7 @@
 
 void GLFWMainWindows::Init(int width, int height, const std::string &title) {
   Logger::Trace("Initializing GLFW");
-  std::string info = "Window size: " + std::to_string(width) + "x" +
-                     std::to_string(height) + ", title: " + title;
-  Logger::Info(info.c_str());
+  Logger::Info("Window size: {}x{}, title: {}", width, height, title);
 
   glfwSetErrorCallback(ErrorCallback);
 

@@ -9,7 +9,7 @@ class Dfd;
 
 auto NodeManager::AddNode(std::shared_ptr<Node> node) -> std::shared_ptr<Node> {
   nodes_.push_back(node);
-  Logger::Info(("Add node: " + std::to_string(node->GetId())).c_str());
+  Logger::Info("[NodeManager] add node ({}: {})", node->GetName(), node->GetId());
   return node;
 }
 

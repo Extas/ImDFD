@@ -105,7 +105,7 @@ void EditorCanvas::HandleInteractions() {
       {
         if (ed::AcceptNewItem()) {
           link_manager_.AddLink(input_pin_id.Get(), output_pin_id.Get());
-          Logger::Trace("dfd_editor: Accepted new link");
+          Logger::Trace("[EditorCanvas] Accepted new link");
 
           // DrawCustom new link.
           DrawLink();
@@ -129,7 +129,7 @@ void EditorCanvas::HandleDelete() {
         for (const auto &kLink : link_manager_.GetLinks()) {
           if (kLink.GetId() == deleted_link_id.Get()) {
             link_manager_.RemoveLink(kLink.GetId());
-            Logger::Trace("dfd_editor: Accepted deleted link");
+            Logger::Trace("[EditorCanvas] Accepted deleted link");
             break;
           }
         }
@@ -160,7 +160,7 @@ void EditorCanvas::FirstFrame() {
 
 auto EditorCanvas::GetContext() -> ed::EditorContext * {
   if (context_ == nullptr) {
-    Logger::Trace("dfd_editor: Initializing EditorCanvas context");
+    Logger::Trace("[EditorCanvas] Initializing EditorCanvas context");
     context_ = ed::CreateEditor();
   }
   return context_;

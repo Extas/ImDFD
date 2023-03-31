@@ -72,9 +72,7 @@ public:
 
   void AddLink(uint64_t input_pin_id, uint64_t output_pin_id) {
     links_.emplace_back(input_pin_id, output_pin_id);
-    Logger::Info(("[LinkManager] Add link:" + std::to_string(input_pin_id) +
-                  " -> " + std::to_string(output_pin_id))
-                     .c_str());
+    Logger::Info("[LinkManager] Add link ({} -> {})", input_pin_id, output_pin_id);
   }
 
   void RemoveLink(uint64_t link_id) {

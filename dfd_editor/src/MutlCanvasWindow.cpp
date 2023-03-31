@@ -9,9 +9,8 @@ MultCanvasWindow::MultCanvasWindow(std::string title)
 }
 
 void MultCanvasWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
-  Logger::Trace(
-      ("Loading DFD into NodeEditor: " + std::to_string(dfd->GetElementId()))
-          .c_str());
+  Logger::Trace("[MultCanvasWindow] Loading DFD into NodeEditor ({}: {})",
+      dfd->GetElementId(), dfd->name_);
   CreateNewCanvas(dfd);
   dfds_.push_back(dfd);
 
@@ -75,7 +74,7 @@ void MultCanvasWindow::ConnectSignal() {
 
 auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd)
     -> int64_t {
-  Logger::Trace(("Creating new canvas for DFD: " + dfd->name_).c_str());
+  Logger::Trace("[MultCanvasWindow] Creating new canvas for DFD ({})", dfd->name_);
   if (!has_connect_signal_) {
     ConnectSignal();
     has_connect_signal_ = true;
@@ -87,7 +86,7 @@ auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd)
         return editor->GetTitle() == title;
       });
   if (found_editor != canvas_.end()) {
-    Logger::Info(("Canvas with title " + title + " already exists").c_str());
+    Logger::Info("Canvas for DFD already exists... Name: {}", dfd->name_);
     return (*found_editor)->GetId();
   }
 
@@ -109,7 +108,7 @@ auto MultCanvasWindow::AddCanvas(
     const std::shared_ptr<EditorCanvas> &node_editor) -> int64_t {
   canvas_.push_back(node_editor);
   int64_t new_canvas_id = canvas_.back()->GetId();
-  Logger::Trace(
-      ("New canvas created with ID: " + std::to_string(new_canvas_id)).c_str());
+  Logger::Trace("[MultCanvasWindow] New canvas added ({}: {})", new_canvas_id,
+      node_editor->GetTitle());
   return new_canvas_id;
 }

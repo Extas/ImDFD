@@ -9,11 +9,11 @@ void Logger::Init() {
       std::make_shared<spdlog::sinks::basic_file_sink_mt>("imdfd.log", true);
 
   // Create logger with both console and file sinks
-  s_Logger = std::make_shared<spdlog::logger>(
+  s_logger_ = std::make_shared<spdlog::logger>(
       "main", spdlog::sinks_init_list{console_sink, file_sink});
 
   // Set log level
-  s_Logger->set_level(spdlog::level::trace);
+  s_logger_->set_level(spdlog::level::trace);
 
   // Set pattern
   spdlog::set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
@@ -24,26 +24,6 @@ void Logger::Init() {
   });
 }
 
-void Logger::Trace(const char *message) {
-  s_Logger->trace(message);
-}
-
-void Logger::Info(const char *message) {
-  s_Logger->info(message);
-}
-
-void Logger::Warn(const char *message) {
-  s_Logger->warn(message);
-}
-
-void Logger::Error(const char *message) {
-  s_Logger->error(message);
-}
-
-void Logger::Critical(const char *message) {
-  s_Logger->critical(message);
-}
-
 auto Logger::GetLogger() -> std::shared_ptr<spdlog::logger> & {
-  return s_Logger;
+  return s_logger_;
 }

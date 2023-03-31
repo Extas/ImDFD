@@ -11,14 +11,34 @@ public:
   static auto GetLogger() -> std::shared_ptr<spdlog::logger> &;
 
   static void Init();
-  static void Trace(const char *message);
-  static void Info(const char *message);
-  static void Warn(const char *message);
-  static void Error(const char *message);
-  static void Critical(const char *message);
+
+  template <typename... Args>
+  static void Trace(const char *format, Args... args) {
+    s_logger_->trace(format, args...);
+  }
+
+  template <typename... Args>
+  static void Info(const char *format, Args... args) {
+    s_logger_->info(format, args...);
+  }
+
+  template <typename... Args>
+  static void Warn(const char *format, Args... args) {
+    s_logger_->warn(format, args...);
+  }
+
+  template <typename... Args>
+  static void Error(const char *format, Args... args) {
+    s_logger_->error(format, args...);
+  }
+
+  template <typename... Args>
+  static void Critical(const char *format, Args... args) {
+    s_logger_->critical(format, args...);
+  }
 
 private:
-  inline static std::shared_ptr<spdlog::logger> s_Logger;
+  inline static std::shared_ptr<spdlog::logger> s_logger_;
 };
 
 #endif // LOGGER_H
