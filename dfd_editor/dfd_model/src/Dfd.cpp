@@ -1,8 +1,13 @@
 #include <dfd_model/Dfd.h>
 
+#include <nlohmann/json.hpp>
+#include <sstream>
 #include <utility>
 
 Dfd::Dfd(std::string name) : name_(std::move(name)) {
+}
+
+Dfd::Dfd(uint64_t id, std::string name) : Element(id), name_(std::move(name)) {
 }
 
 void Dfd::CreateTestData() {
@@ -14,7 +19,7 @@ void Dfd::CreateTestData() {
       std::make_shared<DataStorage>("DataStorage", std::make_pair(1000, 0));
   data_storages_.push_back(data_storage);
 
-  auto data_item = std::make_shared<DataItem>("DataItem", StringDataType());
+  auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
   data_storage->stored_data_items_.push_back(data_item);
 
   auto data_process =
@@ -32,9 +37,31 @@ void Dfd::CreateTestData() {
   data_flow_2->Connect();
 }
 
-auto Dfd::Serialize() const -> std::string {
-  return {};
+[[nodiscard]] auto Dfd::Serialize() const -> std::string {
+  nlohmann::json json_obj;
+
+  json_obj["name"] = name_;
+
+  auto serialize_elements = [](const auto &elements, const std::string &key) {
+    nlohmann::json arr = nlohmann::json::array();
+    for (const auto &element : elements) {
+      arr.push_back(nlohmann::json::parse(element->Serialize()));
+    }
+    return arr;
+  };
+
+  json_obj["data_flows"] = serialize_elements(data_flows_, "data_flows");
+  json_obj["data_items"] = serialize_elements(data_items_, "data_items");
+  json_obj["data_processes"] = serialize_elements(data_processes_, "data_processes");
+  json_obj["external_entities"] = serialize_elements(external_entities_, "external_entities");
+  json_obj["data_storages"] = serialize_elements(data_storages_, "data_storages");
+
+  // Set output formatting options
+  std::stringstream output_stream;
+  output_stream << std::setw(4) << std::setfill(' ') << json_obj << std::endl;
+  return output_stream.str();
 }
+
 auto Dfd::IsValid() const -> bool {
   return false;
 }

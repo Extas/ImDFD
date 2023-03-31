@@ -32,15 +32,18 @@ file(GLOB_RECURSE SOURCES
 asap_add_library(
         ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
 
-        ${SOURCES}
-)
+        ${SOURCES})
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
+
 target_link_libraries(${MODULE_TARGET_NAME}
         PRIVATE
-        logging
-        )
+        logging)
+
+find_package(json REQUIRED)
+target_include_directories(${MODULE_TARGET_NAME}
+        PUBLIC ${json_SOURCE_DIR}/include)
 
 target_include_directories(
         ${MODULE_TARGET_NAME}

@@ -1,11 +1,12 @@
 #include <dfd_model/DataItem.h>
-
-DataItem::DataItem(std::string name, DataType data_type)
-    : Element(), name_(std::move(name)), data_type_(data_type) {
-}
+#include <nlohmann/json.hpp>
 
 auto DataItem::Serialize() const -> std::string {
-  return {};
+  nlohmann::json json;
+  json["id"] = GetElementId();
+  json["name"] = name_;
+  json["data_type"] = data_type_->Serialize();
+  return json.dump();
 }
 auto DataItem::IsValid() const -> bool {
   return true;

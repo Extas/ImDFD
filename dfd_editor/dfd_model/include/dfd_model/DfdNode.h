@@ -8,6 +8,8 @@
 #include <utility>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 class DataFlow;
 
 class DfdNode : public Element {
@@ -16,13 +18,23 @@ public:
       : name_(std::move(name)), position_(pos) {
   }
 
+  DfdNode(uint64_t id, std::string name, std::pair<float, float> pos)
+      : Element(id), name_(std::move(name)), position_(pos) {
+  }
+
   std::string name_;
   std::pair<float, float> position_;
   std::string description_{};
 
   [[nodiscard]] auto Serialize() const -> std::string override {
-    return {};
+    nlohmann::json json;
+    json["id"] = GetElementId();
+    json["name"] = name_;
+    json["position"] = {position_.first, position_.second};
+    json["description"] = description_;
+    return json.dump();
   }
+
   [[nodiscard]] auto IsValid() const -> bool override {
     return false;
   }

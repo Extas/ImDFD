@@ -83,3 +83,11 @@ asap_add_package(
         v1.2.2
         GITHUB_REPOSITORY
         palacaze/sigslot)
+
+asap_add_package(
+        NAME
+        json
+        GIT_TAG
+        v3.11.2
+        GITHUB_REPOSITORY
+        nlohmann/json)

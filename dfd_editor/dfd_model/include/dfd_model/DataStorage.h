@@ -8,6 +8,7 @@
 class DataStorage : public DfdNode {
 public:
   DataStorage(std::string name, std::pair<float, float> pos);
+  DataStorage(uint64_t id, std::string name, std::pair<float, float> pos);
   std::vector<std::shared_ptr<DataItem>> stored_data_items_;
 };
 

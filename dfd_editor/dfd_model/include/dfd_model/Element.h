@@ -7,6 +7,11 @@ class Element {
 public:
   explicit Element() : element_id_(GetNewElementId()) {
   }
+
+  explicit Element(uint64_t special_element_id)
+      : element_id_(GetNewElementId(special_element_id)) {
+  }
+
   [[nodiscard]] virtual auto Serialize() const -> std::string = 0;
   [[nodiscard]] virtual auto IsValid() const -> bool = 0;
 
@@ -22,11 +27,22 @@ public:
   }
 
 private:
-  static auto GetNewElementId() -> uint64_t {
-    static uint64_t element_id = static_cast<uint64_t>(100);
-    ;
-    return element_id++;
+  static auto GetNewElementId(uint64_t special_element_id = 0) -> uint64_t {
+    static auto max_element_id = static_cast<uint64_t>(100);
+    auto next_id = ++max_element_id;
+
+    // have provided special_element_id
+    if (special_element_id != 0) {
+      next_id = special_element_id;
+      // update max_element_id
+      if (special_element_id > max_element_id) {
+        max_element_id = special_element_id;
+      }
+    }
+
+    return next_id;
   }
+
   uint64_t element_id_;
 };
 

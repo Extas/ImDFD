@@ -12,6 +12,7 @@
 class Dfd : public Element {
 public:
   explicit Dfd(std::string name);
+  Dfd(uint64_t id, std::string name);
   std::vector<std::shared_ptr<DataFlow>> data_flows_;
   std::vector<std::shared_ptr<DataItem>> data_items_;
   std::vector<std::shared_ptr<DataProcess>> data_processes_;
@@ -20,7 +21,6 @@ public:
 
   void CreateTestData();
 
-private:
   [[nodiscard]] auto Serialize() const -> std::string override;
   [[nodiscard]] auto IsValid() const -> bool override;
 
