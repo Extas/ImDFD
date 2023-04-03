@@ -21,7 +21,7 @@ public:
     nlohmann::json json;
     json["type"] = "String";
     json["fmt"] = fmt_;
-    return json.dump();
+    return json.dump(4);
   }
 };
 

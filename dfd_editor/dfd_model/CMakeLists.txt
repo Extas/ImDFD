@@ -59,7 +59,7 @@ target_include_directories(${MODULE_TARGET_NAME}
 # Tests
 # -----------------------------------------------------
 if (ASAP_BUILD_TESTS)
-    # add_subdirectory(test)
+     add_subdirectory(test)
 endif ()
 
 asap_pop_module(dfd_model)

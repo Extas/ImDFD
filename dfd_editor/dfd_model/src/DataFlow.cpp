@@ -20,5 +20,5 @@ auto DataFlow::Serialize() const -> std::string {
   }
   j["data_items"] = data_items_json;
 
-  return j.dump();
+  return j.dump(4);
 }
