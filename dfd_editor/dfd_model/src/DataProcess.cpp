@@ -19,3 +19,11 @@ auto DataProcess::Serialize() const -> std::string {
 
   return json.dump();
 }
+auto DataProcess::Create(uint64_t id, const std::string &name,
+    std::pair<float, float> pos) -> std::shared_ptr<DataProcess> {
+  return std::shared_ptr<DataProcess>(new DataProcess(id, name, pos));
+}
+auto DataProcess::Create(const std::string &name, std::pair<float, float> pos)
+    -> std::shared_ptr<DataProcess> {
+  return std::shared_ptr<DataProcess>(new DataProcess(name, pos));
+}
