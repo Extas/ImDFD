@@ -10,7 +10,7 @@ TEST(DataItemTest, SerializeTest) {
   nlohmann::json expected_json;
   expected_json["id"] = data_item->GetElementId();
   expected_json["name"] = "DataItem1";
-  expected_json["data_type"]["type"] = "String";
+  expected_json["data_type"]["type"] = "string";
   expected_json["data_type"]["fmt"] = "string";
 
   // Compare the actual and expected nlohmann::json objects
