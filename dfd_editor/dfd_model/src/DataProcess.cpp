@@ -11,13 +11,12 @@ DataProcess::DataProcess(
     : DfdNode(id, name, pos), process_description_("no description"),
       sub_dfd_(std::make_shared<Dfd>(name + "_dfd")) {
 }
-auto DataProcess::Serialize() const -> std::string {
-  std::string base_serialized = DfdNode::Serialize();
-  nlohmann::json json = nlohmann::json::parse(base_serialized);
+auto DataProcess::Serialize() const -> nlohmann::json {
+  nlohmann::json json = DfdNode::Serialize();
 
   json["process_description"] = process_description_;
 
-  return json.dump();
+  return json;
 }
 auto DataProcess::Create(uint64_t id, const std::string &name,
     std::pair<float, float> pos) -> std::shared_ptr<DataProcess> {

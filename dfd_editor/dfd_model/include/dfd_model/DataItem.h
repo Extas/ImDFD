@@ -24,7 +24,7 @@ public:
         DataItem(std::move(name), std::move(data_type)));
   }
 
-  [[nodiscard]] auto Serialize() const -> std::string override;
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override;
   [[nodiscard]] auto IsValid() const -> bool override;
 
 private:

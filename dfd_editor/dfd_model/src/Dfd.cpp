@@ -1,7 +1,6 @@
 #include <dfd_model/Dfd.h>
 
 #include <nlohmann/json.hpp>
-#include <sstream>
 #include <utility>
 
 Dfd::Dfd(std::string name) : name_(std::move(name)) {
@@ -38,7 +37,10 @@ void Dfd::CreateTestData() {
   data_flows_.push_back(data_flow_2);
 }
 
-[[nodiscard]] auto Dfd::Serialize() const -> std::string {
+[[nodiscard]] auto Dfd::GetJsonString() const -> std::string {
+  return Serialize().dump(4);
+}
+[[nodiscard]] auto Dfd::Serialize() const -> nlohmann::json {
   nlohmann::json json_obj;
 
   json_obj["name"] = name_;
@@ -46,7 +48,7 @@ void Dfd::CreateTestData() {
   auto serialize_elements = [](const auto &elements, const std::string &key) {
     nlohmann::json arr = nlohmann::json::array();
     for (const auto &element : elements) {
-      arr.push_back(nlohmann::json::parse(element->Serialize()));
+      arr.push_back(element->Serialize());
     }
     return arr;
   };
@@ -60,10 +62,7 @@ void Dfd::CreateTestData() {
   json_obj["data_storages"] =
       serialize_elements(data_storages_, "data_storages");
 
-  // Set output formatting options
-  std::stringstream output_stream;
-  output_stream << std::setw(4) << std::setfill(' ') << json_obj << std::endl;
-  return output_stream.str();
+  return json_obj;
 }
 
 auto Dfd::IsValid() const -> bool {

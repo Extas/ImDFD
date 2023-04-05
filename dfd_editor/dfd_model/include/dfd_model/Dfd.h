@@ -21,7 +21,9 @@ public:
 
   void CreateTestData();
 
-  [[nodiscard]] auto Serialize() const -> std::string override;
+  [[nodiscard]] auto GetJsonString() const -> std::string;
+
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override;
   [[nodiscard]] auto IsValid() const -> bool override;
 
   std::string name_;

@@ -6,23 +6,22 @@ void DataFlow::Connect() {
   source_->output_data_flows_.push_back(shared_from_this());
   destination_->input_data_flows_.push_back(shared_from_this());
 }
-auto DataFlow::Serialize() const -> std::string {
+auto DataFlow::Serialize() const -> nlohmann::json {
   // Call the base class implementation
-  std::string base_serialized = DfdNode::Serialize();
-  nlohmann::json j = nlohmann::json::parse(base_serialized);
+  nlohmann::json json = DfdNode::Serialize();
 
   // Serialize DataFlow-specific properties
-  j["source_id"] = source_->GetElementId();
-  j["destination_id"] = destination_->GetElementId();
+  json["source_id"] = source_->GetElementId();
+  json["destination_id"] = destination_->GetElementId();
 
   // Serialize data_items_
   nlohmann::json data_items_json = nlohmann::json::array();
   for (const auto &kItem : data_items_) {
-    data_items_json.push_back(nlohmann::json::parse(kItem->Serialize()));
+    data_items_json.push_back(kItem->Serialize());
   }
-  j["data_items"] = data_items_json;
+  json["data_items"] = data_items_json;
 
-  return j.dump(4);
+  return json;
 }
 
 auto DataFlow::Create(uint64_t id, std::string name,

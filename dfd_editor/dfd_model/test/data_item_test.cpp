@@ -5,13 +5,8 @@ TEST(DataItemTest, SerializeTest) {
   // Set up the DataItem object
   auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
 
-  // Perform the Serialize() method
-  std::string serialized = data_item->Serialize();
+  nlohmann::json actual_json = data_item->Serialize();
 
-  // Parse the serialized string into a nlohmann::json object
-  nlohmann::json actual_json = nlohmann::json::parse(serialized);
-
-  // Set up the expected nlohmann::json object
   nlohmann::json expected_json;
   expected_json["id"] = data_item->GetElementId();
   expected_json["name"] = "DataItem1";

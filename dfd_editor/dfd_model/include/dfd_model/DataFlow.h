@@ -23,7 +23,7 @@ public:
 
   void Connect();
 
-  [[nodiscard]] auto Serialize() const -> std::string override;
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override;
 
   [[nodiscard]] auto IsValid() const -> bool override {
     // Implement the IsValid method as needed

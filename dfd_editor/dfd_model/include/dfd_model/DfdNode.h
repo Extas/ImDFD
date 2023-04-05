@@ -26,13 +26,13 @@ public:
   std::pair<float, float> position_;
   std::string description_{};
 
-  [[nodiscard]] auto Serialize() const -> std::string override {
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override {
     nlohmann::json json;
     json["id"] = GetElementId();
     json["name"] = name_;
     json["position"] = {position_.first, position_.second};
     json["description"] = description_;
-    return json.dump();
+    return json;
   }
 
   [[nodiscard]] auto IsValid() const -> bool override {

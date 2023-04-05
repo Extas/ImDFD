@@ -7,7 +7,7 @@ class DataType {
 public:
   virtual ~DataType() = default;
 
-  [[nodiscard]] virtual std::string Serialize() const = 0;
+  [[nodiscard]] virtual auto Serialize() const -> nlohmann::json = 0;
 };
 
 class StringDataType : public DataType {
@@ -17,11 +17,11 @@ public:
 
   std::string fmt_{};
 
-  [[nodiscard]] auto Serialize() const -> std::string override {
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override {
     nlohmann::json json;
-    json["type"] = "String";
+    json["type"] = "string";
     json["fmt"] = fmt_;
-    return json.dump(4);
+    return json;
   }
 };
 
@@ -34,12 +34,12 @@ public:
   int min_value_{};
   int max_value_{};
 
-  [[nodiscard]] auto Serialize() const -> std::string override {
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override {
     nlohmann::json json;
-    json["type"] = "Integer";
+    json["type"] = "integer";
     json["min_value"] = min_value_;
     json["max_value"] = max_value_;
-    return json.dump();
+    return json;
   }
 };
 

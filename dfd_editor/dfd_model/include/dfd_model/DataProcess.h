@@ -16,7 +16,7 @@ public:
   std::string process_description_;
   std::shared_ptr<Dfd> sub_dfd_;
 
-  [[nodiscard]] auto Serialize() const -> std::string override;
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override;
 
 private:
   DataProcess(const std::string &name, std::pair<float, float> pos);

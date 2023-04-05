@@ -1,6 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_ELEMENT_H_
 #define IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_ELEMENT_H_
 
+#include <nlohmann/json.hpp>
 #include <string>
 
 class Element {
@@ -12,7 +13,7 @@ public:
       : element_id_(GetNewElementId(special_element_id)) {
   }
 
-  [[nodiscard]] virtual auto Serialize() const -> std::string = 0;
+  [[nodiscard]] virtual auto Serialize() const -> nlohmann::json = 0;
   [[nodiscard]] virtual auto IsValid() const -> bool = 0;
 
   Element(const Element &other) = delete;
