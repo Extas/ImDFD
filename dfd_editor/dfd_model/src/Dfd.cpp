@@ -1,5 +1,6 @@
 #include <dfd_model/Dfd.h>
 
+#include <logging/Logger.h>
 #include <nlohmann/json.hpp>
 #include <utility>
 
@@ -11,20 +12,15 @@ Dfd::Dfd(uint64_t id, std::string name) : Element(id), name_(std::move(name)) {
 
 void Dfd::CreateTestData() {
   auto external_entity =
-      ExternalEntity::Create("ExternalEntity", std::make_pair(0, 0));
-  external_entities_.push_back(external_entity);
-
+      CreateExternalEntityNode("ExternalEntity", std::make_pair(0, 0));
   auto data_storage =
-      DataStorage::Create("DataStorage", std::make_pair(1000, 0));
-  data_storages_.push_back(data_storage);
+      CreateDataStorageNode("DataStorage", std::make_pair(1000, 0));
+  auto data_process =
+      CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
   auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
   data_storage->stored_data_items_.push_back(data_item);
   data_items_.push_back(data_item);
-
-  auto data_process =
-      DataProcess::Create("DataProcess", std::make_pair(500, 0));
-  data_processes_.push_back(data_process);
 
   auto data_flow_1 = DataFlow::Create(
       "DataFlow1", external_entity, data_process, std::make_pair(100, 0));
@@ -40,6 +36,7 @@ void Dfd::CreateTestData() {
 [[nodiscard]] auto Dfd::GetJsonString() const -> std::string {
   return Serialize().dump(4);
 }
+
 [[nodiscard]] auto Dfd::Serialize() const -> nlohmann::json {
   nlohmann::json json_obj;
 
@@ -67,4 +64,44 @@ void Dfd::CreateTestData() {
 
 auto Dfd::IsValid() const -> bool {
   return false;
+}
+
+auto Dfd::CreateDataProcessNode(const std::string &name,
+    const std::pair<float, float> &pos) -> std::shared_ptr<DataProcess> {
+  auto data_process = DataProcess::Create(name, pos);
+  data_processes_.push_back(data_process);
+
+  Logger::Trace("[DFD]: Create DataProcess Node ({}, pos({},{}))",
+      data_process->name_, data_process->position_.first,
+      data_process->position_.second);
+  return data_process;
+}
+
+auto Dfd::CreateDataStorageNode(const std::string &name,
+    const std::pair<float, float> &pos) -> std::shared_ptr<DataStorage> {
+  auto data_storage = DataStorage::Create(name, pos);
+  data_storages_.push_back(data_storage);
+  return data_storage;
+}
+
+auto Dfd::CreateExternalEntityNode(const std::string &name,
+    const std::pair<float, float> &pos) -> std::shared_ptr<ExternalEntity> {
+  auto external_entity = ExternalEntity::Create(name, pos);
+  external_entities_.push_back(external_entity);
+  return external_entity;
+}
+void Dfd::AddNode(const std::string &node_type,
+    const std::pair<float, float> &pos, const std::string &name) {
+  auto new_node_name = name;
+  if (new_node_name.empty()) {
+    new_node_name = node_type;
+  }
+
+  if (node_type == "DataProcess") {
+    CreateDataProcessNode(new_node_name, pos);
+  } else if (node_type == "DataStorage") {
+    CreateDataStorageNode(new_node_name, pos);
+  } else if (node_type == "ExternalEntity") {
+    CreateExternalEntityNode(new_node_name, pos);
+  }
 }

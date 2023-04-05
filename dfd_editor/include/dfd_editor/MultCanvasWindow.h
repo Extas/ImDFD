@@ -3,8 +3,8 @@
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_MULTCANVASWINDOW_H_
 
 #include "EditorCanvas.h"
-#include "signal/SignalHandel.h"
 #include <dfd_model/Dfd.h>
+#include <signal/SignalHandel.h>
 
 #include <memory>
 #include <string>

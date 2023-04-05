@@ -19,6 +19,16 @@ public:
   std::vector<std::shared_ptr<ExternalEntity>> external_entities_;
   std::vector<std::shared_ptr<DataStorage>> data_storages_;
 
+  auto CreateDataProcessNode(const std::string &name,
+      const std::pair<float, float> &pos) -> std::shared_ptr<DataProcess>;
+  auto CreateDataStorageNode(const std::string &name,
+      const std::pair<float, float> &pos) -> std::shared_ptr<DataStorage>;
+  auto CreateExternalEntityNode(const std::string &name,
+      const std::pair<float, float> &pos) -> std::shared_ptr<ExternalEntity>;
+
+  void AddNode(const std::string &node_type, const std::pair<float, float> &pos,
+      const std::string &name = "");
+
   void CreateTestData();
 
   [[nodiscard]] auto GetJsonString() const -> std::string;

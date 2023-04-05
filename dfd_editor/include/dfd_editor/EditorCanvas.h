@@ -8,6 +8,7 @@
 #include <logging/Logger.h>
 #include <node_model/NodeManager.h>
 #include <node_model/element/Link.h>
+#include <signal/SignalHandel.h>
 #include <ui/BaseWindow.h>
 
 #include <vector>
@@ -36,10 +37,13 @@ private:
   void HandleDelete();
   void HandleRightClick();
 
+  void ConnectSignals();
+
   // Canvas state
   bool is_first_frame_ = true;
   auto IsFirstFrame() -> bool;
   void FirstFrame();
+  void UpdateDrawData();
 
   auto GetContext() -> ed::EditorContext *;
 

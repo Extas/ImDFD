@@ -1,6 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_INCLUDE_CREATENEWNODEPOPUP_H_
 #define IMDFD_DFD_EDITOR_INCLUDE_CREATENEWNODEPOPUP_H_
 
+#include <signal/SignalHandel.h>
 #include <ui/BasePopup.h>
 
 class CreateNewNodePopup : public BasePopup {

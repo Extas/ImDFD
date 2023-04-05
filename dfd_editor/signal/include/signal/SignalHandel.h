@@ -19,6 +19,8 @@ public:
   sigslot::signal<int, const std::string &> processing_content_changed_;
   sigslot::signal<int> navigate_sub_diagram_onclick_;
   sigslot::signal<const std::shared_ptr<Dfd> &, int64_t &> create_new_dfd_;
+  sigslot::signal<const std::string &, std::pair<float, float>>
+      create_new_node_;
 
 private:
   SignalHandel() = default;

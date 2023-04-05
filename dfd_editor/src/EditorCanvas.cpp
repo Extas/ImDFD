@@ -7,25 +7,9 @@
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
-  for (const auto &kDataProcessPtr : dfd_->data_processes_) {
-    auto data_process_node =
-        node_manager_.AddDataProcessNode(kDataProcessPtr->GetElementId(),
-            &kDataProcessPtr->name_, &kDataProcessPtr->position_,
-            &kDataProcessPtr->process_description_, kDataProcessPtr->sub_dfd_);
-  }
-  for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
-    auto external_entity_node =
-        node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
-            &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
-  }
-  for (const auto &kDataStoragePtr : dfd_->data_storages_) {
-    auto data_storage_node =
-        node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
-            &kDataStoragePtr->name_, &kDataStoragePtr->position_);
-  }
-  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
-    AddLink(kDataFlowPtr);
-  }
+
+  UpdateDrawData();
+  ConnectSignals();
 }
 
 void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
@@ -72,6 +56,7 @@ void EditorCanvas::DrawContents() {
     FirstFrame();
   }
 
+  UpdateDrawData();
   DrawNode();
   DrawLink();
   HandleInteractions();
@@ -187,4 +172,32 @@ void EditorCanvas::HandleRightClick() {
   ed::Suspend();
   create_new_node_popup_.Draw();
   ed::Resume();
+}
+
+void EditorCanvas::ConnectSignals() {
+  SignalHandel::Instance().create_new_node_.connect(
+      [this](const std::string &node_type, std::pair<float, float> pos) {
+        dfd_->AddNode(node_type, pos);
+      });
+}
+void EditorCanvas::UpdateDrawData() {
+  for (const auto &kDataProcessPtr : dfd_->data_processes_) {
+    auto data_process_node =
+        node_manager_.AddDataProcessNode(kDataProcessPtr->GetElementId(),
+            &kDataProcessPtr->name_, &kDataProcessPtr->position_,
+            &kDataProcessPtr->process_description_, kDataProcessPtr->sub_dfd_);
+  }
+  for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
+    auto external_entity_node =
+        node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
+            &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
+  }
+  for (const auto &kDataStoragePtr : dfd_->data_storages_) {
+    auto data_storage_node =
+        node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
+            &kDataStoragePtr->name_, &kDataStoragePtr->position_);
+  }
+  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
+    AddLink(kDataFlowPtr);
+  }
 }
