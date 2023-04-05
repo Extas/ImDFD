@@ -4,7 +4,6 @@
 #include <imgui_node_editor.h>
 
 #include <logging/Logger.h>
-#include <string>
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
@@ -56,12 +55,12 @@ void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
     node->AddOutputPin(output_pin_ptr->GetElementId(), &output_pin_ptr->name_);
   }
   for (const auto &kInputPin : dfd_model_ptr->input_data_flows_) {
-        if (kInputPin.expired()) {
-          Logger::Error("Input pin is expired");
-          continue;
-        }
-        auto input_pin_ptr = kInputPin.lock();
-        node->AddInputPin(input_pin_ptr->GetElementId(), &input_pin_ptr->name_);
+    if (kInputPin.expired()) {
+      Logger::Error("Input pin is expired");
+      continue;
+    }
+    auto input_pin_ptr = kInputPin.lock();
+    node->AddInputPin(input_pin_ptr->GetElementId(), &input_pin_ptr->name_);
   }
 }
 
@@ -77,6 +76,8 @@ void EditorCanvas::DrawContents() {
   DrawLink();
   HandleInteractions();
   HandleDelete();
+
+  HandleRightClick();
 
   ed::End();
   ed::SetCurrentEditor(nullptr);
@@ -172,4 +173,16 @@ auto EditorCanvas::GetId() const -> int64_t {
 
 EditorCanvas::~EditorCanvas() {
   ed::DestroyEditor(context_);
+}
+
+void EditorCanvas::HandleRightClick() {
+  auto open_popup_position = ImGui::GetMousePos();
+  ed::Suspend();
+  if (ed::ShowBackgroundContextMenu()) {
+    Logger::Trace("[EditorCanvas] ShowBackgroundContextMenu");
+    create_new_node_popup_.Open();
+  }
+  ed::Resume();
+
+  create_new_node_popup_.Draw();
 }

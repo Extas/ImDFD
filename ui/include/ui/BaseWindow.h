@@ -16,40 +16,40 @@ public:
   virtual void Draw();
 
 private:
-  std::string m_Title;
-  bool m_IsOpen = false;
+  std::string title_;
+  bool is_open_ = false;
 
 public:
   [[nodiscard]] auto GetTitle() const -> const std::string & {
-    return m_Title;
+    return title_;
   }
 
   void SetTitle(const std::string &title) {
-    m_Title = title;
+    title_ = title;
   }
 
-  bool *GetIsOpenPtr() {
-    return &m_IsOpen;
+  auto GetIsOpenPtr() -> bool * {
+    return &is_open_;
   }
 
   [[nodiscard]] auto IsOpen() const -> bool {
-    return m_IsOpen;
+    return is_open_;
   }
 
   void Close() {
-    m_IsOpen = false;
+    is_open_ = false;
   }
 
   void Open() {
-    m_IsOpen = true;
+    is_open_ = true;
   }
 
   void Toggle() {
-    m_IsOpen = !m_IsOpen;
+    is_open_ = !is_open_;
   }
 
   BaseWindow(BaseWindow &&other) noexcept
-      : m_Title(std::move(other.m_Title)), m_IsOpen(other.m_IsOpen) {
+      : title_(std::move(other.title_)), is_open_(other.is_open_) {
   }
   BaseWindow(const BaseWindow &) = delete;
   auto operator=(BaseWindow &&) -> BaseWindow & = delete;

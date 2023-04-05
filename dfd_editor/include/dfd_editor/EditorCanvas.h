@@ -1,6 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_
 
+#include <dfd_editor/CreateNewNodePopup.h>
 #include <dfd_editor/NotificationWindow.h>
 #include <dfd_model/Dfd.h>
 #include <imgui_node_editor.h>
@@ -33,6 +34,7 @@ private:
   void DrawLink();
   void HandleInteractions();
   void HandleDelete();
+  void HandleRightClick();
 
   // Canvas state
   bool is_first_frame_ = true;
@@ -40,6 +42,8 @@ private:
   void FirstFrame();
 
   auto GetContext() -> ed::EditorContext *;
+
+  CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup();
 
 public:
   EditorCanvas(EditorCanvas &&) = delete;
