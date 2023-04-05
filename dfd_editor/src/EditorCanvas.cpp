@@ -184,5 +184,7 @@ void EditorCanvas::HandleRightClick() {
   }
   ed::Resume();
 
+  ed::Suspend();
   create_new_node_popup_.Draw();
+  ed::Resume();
 }
