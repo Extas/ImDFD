@@ -27,7 +27,8 @@ void MultCanvasWindow::DrawContents() {
 
       ImGuiTabItemFlags tab_item_flags = ImGuiTabItemFlags_None;
 
-      std::string tab_label = canvas->GetTitle();
+      std::string tab_label =
+          canvas->GetTitle() + "##" + std::to_string(canvas->GetId());
       if (canvas->GetId() == selected_canvas_id_) {
         canvas->open_ = true;
         tab_item_flags |= ImGuiTabItemFlags_SetSelected;
@@ -64,30 +65,26 @@ void MultCanvasWindow::ConnectSignal() {
       });
 
   SignalHandel::Instance().create_new_dfd_.connect(
-      [self = shared_from_this()](
-          const std::shared_ptr<Dfd> &sub_dfd, int64_t &new_canvas_id) {
+      [self = shared_from_this()](const std::shared_ptr<Dfd> &sub_dfd) {
         auto mult_canvas_window =
             std::static_pointer_cast<MultCanvasWindow>(self);
-        new_canvas_id = mult_canvas_window->CreateNewCanvas(sub_dfd);
+        mult_canvas_window->CreateNewCanvas(sub_dfd);
       });
 }
 
 auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd)
     -> int64_t {
-  Logger::Trace("[MultCanvasWindow] Creating new canvas for DFD ({}: {})",
-      dfd->GetElementId(), dfd->name_);
   if (!has_connect_signal_) {
     ConnectSignal();
     has_connect_signal_ = true;
   }
 
-  std::string title = dfd->name_;
+  int64_t canvas_id = dfd->GetElementId();
   auto found_editor = std::find_if(canvas_.begin(), canvas_.end(),
-      [title](const std::shared_ptr<EditorCanvas> &editor) {
-        return editor->GetTitle() == title;
+      [canvas_id](const std::shared_ptr<EditorCanvas> &editor) {
+        return editor->GetId() == canvas_id;
       });
   if (found_editor != canvas_.end()) {
-    Logger::Info("Canvas for DFD already exists... Name: {}", dfd->name_);
     return (*found_editor)->GetId();
   }
 
@@ -106,10 +103,10 @@ void MultCanvasWindow::OpenCanvas(int64_t canvas_id) {
 }
 
 auto MultCanvasWindow::AddCanvas(
-    const std::shared_ptr<EditorCanvas> &node_editor) -> int64_t {
-  canvas_.push_back(node_editor);
+    const std::shared_ptr<EditorCanvas> &editor_canvas) -> int64_t {
+  canvas_.push_back(editor_canvas);
   int64_t new_canvas_id = canvas_.back()->GetId();
   Logger::Trace("[MultCanvasWindow] New canvas added ({}: {})", new_canvas_id,
-      node_editor->GetTitle());
+      editor_canvas->GetTitle());
   return new_canvas_id;
 }

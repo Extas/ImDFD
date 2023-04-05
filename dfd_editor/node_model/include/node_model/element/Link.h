@@ -72,7 +72,6 @@ public:
 
   void AddLink(uint64_t input_pin_id, uint64_t output_pin_id) {
     links_.emplace_back(input_pin_id, output_pin_id);
-    Logger::Info("[LinkManager] Add link ({} -> {})", input_pin_id, output_pin_id);
   }
 
   void RemoveLink(uint64_t link_id) {
@@ -80,6 +79,10 @@ public:
         std::remove_if(links_.begin(), links_.end(),
             [link_id](const Link &link) { return link.GetId() == link_id; }),
         links_.end());
+  }
+
+  void ClearLinks() {
+    links_.clear();
   }
 
 private:

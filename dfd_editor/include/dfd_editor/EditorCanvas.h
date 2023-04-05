@@ -47,7 +47,7 @@ private:
 
   auto GetContext() -> ed::EditorContext *;
 
-  CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup();
+  CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup(GetId());
 
 public:
   EditorCanvas(EditorCanvas &&) = delete;

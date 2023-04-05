@@ -25,7 +25,7 @@ public:
 private:
   std::vector<std::shared_ptr<Dfd>> dfds_;
   std::vector<std::shared_ptr<EditorCanvas>> canvas_;
-  auto AddCanvas(const std::shared_ptr<EditorCanvas> &node_editor) -> int64_t;
+  auto AddCanvas(const std::shared_ptr<EditorCanvas> &editor_canvas) -> int64_t;
 
   bool has_connect_signal_ = false;
   void ConnectSignal();

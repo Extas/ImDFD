@@ -4,7 +4,9 @@ void DataProcessNode::DrawCustomContent() const {
 
   ImGui::Text("%s", data_processing_.GetDescription().c_str());
 
-  if (ImGui::Button("Navigate to Sub Data Flow Diagram")) {
+  std::string button_name =
+      "Navigate to Sub Data Flow Diagram##" + std::to_string(GetId());
+  if (ImGui::Button(button_name.c_str())) {
     NavigateToNodeEditorById(data_processing_.GetSubDataFlowDiagramId());
   }
 }

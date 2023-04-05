@@ -71,8 +71,8 @@ auto Dfd::CreateDataProcessNode(const std::string &name,
   auto data_process = DataProcess::Create(name, pos);
   data_processes_.push_back(data_process);
 
-  Logger::Trace("[DFD]: Create DataProcess Node ({}, pos({},{}))",
-      data_process->name_, data_process->position_.first,
+  Logger::Trace("[DFD {}]: Create DataProcess Node ({}, pos({},{}))",
+      GetElementId(), data_process->name_, data_process->position_.first,
       data_process->position_.second);
   return data_process;
 }
@@ -90,18 +90,20 @@ auto Dfd::CreateExternalEntityNode(const std::string &name,
   external_entities_.push_back(external_entity);
   return external_entity;
 }
-void Dfd::AddNode(const std::string &node_type,
+uint64_t Dfd::AddNode(const std::string &node_type,
     const std::pair<float, float> &pos, const std::string &name) {
   auto new_node_name = name;
   if (new_node_name.empty()) {
     new_node_name = node_type;
   }
 
+  std::shared_ptr<Element> new_node;
   if (node_type == "DataProcess") {
-    CreateDataProcessNode(new_node_name, pos);
+    new_node = CreateDataProcessNode(new_node_name, pos);
   } else if (node_type == "DataStorage") {
-    CreateDataStorageNode(new_node_name, pos);
+    new_node = CreateDataStorageNode(new_node_name, pos);
   } else if (node_type == "ExternalEntity") {
-    CreateExternalEntityNode(new_node_name, pos);
+    new_node = CreateExternalEntityNode(new_node_name, pos);
   }
+  return new_node->GetElementId();
 }

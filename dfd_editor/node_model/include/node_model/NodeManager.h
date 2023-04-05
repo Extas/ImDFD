@@ -13,11 +13,12 @@ class NodeManager {
 public:
   NodeManager() = default;
 
-  auto AddNode(std::shared_ptr<Node>) -> std::shared_ptr<Node> ;
+  auto AddNode(std::shared_ptr<Node>) -> std::shared_ptr<Node>;
+  auto ClearNodes() -> void;
 
   auto AddDataProcessNode(uint64_t node_id, std::string *name,
       std::pair<float, float> *position, std::string *description,
-      const std::shared_ptr<Dfd> &sub_dfd) -> std::shared_ptr<DataProcessNode>;
+      uint64_t sub_dfd_id) -> std::shared_ptr<DataProcessNode>;
   auto AddExternalEntityNode(uint64_t node_id, std::string *name,
       std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode>;
   auto AddDataStorageNode(uint64_t node_id, std::string *name,

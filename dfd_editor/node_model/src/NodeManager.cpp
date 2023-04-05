@@ -5,23 +5,17 @@
 
 #include <logging/Logger.h>
 
-class Dfd;
-
 auto NodeManager::AddNode(std::shared_ptr<Node> node) -> std::shared_ptr<Node> {
   nodes_.push_back(node);
-  Logger::Info("[NodeManager] add node ({}: {})", node->GetName(), node->GetId());
   return node;
 }
 
 auto NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position, std::string *description,
-    const std::shared_ptr<Dfd> &sub_dfd) -> std::shared_ptr<DataProcessNode> {
-
-  int64_t get_canvas_id = -1;
-  SignalHandel::Instance().create_new_dfd_(sub_dfd, get_canvas_id);
+    uint64_t sub_dfd_id) -> std::shared_ptr<DataProcessNode> {
 
   auto node = std::make_shared<DataProcessNode>(
-      node_id, name, position, description, get_canvas_id);
+      node_id, name, position, description, sub_dfd_id);
   uint64_t input_pin_id = (node_id << 16) + 1ULL;
   node->AddInputPin(input_pin_id, nullptr);
   uint64_t output_pin_id = input_pin_id + 1ULL;
@@ -93,4 +87,7 @@ auto NodeManager::GetOutputPinById(uint64_t pin_id) const
     }
   }
   return std::nullopt;
+}
+auto NodeManager::ClearNodes() -> void {
+  nodes_.clear();
 }

@@ -3,18 +3,17 @@
 #include <logging/Logger.h>
 
 void CreateNewNodePopup::DrawContents() {
-  auto cur_pos_imv2 = ImGui::GetCursorPos();
-  auto cur_pos = std::make_pair(cur_pos_imv2.x, cur_pos_imv2.y);
-
   if (ImGui::MenuItem("Date Process")) {
-    Logger::Trace("[CreateNewNodePopup] MenuItem {} Clicked", "Date Process");
-    SignalHandel::Instance().create_new_node_("DataProcess", cur_pos);
+    Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
+        "Date Process");
+    SignalHandel::Instance().create_new_node_(canvas_id_, "DataProcess", pos_);
   }
   if (ImGui::MenuItem("External Entity")) {
-    Logger::Trace(
-        "[CreateNewNodePopup] MenuItem {} Clicked", "External Entity");
+    Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
+        "External Entity");
   }
   if (ImGui::MenuItem("Data Store")) {
-    Logger::Trace("[CreateNewNodePopup] MenuItem {} Clicked", "Data Store");
+    Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
+        "Data Store");
   }
 }
