@@ -49,7 +49,7 @@ public:
   ~EditorCanvas() override;
   static void AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
       const std::shared_ptr<Node> &node);
-  void Connect(const std::shared_ptr<DataFlow> &kDataFlowPtr);
+  void AddLink(const std::shared_ptr<DataFlow> &kDataFlowPtr);
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_

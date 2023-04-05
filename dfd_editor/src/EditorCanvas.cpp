@@ -25,11 +25,11 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
             &kDataStoragePtr->name_, &kDataStoragePtr->position_);
   }
   for (const auto &kDataFlowPtr : dfd_->data_flows_) {
-    Connect(kDataFlowPtr);
+    AddLink(kDataFlowPtr);
   }
 }
 
-void EditorCanvas::Connect(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
+void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
   auto from_node = node_manager_.GetNode(kDataFlowPtr->source_->GetElementId());
   auto to_node =
       node_manager_.GetNode(kDataFlowPtr->destination_->GetElementId());
@@ -37,8 +37,8 @@ void EditorCanvas::Connect(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
     Logger::Error("Data flow is not valid");
   }
 
-  const auto& from_pins = from_node.value().get().GetOutputPins();
-  const auto& to_pins = to_node.value().get().GetInputPins();
+  const auto &from_pins = from_node.value().get().GetOutputPins();
+  const auto &to_pins = to_node.value().get().GetInputPins();
   if (from_pins.size() != 1 || to_pins.size() != 1) {
     Logger::Error("Data flow is not valid");
   }

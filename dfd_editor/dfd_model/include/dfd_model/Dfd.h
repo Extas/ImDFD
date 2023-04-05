@@ -24,7 +24,6 @@ public:
   [[nodiscard]] auto Serialize() const -> std::string override;
   [[nodiscard]] auto IsValid() const -> bool override;
 
-public:
   std::string name_;
 };
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DFD_H_

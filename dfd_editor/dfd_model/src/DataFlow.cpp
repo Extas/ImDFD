@@ -1,5 +1,7 @@
 #include <dfd_model/DataFlow.h>
 
+#include <utility>
+
 void DataFlow::Connect() {
   source_->output_data_flows_.push_back(shared_from_this());
   destination_->input_data_flows_.push_back(shared_from_this());
@@ -22,17 +24,20 @@ auto DataFlow::Serialize() const -> std::string {
 
   return j.dump(4);
 }
+
 auto DataFlow::Create(uint64_t id, std::string name,
     std::shared_ptr<DfdNode> source, std::shared_ptr<DfdNode> destination,
     std::pair<float, float> pos) -> std::shared_ptr<DataFlow> {
-  auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(name, source, destination, pos));
+  auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(
+      std::move(name), std::move(source), std::move(destination), pos));
   data_flow->Connect();
   return data_flow;
 }
 auto DataFlow::Create(std::string name, std::shared_ptr<DfdNode> source,
     std::shared_ptr<DfdNode> destination, std::pair<float, float> pos)
     -> std::shared_ptr<DataFlow> {
-  auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(name, source, destination, pos));
+  auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(
+      std::move(name), std::move(source), std::move(destination), pos));
   data_flow->Connect();
   return data_flow;
 }

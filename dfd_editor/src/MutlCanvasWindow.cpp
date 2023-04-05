@@ -74,7 +74,8 @@ void MultCanvasWindow::ConnectSignal() {
 
 auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd)
     -> int64_t {
-  Logger::Trace("[MultCanvasWindow] Creating new canvas for DFD ({})", dfd->name_);
+  Logger::Trace("[MultCanvasWindow] Creating new canvas for DFD ({}: {})",
+      dfd->GetElementId(), dfd->name_);
   if (!has_connect_signal_) {
     ConnectSignal();
     has_connect_signal_ = true;

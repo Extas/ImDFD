@@ -13,12 +13,15 @@ Dfd::Dfd(uint64_t id, std::string name) : Element(id), name_(std::move(name)) {
 void Dfd::CreateTestData() {
   auto external_entity =
       ExternalEntity::Create("ExternalEntity", std::make_pair(0, 0));
+  external_entities_.push_back(external_entity);
 
   auto data_storage =
       DataStorage::Create("DataStorage", std::make_pair(1000, 0));
+  data_storages_.push_back(data_storage);
 
   auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
   data_storage->stored_data_items_.push_back(data_item);
+  data_items_.push_back(data_item);
 
   auto data_process =
       DataProcess::Create("DataProcess", std::make_pair(500, 0));
@@ -27,10 +30,12 @@ void Dfd::CreateTestData() {
   auto data_flow_1 = DataFlow::Create(
       "DataFlow1", external_entity, data_process, std::make_pair(100, 0));
   data_flow_1->Connect();
+  data_flows_.push_back(data_flow_1);
 
   auto data_flow_2 = DataFlow::Create(
       "DataFlow2", data_process, data_storage, std::make_pair(600, 0));
   data_flow_2->Connect();
+  data_flows_.push_back(data_flow_2);
 }
 
 [[nodiscard]] auto Dfd::Serialize() const -> std::string {
