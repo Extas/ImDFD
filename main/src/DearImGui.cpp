@@ -26,6 +26,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   AddWindow(std::make_shared<BaseWindow>("test"));
   AddWindow(std::make_shared<InfoWindow>(info));
   AddWindow(std::make_shared<NotificationWindow>());
+  Logger::Info("Welcome to the ImDFD");
 
   auto mult_canvas_window =
       std::make_shared<MultCanvasWindow>("Node Editor Window");

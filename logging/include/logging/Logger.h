@@ -14,31 +14,34 @@ public:
 
   template <typename... Args>
   static void Trace(const char *format, Args... args) {
-    s_logger_->trace(format, args...);
+    logger_->trace(format, args...);
   }
 
   template <typename... Args>
   static void Info(const char *format, Args... args) {
-    s_logger_->info(format, args...);
+    logger_->info(format, args...);
   }
 
   template <typename... Args>
   static void Warn(const char *format, Args... args) {
-    s_logger_->warn(format, args...);
+    logger_->warn(format, args...);
   }
 
   template <typename... Args>
   static void Error(const char *format, Args... args) {
-    s_logger_->error(format, args...);
+    logger_->error(format, args...);
   }
 
   template <typename... Args>
   static void Critical(const char *format, Args... args) {
-    s_logger_->critical(format, args...);
+    logger_->critical(format, args...);
   }
 
+  static void AddSink(spdlog::sink_ptr sink);
+
 private:
-  inline static std::shared_ptr<spdlog::logger> s_logger_;
+  inline static std::shared_ptr<spdlog::logger> logger_;
+  inline static std::vector<std::shared_ptr<spdlog::sinks::sink>> sinks_;
 };
 
 #endif // LOGGER_H

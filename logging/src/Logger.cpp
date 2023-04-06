@@ -1,19 +1,19 @@
 #include <logging/Logger.h>
 
 void Logger::Init() {
-  // Create console sink
   auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-
-  // Create file sink
   auto file_sink =
       std::make_shared<spdlog::sinks::basic_file_sink_mt>("imdfd.log", true);
 
+  sinks_.push_back(console_sink);
+  sinks_.push_back(file_sink);
+
   // Create logger with both console and file sinks
-  s_logger_ = std::make_shared<spdlog::logger>(
-      "main", spdlog::sinks_init_list{console_sink, file_sink});
+  logger_ =
+      std::make_shared<spdlog::logger>("main", sinks_.begin(), sinks_.end());
 
   // Set log level
-  s_logger_->set_level(spdlog::level::trace);
+  logger_->set_level(spdlog::level::trace);
 
   // Set pattern
   spdlog::set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
@@ -24,6 +24,10 @@ void Logger::Init() {
   });
 }
 
+void Logger::AddSink(spdlog::sink_ptr sink) {
+  logger_->sinks().push_back(sink);
+}
+
 auto Logger::GetLogger() -> std::shared_ptr<spdlog::logger> & {
-  return s_logger_;
+  return logger_;
 }
