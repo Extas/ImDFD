@@ -55,8 +55,6 @@ public:
   auto operator=(EditorCanvas &&) -> EditorCanvas & = delete;
   auto operator=(const EditorCanvas &) -> EditorCanvas & = delete;
   ~EditorCanvas() override;
-  static void AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
-      const std::shared_ptr<Node> &node);
   void AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr);
 };
 

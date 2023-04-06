@@ -21,15 +21,12 @@ public:
       std::shared_ptr<DfdNode> source, std::shared_ptr<DfdNode> destination,
       std::pair<float, float> pos) -> std::shared_ptr<DataFlow>;
 
+  auto HasNode(uint64_t node_id) const -> bool;
   void Connect();
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
 
-  [[nodiscard]] auto IsValid() const -> bool override {
-    // Implement the IsValid method as needed
-    // ...
-    return true;
-  }
+  [[nodiscard]] auto IsValid() const -> bool override;
 
   std::vector<std::shared_ptr<DataItem>> data_items_;
   std::shared_ptr<DfdNode> source_;

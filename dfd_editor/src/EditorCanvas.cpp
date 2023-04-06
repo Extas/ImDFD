@@ -30,26 +30,6 @@ void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
       data_flow_ptr->GetElementId(), from_pins[0].GetId(), to_pins[0].GetId());
 }
 
-void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
-    const std::shared_ptr<Node> &node) {
-  for (const auto &kOutputPin : dfd_model_ptr->output_data_flows_) {
-    if (kOutputPin.expired()) {
-      Logger::Error("Output pin is expired");
-      continue;
-    }
-    auto output_pin_ptr = kOutputPin.lock();
-    node->AddOutputPin(output_pin_ptr->GetElementId(), &output_pin_ptr->name_);
-  }
-  for (const auto &kInputPin : dfd_model_ptr->input_data_flows_) {
-    if (kInputPin.expired()) {
-      Logger::Error("Input pin is expired");
-      continue;
-    }
-    auto input_pin_ptr = kInputPin.lock();
-    node->AddInputPin(input_pin_ptr->GetElementId(), &input_pin_ptr->name_);
-  }
-}
-
 void EditorCanvas::DrawContents() {
   ed::SetCurrentEditor(GetContext());
   ed::Begin("My Editor", ImVec2(0.0, 0.0));
@@ -100,7 +80,7 @@ void EditorCanvas::HandleInteractions() {
           }
           if (!input_pin.has_value() || !output_pin.has_value()) {
             Logger::Warn("Input or output pin is not valid");
-//            ed::RejectNewItem();
+            //            ed::RejectNewItem();
             return;
           }
 
@@ -126,6 +106,12 @@ void EditorCanvas::HandleInteractions() {
 
 void EditorCanvas::HandleDelete() {
   if (ed::BeginDelete()) {
+    ed::NodeId node_id = 0;
+    while (ed::QueryDeletedNode(&node_id)) {
+      if (ed::AcceptDeletedItem()) {
+        dfd_->DeleteNode(node_id.Get());
+      }
+    }
     // There may be many links marked for deletion, let's loop over them.
     ed::LinkId deleted_link_id;
     while (ed::QueryDeletedLink(&deleted_link_id)) {

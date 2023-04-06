@@ -38,16 +38,6 @@ auto NodeManager::AddDataStorageNode(uint64_t node_id, std::string *name,
   return node;
 }
 
-void NodeManager::RemoveNode(uint64_t node_id) {
-  for (auto &node_ptr : nodes_) {
-    if (node_ptr->GetId() == node_id) {
-      node_ptr = std::move(nodes_.back());
-      nodes_.pop_back();
-      return;
-    }
-  }
-}
-
 auto NodeManager::GetNode(uint64_t node_id)
     -> std::optional<std::reference_wrapper<Node>> {
   for (auto &node_ptr : nodes_) {
@@ -94,14 +84,4 @@ auto NodeManager::GetOutputPinById(uint64_t pin_id) const
 
 auto NodeManager::ClearNodes() -> void {
   nodes_.clear();
-}
-
-auto NodeManager::GetPinType(uint64_t pin_id) const -> int {
-  if (auto pin = GetOutputPinById(pin_id)) {
-    return 0;
-  }
-  if (auto pin = GetInputPinById(pin_id)) {
-    return 1;
-  }
-  return -1;
 }
