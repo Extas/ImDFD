@@ -10,7 +10,7 @@ MultCanvasWindow::MultCanvasWindow(std::string title)
 
 void MultCanvasWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   Logger::Trace("[MultCanvasWindow] Loading DFD into NodeEditor ({}: {})",
-      dfd->GetElementId(), dfd->name_);
+      dfd->GetElementId(), dfd->GetName());
   CreateNewCanvas(dfd);
   dfds_.push_back(dfd);
 

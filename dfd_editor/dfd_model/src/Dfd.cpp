@@ -22,14 +22,11 @@ void Dfd::CreateTestData() {
   data_storage->stored_data_items_.push_back(data_item);
   data_items_.push_back(data_item);
 
-  auto data_flow_1 = DataFlow::Create(
-      "DataFlow1", external_entity, data_process, std::make_pair(100, 0));
-  data_flow_1->Connect();
-  data_flows_.push_back(data_flow_1);
+  auto data_flow_1 = CreateDataFlow(
+      "DataFlow1", external_entity, data_process, std::make_pair(0, 0));
 
-  auto data_flow_2 = DataFlow::Create(
-      "DataFlow2", data_process, data_storage, std::make_pair(600, 0));
-  data_flow_2->Connect();
+  auto data_flow_2 = CreateDataFlow(
+      "DataFlow2", data_process, data_storage, std::make_pair(0, 0));
   data_flows_.push_back(data_flow_2);
 }
 
@@ -106,4 +103,60 @@ auto Dfd::AddNode(const std::string &node_type,
     new_node = CreateExternalEntityNode(new_node_name, pos);
   }
   return new_node->GetElementId();
+}
+auto Dfd::GetName() const -> std::string {
+  return name_;
+}
+auto Dfd::CreateDataFlow(const std::string &name,
+    const std::shared_ptr<DfdNode> &src, const std::shared_ptr<DfdNode> &dst,
+    const std::pair<float, float> &pos) -> std::shared_ptr<DataFlow> {
+  auto data_flow = DataFlow::Create(name, src, dst, pos);
+  data_flows_.push_back(data_flow);
+  return data_flow;
+}
+auto Dfd::FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
+  auto iter = std::find_if(data_processes_.begin(), data_processes_.end(),
+                           [node_id](
+                               const auto &node) { return node->GetElementId() == node_id; });
+  if (iter != data_processes_.end()) {
+    return *iter;
+  }
+
+  auto iter2 = std::find_if(data_storages_.begin(), data_storages_.end(),
+                            [node_id](
+                                const auto &node) { return node->GetElementId() == node_id; });
+  if (iter2 != data_storages_.end()) {
+    return *iter2;
+  }
+
+  auto iter3 = std::find_if(external_entities_.begin(),
+                            external_entities_.end(), [node_id](const auto &node) {
+        return node->GetElementId() == node_id;
+      });
+  if (iter3 != external_entities_.end()) {
+    return *iter3;
+  }
+
+  return nullptr;
+}
+auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
+  auto iter = std::find_if(
+      data_flows_.begin(), data_flows_.end(), [flow_id](const auto &flow) {
+        return flow->GetElementId() == flow_id;
+      });
+  if (iter != data_flows_.end()) {
+    data_flows_.erase(iter);
+    return true;
+  }
+  return false;
+}
+auto Dfd::AddDataFlow(const std::string &name, uint64_t src_node_id,
+    uint64_t dst_node_id) -> uint64_t {
+  auto src = FindNodeById(src_node_id);
+  auto dst = FindNodeById(dst_node_id);
+  if (src && dst) {
+    auto data_flow = CreateDataFlow(name, src, dst, {0, 0});
+    return data_flow->GetElementId();
+  }
+  return 0;
 }

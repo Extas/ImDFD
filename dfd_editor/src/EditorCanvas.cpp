@@ -1,3 +1,4 @@
+#include "sigslot/signal.hpp"
 #include <dfd_editor/EditorCanvas.h>
 
 #include <imgui.h>
@@ -6,15 +7,16 @@
 #include <logging/Logger.h>
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
-    : BaseWindow(dfd->name_), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
+    : BaseWindow(dfd->GetName()), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
 
   ConnectSignals();
 }
 
 void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
-  auto from_node = node_manager_.GetNode(data_flow_ptr->source_->GetElementId());
-  auto to_node =
-      node_manager_.GetNode(data_flow_ptr->destination_->GetElementId());
+  auto from_node_id = data_flow_ptr->source_->GetElementId();
+  auto to_node_id = data_flow_ptr->destination_->GetElementId();
+  auto from_node = node_manager_.GetNode(from_node_id);
+  auto to_node = node_manager_.GetNode(to_node_id);
   if (!from_node.has_value() || !to_node.has_value()) {
     Logger::Error("Data flow is not valid");
   }
@@ -24,7 +26,8 @@ void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
   if (from_pins.size() != 1 || to_pins.size() != 1) {
     Logger::Error("Data flow is not valid");
   }
-  link_manager_.AddLink(from_pins[0].GetId(), to_pins[0].GetId());
+  link_manager_.AddLink(
+      data_flow_ptr->GetElementId(), from_pins[0].GetId(), to_pins[0].GetId());
 }
 
 void EditorCanvas::AddPin(const std::shared_ptr<DfdNode> &dfd_model_ptr,
@@ -84,20 +87,37 @@ void EditorCanvas::HandleInteractions() {
   // Handle creation action, returns true if editor want to create new object
   // (node or link)
   if (ed::BeginCreate()) {
-    ed::PinId input_pin_id;
-    ed::PinId output_pin_id;
-    if (ed::QueryNewLink(&input_pin_id, &output_pin_id)) {
-      if (input_pin_id && output_pin_id) // both are valid, let's accept link
-      {
+    ed::PinId to_pin_id;
+    ed::PinId from_pin_id;
+    if (ed::QueryNewLink(&from_pin_id, &to_pin_id)) {
+      if (from_pin_id && to_pin_id) { // both are valid, let's accept link
         if (ed::AcceptNewItem()) {
-          link_manager_.AddLink(input_pin_id.Get(), output_pin_id.Get());
-          Logger::Trace("[EditorCanvas] Accepted new link");
+          auto input_pin = node_manager_.GetInputPinById(to_pin_id.Get());
+          auto output_pin = node_manager_.GetOutputPinById(from_pin_id.Get());
+          if (!input_pin.has_value()) {
+            input_pin = node_manager_.GetInputPinById(from_pin_id.Get());
+            output_pin = node_manager_.GetOutputPinById(to_pin_id.Get());
+          }
+          if (!input_pin.has_value() || !output_pin.has_value()) {
+            Logger::Warn("Input or output pin is not valid");
+//            ed::RejectNewItem();
+            return;
+          }
 
-          // DrawCustom new link.
-          DrawLink();
+          auto source_node =
+              node_manager_.GetNodeByPinId(output_pin.value().get().GetId());
+          auto destination_node =
+              node_manager_.GetNodeByPinId(input_pin.value().get().GetId());
+
+          if (!source_node.has_value() || !destination_node.has_value()) {
+            Logger::Error("Source or destination node is not valid");
+            return;
+          }
+          auto source_node_id = source_node.value().get().GetId();
+          auto destination_node_id = destination_node.value().get().GetId();
+          dfd_->AddDataFlow(
+              "New Dataflow", source_node_id, destination_node_id);
         }
-
-        // ed::RejectNewItem()
       }
     }
   }
@@ -112,13 +132,7 @@ void EditorCanvas::HandleDelete() {
       // If you agree that link can be deleted, accept deletion.
       if (ed::AcceptDeletedItem()) {
         // Then remove link from your data.
-        for (const auto &kLink : link_manager_.GetLinks()) {
-          if (kLink.GetId() == deleted_link_id.Get()) {
-            link_manager_.RemoveLink(kLink.GetId());
-            Logger::Trace("[EditorCanvas] Accepted deleted link");
-            break;
-          }
-        }
+        dfd_->DeleteFlow(deleted_link_id.Get());
       }
 
       // You may reject link deletion by calling:

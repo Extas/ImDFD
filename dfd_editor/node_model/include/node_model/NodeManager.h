@@ -28,8 +28,9 @@ public:
 
   [[nodiscard]] auto GetNode(uint64_t node_id)
       -> std::optional<std::reference_wrapper<Node>>;
-  [[nodiscard]] auto GetPinById(uint64_t pin_id) const
-      -> std::optional<std::reference_wrapper<const Pin>>;
+  [[nodiscard]] auto GetNodeByPinId(uint64_t pin_id) const
+      -> std::optional<std::reference_wrapper<Node>>;
+  [[nodiscard]] auto GetPinType(uint64_t pin_id) const -> int;
   [[nodiscard]] auto GetInputPinById(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const InPin>>;
   [[nodiscard]] auto GetOutputPinById(uint64_t pin_id) const

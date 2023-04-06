@@ -6,11 +6,13 @@
 
 #include <algorithm>
 #include <logging/Logger.h>
+#include <stdint.h>
 
 class Link {
 public:
-  Link(uint64_t input_pin_id, uint64_t output_pin_id)
-      : input_pin_id_(input_pin_id), output_pin_id_(output_pin_id) {
+  Link(uint64_t link_id, uint64_t input_pin_id, uint64_t output_pin_id)
+      : link_id_(link_id), input_pin_id_(input_pin_id),
+        output_pin_id_(output_pin_id) {
   }
 
   void Draw() const {
@@ -25,26 +27,29 @@ public:
   }
 
   [[nodiscard]] auto GetId() const -> uint64_t {
-    // gen uni id use input_pin_id_ and output_pin_id_
-    return (static_cast<uint64_t>(input_pin_id_) << 32) | output_pin_id_;
+    return link_id_;
   }
 
 private:
+  uint64_t link_id_;
   uint64_t input_pin_id_;
   uint64_t output_pin_id_;
 
 public:
   Link(Link &&other) noexcept
-      : input_pin_id_(other.input_pin_id_),
+      : link_id_(other.link_id_), input_pin_id_(other.input_pin_id_),
         output_pin_id_(other.output_pin_id_) {
+    other.link_id_ = static_cast<uint64_t>(0);
     other.input_pin_id_ = static_cast<uint64_t>(0);
-    ;
     other.output_pin_id_ = static_cast<uint64_t>(0);
   }
   auto operator=(Link &&other) noexcept -> Link & {
     if (this != &other) {
+      link_id_ = other.link_id_;
       input_pin_id_ = other.input_pin_id_;
       output_pin_id_ = other.output_pin_id_;
+
+      other.link_id_ = static_cast<uint64_t>(0);
       other.input_pin_id_ = static_cast<uint64_t>(0);
       other.output_pin_id_ = static_cast<uint64_t>(0);
     }
@@ -70,8 +75,9 @@ public:
     return links_;
   }
 
-  void AddLink(uint64_t input_pin_id, uint64_t output_pin_id) {
-    links_.emplace_back(input_pin_id, output_pin_id);
+  void AddLink(
+      uint64_t link_id, uint64_t input_pin_id, uint64_t output_pin_id) {
+    links_.emplace_back(link_id, input_pin_id, output_pin_id);
   }
 
   void RemoveLink(uint64_t link_id) {

@@ -61,15 +61,17 @@ auto NodeManager::GetNode(uint64_t node_id)
 auto NodeManager::GetNodes() const -> const std::vector<std::shared_ptr<Node>> {
   return nodes_;
 }
-auto NodeManager::GetPinById(uint64_t pin_id) const
-    -> std::optional<std::reference_wrapper<const Pin>> {
+
+auto NodeManager::GetNodeByPinId(uint64_t pin_id) const
+    -> std::optional<std::reference_wrapper<Node>> {
   for (const auto &kNodePtr : nodes_) {
     if (auto pin = kNodePtr->GetPin(pin_id)) {
-      return pin;
+      return std::ref(*kNodePtr);
     }
   }
   return std::nullopt;
 }
+
 auto NodeManager::GetInputPinById(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const InPin>> {
   for (const auto &kNodePtr : nodes_) {
@@ -79,6 +81,7 @@ auto NodeManager::GetInputPinById(uint64_t pin_id) const
   }
   return std::nullopt;
 }
+
 auto NodeManager::GetOutputPinById(uint64_t pin_id) const
     -> std::optional<std::reference_wrapper<const OutPin>> {
   for (const auto &kNodePtr : nodes_) {
@@ -88,6 +91,17 @@ auto NodeManager::GetOutputPinById(uint64_t pin_id) const
   }
   return std::nullopt;
 }
+
 auto NodeManager::ClearNodes() -> void {
   nodes_.clear();
+}
+
+auto NodeManager::GetPinType(uint64_t pin_id) const -> int {
+  if (auto pin = GetOutputPinById(pin_id)) {
+    return 0;
+  }
+  if (auto pin = GetInputPinById(pin_id)) {
+    return 1;
+  }
+  return -1;
 }
