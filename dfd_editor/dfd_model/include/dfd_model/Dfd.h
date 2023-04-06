@@ -26,8 +26,8 @@ public:
   auto CreateExternalEntityNode(const std::string &name,
       const std::pair<float, float> &pos) -> std::shared_ptr<ExternalEntity>;
 
-  uint64_t AddNode(const std::string &node_type,
-      const std::pair<float, float> &pos, const std::string &name = "");
+  auto AddNode(const std::string &node_type,
+      const std::pair<float, float> &pos, const std::string &name = "") -> uint64_t;
 
   void CreateTestData();
 

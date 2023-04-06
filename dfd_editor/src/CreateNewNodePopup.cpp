@@ -11,9 +11,12 @@ void CreateNewNodePopup::DrawContents() {
   if (ImGui::MenuItem("External Entity")) {
     Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
         "External Entity");
+    SignalHandel::Instance().create_new_node_(
+        canvas_id_, "ExternalEntity", pos_);
   }
   if (ImGui::MenuItem("Data Store")) {
     Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
         "Data Store");
+    SignalHandel::Instance().create_new_node_(canvas_id_, "DataStorage", pos_);
   }
 }

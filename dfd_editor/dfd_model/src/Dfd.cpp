@@ -90,8 +90,8 @@ auto Dfd::CreateExternalEntityNode(const std::string &name,
   external_entities_.push_back(external_entity);
   return external_entity;
 }
-uint64_t Dfd::AddNode(const std::string &node_type,
-    const std::pair<float, float> &pos, const std::string &name) {
+auto Dfd::AddNode(const std::string &node_type,
+    const std::pair<float, float> &pos, const std::string &name) -> uint64_t {
   auto new_node_name = name;
   if (new_node_name.empty()) {
     new_node_name = node_type;

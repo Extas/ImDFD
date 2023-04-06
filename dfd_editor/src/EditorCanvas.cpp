@@ -11,10 +11,10 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
   ConnectSignals();
 }
 
-void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &kDataFlowPtr) {
-  auto from_node = node_manager_.GetNode(kDataFlowPtr->source_->GetElementId());
+void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
+  auto from_node = node_manager_.GetNode(data_flow_ptr->source_->GetElementId());
   auto to_node =
-      node_manager_.GetNode(kDataFlowPtr->destination_->GetElementId());
+      node_manager_.GetNode(data_flow_ptr->destination_->GetElementId());
   if (!from_node.has_value() || !to_node.has_value()) {
     Logger::Error("Data flow is not valid");
   }
