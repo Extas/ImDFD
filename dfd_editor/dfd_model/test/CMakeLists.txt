@@ -14,12 +14,13 @@ asap_add_test(
         VALGRIND_MEMCHECK
         SRCS
         ${SOURCES}
+
         LINK
         ${MODULE_TARGET_NAME}
         gtest
         gmock
         COMMENT
-        "logging unit tests")
+        "dfd_model unit tests")
 
 asap_set_language_standards(${MAIN_TEST_TARGET_NAME} CXX 17)
 

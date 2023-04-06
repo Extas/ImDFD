@@ -2,14 +2,14 @@
 #include <logging/Logger.h>
 
 #include <dfd_editor/InfoWindow.h>
-#include <dfd_editor/NodeEditorWindow.h>
+#include <dfd_editor/MultCanvasWindow.h>
+#include <dfd_editor/NotificationWindow.h>
+#include <dfd_model/Dfd.h>
 #include <memory>
 #include <ui/BaseWindow.h>
 #include <ui/MainMenuBar.h>
 
 #include <filesystem>
-#include <string_view>
-
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   Logger::Trace("Initializing Dear ImGui");
   IMGUI_CHECKVERSION();
@@ -23,9 +23,18 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui::StyleColorsDark();
 
   auto info = ElementInfo("test", "test");
-  AddWindow(std::make_unique<BaseWindow>("info"));
-  AddWindow(std::make_unique<InfoWindow>(info));
-  AddWindow(std::make_unique<NodeEditorWindow>("Node Editor"));
+  AddWindow(std::make_shared<BaseWindow>("test"));
+  AddWindow(std::make_shared<InfoWindow>(info));
+  AddWindow(std::make_shared<NotificationWindow>());
+
+  auto mult_canvas_window =
+      std::make_shared<MultCanvasWindow>("Node Editor Window");
+  AddWindow(mult_canvas_window);
+
+  auto test_dfd = std::make_shared<Dfd>("test_dfd");
+  test_dfd->CreateTestData();
+  mult_canvas_window->LoadDfd(test_dfd);
+  auto str = test_dfd->Serialize();
 }
 
 void DearImGui::NewFrame() {
@@ -43,9 +52,8 @@ void DearImGui::Draw() {
 
   MainMenuBar menu_bar;
   menu_bar.Show();
-
   for (auto &window : windows_) {
-    window->Show();
+    window->Draw();
   }
 }
 
@@ -97,6 +105,6 @@ void DearImGui::IoConfig() {
   }
 }
 
-void DearImGui::AddWindow(std::unique_ptr<BaseWindow> window) {
+void DearImGui::AddWindow(std::shared_ptr<BaseWindow> window) {
   windows_.push_back(std::move(window));
 }

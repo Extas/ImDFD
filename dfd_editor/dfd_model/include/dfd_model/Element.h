@@ -1,43 +1,50 @@
-#ifndef ELEMENT_H
-#define ELEMENT_H
+#ifndef IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_ELEMENT_H_
+#define IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_ELEMENT_H_
 
+#include <nlohmann/json.hpp>
 #include <string>
-#include <vector>
-
-enum class ElementType { Input, Output, Process, External, Storage };
 
 class Element {
 public:
-  Element(ElementType type, std::string name)
-      : m_type(type), m_name(std::move(name)) {
+  explicit Element() : element_id_(GetNewElementId()) {
   }
+
+  explicit Element(uint64_t special_element_id)
+      : element_id_(GetNewElementId(special_element_id)) {
+  }
+
+  [[nodiscard]] virtual auto Serialize() const -> nlohmann::json = 0;
+  [[nodiscard]] virtual auto IsValid() const -> bool = 0;
+
+  Element(const Element &other) = delete;
+  Element(Element &&other) noexcept = default;
+  auto operator=(const Element &other) -> Element & = delete;
+  auto operator=(Element &&other) noexcept -> Element & = default;
 
   virtual ~Element() = default;
 
-  const std::string &GetName() const;
-  ElementType GetType() const {
-    return m_type;
-  }
-
-  // Get the inputs of this element
-  virtual std::vector<Element *> GetInputs() const = 0;
-
-  // Get the outputs of this element
-  virtual std::vector<Element *> GetOutputs() const = 0;
-
-  // Get the data produced by this element (e.g. for output elements)
-  virtual std::vector<std::string> GetDataProduced() const {
-    return {};
-  }
-
-  // Get the data required by this element (e.g. for input elements)
-  virtual std::vector<std::string> GetDataRequired() const {
-    return {};
+  [[nodiscard]] auto GetElementId() const -> uint64_t {
+    return element_id_;
   }
 
 private:
-  ElementType m_type;
-  std::string m_name;
+  static auto GetNewElementId(uint64_t special_element_id = 0) -> uint64_t {
+    static auto max_element_id = static_cast<uint64_t>(100);
+    auto next_id = ++max_element_id;
+
+    // have provided special_element_id
+    if (special_element_id != 0) {
+      next_id = special_element_id;
+      // update max_element_id
+      if (special_element_id > max_element_id) {
+        max_element_id = special_element_id;
+      }
+    }
+
+    return next_id;
+  }
+
+  uint64_t element_id_;
 };
 
-#endif // ELEMENT_H
+#endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_ELEMENT_H_
