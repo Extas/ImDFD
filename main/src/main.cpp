@@ -3,7 +3,6 @@
 
 int main() {
   Logger::Init();
-  Logger::Info("Welcome to the ImDFD");
 
   GLFWMainWindows::Init();
 

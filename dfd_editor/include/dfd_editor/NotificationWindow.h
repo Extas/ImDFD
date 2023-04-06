@@ -1,10 +1,13 @@
 #ifndef IMNOTIFICATION_H
 #define IMNOTIFICATION_H
 
+#include "spdlog/common.h"
 #include <imgui.h>
 #include <ui/BaseWindow.h>
 
 #include <chrono>
+#include <mutex>
+#include <spdlog/sinks/base_sink.h>
 #include <string>
 #include <vector>
 
@@ -150,26 +153,33 @@ struct ExampleAppLog {
   }
 };
 
-enum class NotificationType { INFO, WARNING, ERROR };
-
-struct Notification {
-  NotificationType type;
-  std::string message;
-  std::chrono::system_clock::time_point timestamp;
-};
-
 class NotificationWindow : public BaseWindow {
 public:
   NotificationWindow();
 
-  static void AddInfoNotification(const std::string &message);
-  static void AddWarningNotification(const std::string &message);
-  static void AddErrorNotification(const std::string &message);
+  static void AddNotification(const std::string &message);
 
   void DrawContents() override;
 
 private:
   inline static ExampleAppLog log_;
+  spdlog::sink_ptr sink_;
 };
 
-#endif // IMNOTIFICATION_H
+class NotificationWindowSink : public spdlog::sinks::base_sink<std::mutex> {
+public:
+  explicit NotificationWindowSink(NotificationWindow *window)
+      : window_(window) {
+  }
+
+protected:
+  void sink_it_(const spdlog::details::log_msg &msg) override;
+
+  void flush_() override {
+  }
+
+private:
+  NotificationWindow *window_;
+};
+
+#endif
