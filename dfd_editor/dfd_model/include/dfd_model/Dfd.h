@@ -22,48 +22,7 @@ public:
 
   auto AddNode(const std::string &node_type, const std::pair<float, float> &pos,
       const std::string &name = "") -> uint64_t;
-  auto DeleteNode(uint64_t node_id) -> bool {
-    DfdNode *to_delete = nullptr;
-    auto iter = std::find_if(data_processes_.begin(), data_processes_.end(),
-        [node_id](
-            const auto &node) { return node->GetElementId() == node_id; });
-    if (iter != data_processes_.end()) {
-      auto data_process = *iter;
-      data_processes_.erase(iter);
-      to_delete = data_process.get();
-    }
-
-    auto iter2 = std::find_if(data_storages_.begin(), data_storages_.end(),
-        [node_id](
-            const auto &node) { return node->GetElementId() == node_id; });
-    if (iter2 != data_storages_.end()) {
-      auto data_storage = *iter2;
-      data_storages_.erase(iter2);
-      to_delete = data_storage.get();
-    }
-
-    auto iter3 = std::find_if(external_entities_.begin(),
-        external_entities_.end(), [node_id](const auto &node) {
-          return node->GetElementId() == node_id;
-        });
-
-    if (iter3 != external_entities_.end()) {
-      auto external_entity = *iter3;
-      external_entities_.erase(iter3);
-      to_delete = external_entity.get();
-    }
-
-    if (to_delete == nullptr) {
-      return false;
-    }
-
-    // delete all flows connected to this node,use flow.HasNode(node_id) to check
-    data_flows_.erase(std::remove_if(data_flows_.begin(), data_flows_.end(),
-        [node_id](const auto &flow) { return flow->HasNode(node_id); }),
-        data_flows_.end());
-
-    return true;
-  }
+  auto DeleteNode(uint64_t node_id) -> bool;
 
   auto AddDataFlow(const std::string &name, uint64_t src_node_id,
       uint64_t dst_node_id) -> uint64_t;

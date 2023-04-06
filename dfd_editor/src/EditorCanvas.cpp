@@ -42,10 +42,9 @@ void EditorCanvas::DrawContents() {
 
   DrawNode();
   DrawLink();
+
   HandleInteractions();
   HandleDelete();
-
-  HandleRightClick();
 
   ed::End();
   ed::SetCurrentEditor(nullptr);
@@ -64,6 +63,8 @@ void EditorCanvas::DrawLink() {
 }
 
 void EditorCanvas::HandleInteractions() {
+  HandleRightClick();
+
   // Handle creation action, returns true if editor want to create new object
   // (node or link)
   if (ed::BeginCreate()) {
@@ -71,26 +72,23 @@ void EditorCanvas::HandleInteractions() {
     ed::PinId from_pin_id;
     if (ed::QueryNewLink(&from_pin_id, &to_pin_id)) {
       if (from_pin_id && to_pin_id) { // both are valid, let's accept link
-        if (ed::AcceptNewItem()) {
-          auto input_pin = node_manager_.GetInputPinById(to_pin_id.Get());
-          auto output_pin = node_manager_.GetOutputPinById(from_pin_id.Get());
-          if (!input_pin.has_value()) {
-            input_pin = node_manager_.GetInputPinById(from_pin_id.Get());
-            output_pin = node_manager_.GetOutputPinById(to_pin_id.Get());
-          }
-          if (!input_pin.has_value() || !output_pin.has_value()) {
-            Logger::Warn("Input or output pin is not valid");
-            //            ed::RejectNewItem();
-            return;
-          }
-
+        auto input_pin = node_manager_.GetInputPinById(to_pin_id.Get());
+        auto output_pin = node_manager_.GetOutputPinById(from_pin_id.Get());
+        if (!output_pin.has_value()) {
+          input_pin = node_manager_.GetInputPinById(from_pin_id.Get());
+          output_pin = node_manager_.GetOutputPinById(to_pin_id.Get());
+        }
+        if (!input_pin.has_value() || !output_pin.has_value()) {
+          Logger::Warn("[EditorCanvas {}] Invalid pin", GetId());
+          ed::RejectNewItem();
+        } else if (ed::AcceptNewItem()) {
           auto source_node =
               node_manager_.GetNodeByPinId(output_pin.value().get().GetId());
           auto destination_node =
               node_manager_.GetNodeByPinId(input_pin.value().get().GetId());
 
           if (!source_node.has_value() || !destination_node.has_value()) {
-            Logger::Error("Source or destination node is not valid");
+            Logger::Error("[EditorCanvas {}] Invalid node", GetId());
             return;
           }
           auto source_node_id = source_node.value().get().GetId();
