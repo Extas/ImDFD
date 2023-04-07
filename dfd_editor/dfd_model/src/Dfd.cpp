@@ -114,25 +114,22 @@ auto Dfd::CreateDataFlow(const std::string &name,
   data_flows_.push_back(data_flow);
   return data_flow;
 }
-auto Dfd::FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
+auto Dfd::GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
   auto iter = std::find_if(data_processes_.begin(), data_processes_.end(),
-                           [node_id](
-                               const auto &node) { return node->GetElementId() == node_id; });
+      [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter != data_processes_.end()) {
     return *iter;
   }
 
   auto iter2 = std::find_if(data_storages_.begin(), data_storages_.end(),
-                            [node_id](
-                                const auto &node) { return node->GetElementId() == node_id; });
+      [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter2 != data_storages_.end()) {
     return *iter2;
   }
 
   auto iter3 = std::find_if(external_entities_.begin(),
-                            external_entities_.end(), [node_id](const auto &node) {
-        return node->GetElementId() == node_id;
-      });
+      external_entities_.end(),
+      [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter3 != external_entities_.end()) {
     return *iter3;
   }
@@ -140,10 +137,8 @@ auto Dfd::FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
   return nullptr;
 }
 auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
-  auto iter = std::find_if(
-      data_flows_.begin(), data_flows_.end(), [flow_id](const auto &flow) {
-        return flow->GetElementId() == flow_id;
-      });
+  auto iter = std::find_if(data_flows_.begin(), data_flows_.end(),
+      [flow_id](const auto &flow) { return flow->GetElementId() == flow_id; });
   if (iter != data_flows_.end()) {
     data_flows_.erase(iter);
     return true;
@@ -152,8 +147,8 @@ auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
 }
 auto Dfd::AddDataFlow(const std::string &name, uint64_t src_node_id,
     uint64_t dst_node_id) -> uint64_t {
-  auto src = FindNodeById(src_node_id);
-  auto dst = FindNodeById(dst_node_id);
+  auto src = GetNodeById(src_node_id);
+  auto dst = GetNodeById(dst_node_id);
   if (src && dst) {
     auto data_flow = CreateDataFlow(name, src, dst, {0, 0});
     return data_flow->GetElementId();
@@ -163,8 +158,7 @@ auto Dfd::AddDataFlow(const std::string &name, uint64_t src_node_id,
 auto Dfd::DeleteNode(uint64_t node_id) -> bool {
   DfdNode *to_delete = nullptr;
   auto iter = std::find_if(data_processes_.begin(), data_processes_.end(),
-                           [node_id](
-                               const auto &node) { return node->GetElementId() == node_id; });
+      [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter != data_processes_.end()) {
     auto data_process = *iter;
     data_processes_.erase(iter);
@@ -172,8 +166,7 @@ auto Dfd::DeleteNode(uint64_t node_id) -> bool {
   }
 
   auto iter2 = std::find_if(data_storages_.begin(), data_storages_.end(),
-                            [node_id](
-                                const auto &node) { return node->GetElementId() == node_id; });
+      [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter2 != data_storages_.end()) {
     auto data_storage = *iter2;
     data_storages_.erase(iter2);
@@ -181,9 +174,8 @@ auto Dfd::DeleteNode(uint64_t node_id) -> bool {
   }
 
   auto iter3 = std::find_if(external_entities_.begin(),
-                            external_entities_.end(), [node_id](const auto &node) {
-        return node->GetElementId() == node_id;
-      });
+      external_entities_.end(),
+      [node_id](const auto &node) { return node->GetElementId() == node_id; });
 
   if (iter3 != external_entities_.end()) {
     auto external_entity = *iter3;
@@ -196,9 +188,18 @@ auto Dfd::DeleteNode(uint64_t node_id) -> bool {
   }
 
   // delete all flows connected to this node,use flow.HasNode(node_id) to check
-  data_flows_.erase(std::remove_if(data_flows_.begin(), data_flows_.end(),
-                                   [node_id](const auto &flow) { return flow->HasNode(node_id); }),
-                    data_flows_.end());
+  data_flows_.erase(
+      std::remove_if(data_flows_.begin(), data_flows_.end(),
+          [node_id](const auto &flow) { return flow->HasNode(node_id); }),
+      data_flows_.end());
 
   return true;
+}
+auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
+  auto iter = std::find_if(data_flows_.begin(), data_flows_.end(),
+      [flow_id](const auto &flow) { return flow->GetElementId() == flow_id; });
+  if (iter != data_flows_.end()) {
+    return *iter;
+  }
+  return nullptr;
 }

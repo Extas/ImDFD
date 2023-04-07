@@ -1,85 +1,70 @@
-#ifndef INFOWINDOW_H
-#define INFOWINDOW_H
+#ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
+#define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
 
+#include <dfd_model/DataFlow.h>
+#include <dfd_model/Dfd.h>
+#include <dfd_model/DfdNode.h>
 #include <imgui.h>
+#include <signal/SignalHandel.h>
 #include <ui/BaseWindow.h>
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-class ElementInfo {
+class Info {
 public:
+  Info() = default;
+
+  void LoadNode(const std::shared_ptr<DfdNode> &node) {
+    if (node) {
+      name_ = node->name_;
+      description_ = node->description_;
+    }
+  }
+
+  void LoadLink(const std::shared_ptr<DataFlow> &link) {
+    if (link) {
+      name_ = link->name_;
+      description_ = link->description_;
+    }
+  }
+
   std::string name_;
   std::string description_;
-  std::vector<std::string> data_items_;
-  std::vector<std::string> input_streams_;
-  std::vector<std::string> output_streams_;
-
-  ElementInfo() = default;
-
-  ElementInfo(std::string name, std::string description)
-      : name_(std::move(name)), description_(std::move(description)) {
-  }
 };
 
 class InfoWindow : public BaseWindow {
 public:
-  explicit InfoWindow(ElementInfo &info)
-      : BaseWindow("Info"), element_info_(info) {
+  explicit InfoWindow() : BaseWindow("Info") {
+    SignalHandel::Instance().selected_node_.connect([this](int64_t node_id) {
+      auto node = dfd_->GetNodeById(node_id);
+      if (node) {
+        info_.LoadNode(node);
+      }
+    });
+
+    SignalHandel::Instance().selected_link_.connect([this](int64_t link_id) {
+      auto link = dfd_->GetFlowById(link_id);
+      if (link) {
+        info_.LoadLink(link);
+      }
+    });
   }
 
   void DrawContents() override {
+    ImGui::Text("%s", info_.name_.c_str());
+    ImGui::Text("%s", info_.description_.c_str());
+  }
 
-    ImGui::Text("%s", element_info_.name_.c_str());
-    ImGui::Separator();
-    ImGui::Text("%s", element_info_.description_.c_str());
-
-    if (!element_info_.data_items_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Data Items:");
-      for (auto &item : element_info_.data_items_) {
-        ImGui::Text("- %s", item.c_str());
-      }
-    }
-
-    if (!element_info_.input_streams_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Input Streams:");
-      for (auto &stream : element_info_.input_streams_) {
-        ImGui::Text("- %s", stream.c_str());
-      }
-    }
-
-    if (!element_info_.output_streams_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Output Streams:");
-      for (auto &stream : element_info_.output_streams_) {
-        ImGui::Text("- %s", stream.c_str());
-      }
-    }
-
-    // if (!info.description.empty()) {
-    //   ImGui::Separator();
-    //   ImGui::Text("Description:");
-    //   ImGui::InputTextMultiline("##Description", &info.description,
-    //       ImVec2(-1.0f, ImGui::GetTextLineHeight() * 3));
-    // }
-
-    if (!element_info_.name_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Jump to:");
-      if (ImGui::Button("Data Item Definition")) {
-      }
-      if (ImGui::Button("Input Stream Definition")) {
-      }
-      if (ImGui::Button("Output Stream Definition")) {
-      }
-    }
+  void LoadDfd(const std::shared_ptr<Dfd> &dfd) {
+    dfd_ = dfd;
   }
 
 private:
-  ElementInfo element_info_;
+  std::shared_ptr<Dfd> dfd_;
+  Info info_;
 };
 
-#endif // INFOWINDOW_H
+#endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_

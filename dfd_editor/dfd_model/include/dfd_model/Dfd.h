@@ -38,6 +38,9 @@ public:
 
   [[nodiscard]] auto GetName() const -> std::string;
 
+  auto GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode>;
+  auto GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow>;
+
 private:
   std::string name_;
 
@@ -51,6 +54,6 @@ private:
       const std::shared_ptr<DfdNode> &src, const std::shared_ptr<DfdNode> &dst,
       const std::pair<float, float> &pos) -> std::shared_ptr<DataFlow>;
 
-  auto FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode>;
+
 };
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DFD_H_

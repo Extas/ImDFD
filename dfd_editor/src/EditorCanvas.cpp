@@ -15,8 +15,8 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
 void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
   auto from_node_id = data_flow_ptr->source_->GetElementId();
   auto to_node_id = data_flow_ptr->destination_->GetElementId();
-  auto from_node = node_manager_.GetNode(from_node_id);
-  auto to_node = node_manager_.GetNode(to_node_id);
+  auto from_node = node_manager_.GetNodeById(from_node_id);
+  auto to_node = node_manager_.GetNodeById(to_node_id);
   if (!from_node.has_value() || !to_node.has_value()) {
     Logger::Error("Data flow is not valid");
   }
@@ -45,6 +45,8 @@ void EditorCanvas::DrawContents() {
 
   HandleInteractions();
   HandleDelete();
+
+  UpdateSelected();
 
   ed::End();
   ed::SetCurrentEditor(nullptr);
@@ -213,5 +215,23 @@ void EditorCanvas::UpdateDrawData() {
 
   for (const auto &kDataFlowPtr : dfd_->data_flows_) {
     AddLink(kDataFlowPtr);
+  }
+}
+
+void EditorCanvas::UpdateSelected() {
+  selected_nodes_.resize(ed::GetSelectedObjectCount());
+  selected_links_.resize(ed::GetSelectedObjectCount());
+  int node_count = ed::GetSelectedNodes(
+      selected_nodes_.data(), static_cast<int>(selected_nodes_.size()));
+  int link_count = ed::GetSelectedLinks(
+      selected_links_.data(), static_cast<int>(selected_links_.size()));
+
+  selected_nodes_.resize(node_count);
+  selected_links_.resize(link_count);
+
+  if (selected_nodes_.size() == 1) {
+    SignalHandel::Instance().selected_node_(selected_nodes_[0].Get());
+  } else if (selected_links_.size() == 1) {
+    SignalHandel::Instance().selected_link_(selected_links_[0].Get());
   }
 }

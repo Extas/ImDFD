@@ -24,7 +24,7 @@ public:
   auto AddDataStorageNode(uint64_t node_id, std::string *name,
       std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode>;
 
-  [[nodiscard]] auto GetNode(uint64_t node_id)
+  [[nodiscard]] auto GetNodeById(uint64_t node_id)
       -> std::optional<std::reference_wrapper<Node>>;
   [[nodiscard]] auto GetNodeByPinId(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<Node>>;
