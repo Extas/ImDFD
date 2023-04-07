@@ -11,6 +11,12 @@ public:
   static auto Create(uint64_t id, std::string name, std::pair<float, float> pos)
       -> std::shared_ptr<ExternalEntity>;
 
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override {
+    return DfdNode::Serialize("ExternalEntity");
+  }
+  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
+      -> std::shared_ptr<ExternalEntity>;
+
 private:
   ExternalEntity(std::string name, std::pair<float, float> pos);
   ExternalEntity(uint64_t id, std::string name, std::pair<float, float> pos);

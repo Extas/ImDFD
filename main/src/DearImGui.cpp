@@ -34,6 +34,8 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
 
   auto test_dfd = std::make_shared<Dfd>("test_dfd");
   test_dfd->CreateTestData();
+  auto test_seri = test_dfd->Serialize();
+  auto test_dfd2 = Dfd::DeSerialize(test_seri);
   mult_canvas_window->LoadDfd(test_dfd);
   auto str = test_dfd->Serialize();
 }

@@ -193,7 +193,7 @@ void EditorCanvas::UpdateDrawData() {
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
     auto data_process_node = node_manager_.AddDataProcessNode(
         kDataProcessPtr->GetElementId(), &kDataProcessPtr->name_,
-        &kDataProcessPtr->position_, &kDataProcessPtr->process_description_,
+        &kDataProcessPtr->position_, &kDataProcessPtr->description_,
         kDataProcessPtr->sub_dfd_->GetElementId());
 
     SignalHandel::Instance().create_new_dfd_(kDataProcessPtr->sub_dfd_);

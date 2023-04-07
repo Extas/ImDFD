@@ -28,7 +28,8 @@ auto DataFlow::Create(uint64_t id, std::string name,
     std::shared_ptr<DfdNode> source, std::shared_ptr<DfdNode> destination,
     std::pair<float, float> pos) -> std::shared_ptr<DataFlow> {
   auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(
-      std::move(name), std::move(source), std::move(destination), pos));
+      id, std::move(name), std::move(source), std::move(destination), pos));
+  data_flow->Connect();
   return data_flow;
 }
 auto DataFlow::Create(std::string name, std::shared_ptr<DfdNode> source,
@@ -36,7 +37,7 @@ auto DataFlow::Create(std::string name, std::shared_ptr<DfdNode> source,
     -> std::shared_ptr<DataFlow> {
   auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(
       std::move(name), std::move(source), std::move(destination), pos));
-  //  data_flow->Connect();
+  data_flow->Connect();
   return data_flow;
 }
 DataFlow::DataFlow(std::string name, std::shared_ptr<DfdNode> source,
@@ -50,10 +51,27 @@ DataFlow::DataFlow(uint64_t id, std::string name,
     : DfdNode(id, std::move(name), pos), source_(std::move(source)),
       destination_(std::move(destination)) {
 }
-auto DataFlow::IsValid() const -> bool {
-  // Implement the IsValid method as needed
-  // ...
-  return true;
+auto DataFlow::DeSerialize(nlohmann::json json,
+    std::function<std::shared_ptr<DfdNode>(uint64_t)> find_node_by_id)
+    -> std::shared_ptr<DataFlow> {
+  auto id = json["id"].get<uint64_t>();
+  auto name = json["name"].get<std::string>();
+  auto pos = json["pos"].get<std::pair<float, float>>();
+  auto source_id = json["source_id"].get<uint64_t>();
+  auto destination_id = json["destination_id"].get<uint64_t>();
+
+  auto source = find_node_by_id(source_id);
+  auto destination = find_node_by_id(destination_id);
+
+  auto data_flow = Create(id, name, source, destination, pos);
+
+  // Deserialize data_items_
+  auto data_items_json = json["data_items"].get<nlohmann::json>();
+  for (const auto &kItem : data_items_json) {
+    data_flow->data_items_.push_back(DataItem::DeSerialize(kItem));
+  }
+
+  return data_flow;
 }
 auto DataFlow::HasNode(uint64_t node_id) const -> bool {
   return source_->GetElementId() == node_id ||

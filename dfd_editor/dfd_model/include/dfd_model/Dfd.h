@@ -31,8 +31,9 @@ public:
   void CreateTestData();
 
   [[nodiscard]] auto GetJsonString() const -> std::string;
-
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
+  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
+      -> std::shared_ptr<Dfd>;
 
   [[nodiscard]] auto IsValid() const -> bool override;
 

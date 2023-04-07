@@ -14,12 +14,16 @@ class DataFlow;
 
 class DfdNode : public Element {
 public:
-  explicit DfdNode(std::string name, std::pair<float, float> pos)
-      : name_(std::move(name)), position_(pos) {
+  explicit DfdNode(std::string name, std::pair<float, float> pos,
+      std::string description = "")
+      : name_(std::move(name)), position_(pos),
+        description_(std::move(description)) {
   }
 
-  DfdNode(uint64_t id, std::string name, std::pair<float, float> pos)
-      : Element(id), name_(std::move(name)), position_(pos) {
+  DfdNode(uint64_t id, std::string name, std::pair<float, float> pos,
+      std::string description = "")
+      : Element(id), name_(std::move(name)), position_(pos),
+        description_(std::move(description)) {
   }
 
   std::string name_;
@@ -30,8 +34,17 @@ public:
     nlohmann::json json;
     json["id"] = GetElementId();
     json["name"] = name_;
-    json["position"] = {position_.first, position_.second};
+    json["pos"] = {position_.first, position_.second};
     json["description"] = description_;
+    return json;
+  }
+
+  [[nodiscard]] auto Serialize(const std::string &node_type) const
+      -> nlohmann::json {
+    nlohmann::json json;
+    json["node_type"] = node_type;
+    auto base_json = DfdNode::Serialize();
+    json.insert(base_json.begin(), base_json.end());
     return json;
   }
 
