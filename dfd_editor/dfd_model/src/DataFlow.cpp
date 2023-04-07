@@ -28,7 +28,8 @@ auto DataFlow::Create(uint64_t id, std::string name,
     std::shared_ptr<DfdNode> source, std::shared_ptr<DfdNode> destination,
     std::pair<float, float> pos) -> std::shared_ptr<DataFlow> {
   auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(
-      std::move(name), std::move(source), std::move(destination), pos));
+      id, std::move(name), std::move(source), std::move(destination), pos));
+  data_flow->Connect();
   return data_flow;
 }
 auto DataFlow::Create(std::string name, std::shared_ptr<DfdNode> source,
@@ -36,9 +37,10 @@ auto DataFlow::Create(std::string name, std::shared_ptr<DfdNode> source,
     -> std::shared_ptr<DataFlow> {
   auto data_flow = std::shared_ptr<DataFlow>(new DataFlow(
       std::move(name), std::move(source), std::move(destination), pos));
-  //  data_flow->Connect();
+  data_flow->Connect();
   return data_flow;
 }
+
 DataFlow::DataFlow(std::string name, std::shared_ptr<DfdNode> source,
     std::shared_ptr<DfdNode> destination, std::pair<float, float> pos)
     : DfdNode(std::move(name), pos), source_(std::move(source)),
@@ -50,6 +52,7 @@ DataFlow::DataFlow(uint64_t id, std::string name,
     : DfdNode(id, std::move(name), pos), source_(std::move(source)),
       destination_(std::move(destination)) {
 }
+
 auto DataFlow::IsValid() const -> bool {
   // Implement the IsValid method as needed
   // ...
