@@ -36,7 +36,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   test_dfd->CreateTestData();
   auto test_seri = test_dfd->Serialize();
   auto test_dfd2 = Dfd::DeSerialize(test_seri);
-  mult_canvas_window->LoadDfd(test_dfd);
+  mult_canvas_window->LoadDfd(test_dfd2);
   auto str = test_dfd->Serialize();
 }
 
