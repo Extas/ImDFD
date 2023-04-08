@@ -21,6 +21,7 @@ public:
   void DrawContents() override;
 
   void NavigateToElement(uint64_t element_id);
+  void ResetZoom();
 
   [[nodiscard]] auto GetId() const -> int64_t;
 

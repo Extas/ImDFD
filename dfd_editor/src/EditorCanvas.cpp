@@ -259,3 +259,7 @@ void EditorCanvas::NavigateToElement(uint64_t element_id) {
 
   ed::NavigateToSelection();
 }
+
+void EditorCanvas::ResetZoom() {
+  ed::NavigateToContent();
+}
