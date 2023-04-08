@@ -13,10 +13,10 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
 }
 
 void EditorCanvas::DrawContents() {
-  ed::SetCurrentEditor(GetContext());
+  ed::SetCurrentEditor(GetOrInitContext());
   ed::Begin("My Editor", ImVec2(0.0, 0.0));
 
-  UpdateDrawData();
+  LoadDrawData();
 
   if (IsFirstFrame()) {
     FirstFrame();
@@ -34,7 +34,8 @@ void EditorCanvas::DrawContents() {
   ed::SetCurrentEditor(nullptr);
 }
 
-void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
+void EditorCanvas::LoadLinkFromFlow(
+    const std::shared_ptr<DataFlow> &data_flow_ptr) {
   auto from_node_id = data_flow_ptr->source_->GetElementId();
   auto to_node_id = data_flow_ptr->destination_->GetElementId();
   auto from_node = node_manager_.GetNodeById(from_node_id);
@@ -144,7 +145,7 @@ void EditorCanvas::FirstFrame() {
   ed::NavigateToContent(0.0F);
 }
 
-auto EditorCanvas::GetContext() -> ed::EditorContext * {
+auto EditorCanvas::GetOrInitContext() -> ed::EditorContext * {
   if (context_ == nullptr) {
     config_.UserPointer = this;
     config_.SaveNodeSettings = [](ed::NodeId node_id, const char *data,
@@ -200,7 +201,7 @@ void EditorCanvas::ConnectSignals() {
       });
 }
 
-void EditorCanvas::UpdateDrawData() {
+void EditorCanvas::LoadDrawData() {
   node_manager_.ClearNodes();
   link_manager_.ClearLinks();
 
@@ -226,7 +227,7 @@ void EditorCanvas::UpdateDrawData() {
   }
 
   for (const auto &kDataFlowPtr : dfd_->data_flows_) {
-    AddLink(kDataFlowPtr);
+    LoadLinkFromFlow(kDataFlowPtr);
   }
 }
 
@@ -246,4 +247,15 @@ void EditorCanvas::UpdateSelected() {
   } else if (selected_links_.size() == 1) {
     SignalHandel::Instance().selected_link_(selected_links_[0].Get());
   }
+}
+
+void EditorCanvas::NavigateToElement(uint64_t element_id) {
+  auto node = node_manager_.GetNodeById(element_id);
+  if (node.has_value()) {
+    ed::SelectNode(ed::NodeId(element_id), false);
+  } else {
+    ed::SelectLink(ed::LinkId(element_id), false);
+  }
+
+  ed::NavigateToSelection();
 }

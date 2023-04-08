@@ -20,13 +20,24 @@ public:
 
   void DrawContents() override;
 
+  void NavigateToElement(uint64_t element_id);
+
   [[nodiscard]] auto GetId() const -> int64_t;
 
   bool open_ = false;
 
 private:
-  int64_t canvas_id_ = static_cast<int64_t>(0);
+  auto GetOrInitContext() -> ed::EditorContext *;
+  void LoadDrawData();
+  auto IsFirstFrame() -> bool;
+  void FirstFrame();
+  void DrawNode() const;
+  void DrawLink();
+  void HandleInteractions();
+  void HandleDelete();
+  void UpdateSelected();
 
+  int64_t canvas_id_ = static_cast<int64_t>(0);
   ed::EditorContext *context_ = nullptr;
   ed::Config config_;
 
@@ -39,24 +50,11 @@ private:
 
   CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup(GetId());
 
-  void DrawNode() const;
-  void DrawLink();
-  void HandleInteractions();
-  void HandleDelete();
-
   void HandleRightClick();
+  void LoadLinkFromFlow(const std::shared_ptr<DataFlow> &data_flow_ptr);
 
-  void UpdateDrawData();
-  void UpdateSelected();
-
-  void AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr);
-
-  auto GetContext() -> ed::EditorContext *;
   void ConnectSignals();
-
   bool is_first_frame_ = true;
-  auto IsFirstFrame() -> bool;
-  void FirstFrame();
 
 public:
   EditorCanvas(EditorCanvas &&) = delete;
