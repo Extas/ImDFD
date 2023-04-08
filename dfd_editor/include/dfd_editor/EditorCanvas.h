@@ -26,7 +26,10 @@ public:
 
 private:
   int64_t canvas_id_ = static_cast<int64_t>(0);
+
   ed::EditorContext *context_ = nullptr;
+  ed::Config config_;
+
   std::shared_ptr<Dfd> dfd_;
   NodeManager node_manager_;
   LinkManager link_manager_;

@@ -1,5 +1,5 @@
-#include "sigslot/signal.hpp"
 #include <dfd_editor/EditorCanvas.h>
+#include <signal/SignalHandel.h>
 
 #include <imgui.h>
 #include <imgui_node_editor.h>
@@ -10,24 +10,6 @@ EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->GetName()), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
 
   ConnectSignals();
-}
-
-void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
-  auto from_node_id = data_flow_ptr->source_->GetElementId();
-  auto to_node_id = data_flow_ptr->destination_->GetElementId();
-  auto from_node = node_manager_.GetNodeById(from_node_id);
-  auto to_node = node_manager_.GetNodeById(to_node_id);
-  if (!from_node.has_value() || !to_node.has_value()) {
-    Logger::Error("Data flow is not valid");
-  }
-
-  const auto &from_pins = from_node.value().get().GetOutputPins();
-  const auto &to_pins = to_node.value().get().GetInputPins();
-  if (from_pins.size() != 1 || to_pins.size() != 1) {
-    Logger::Error("Data flow is not valid");
-  }
-  link_manager_.AddLink(
-      data_flow_ptr->GetElementId(), from_pins[0].GetId(), to_pins[0].GetId());
 }
 
 void EditorCanvas::DrawContents() {
@@ -50,6 +32,24 @@ void EditorCanvas::DrawContents() {
 
   ed::End();
   ed::SetCurrentEditor(nullptr);
+}
+
+void EditorCanvas::AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr) {
+  auto from_node_id = data_flow_ptr->source_->GetElementId();
+  auto to_node_id = data_flow_ptr->destination_->GetElementId();
+  auto from_node = node_manager_.GetNodeById(from_node_id);
+  auto to_node = node_manager_.GetNodeById(to_node_id);
+  if (!from_node.has_value() || !to_node.has_value()) {
+    Logger::Error("Data flow is not valid");
+  }
+
+  const auto &from_pins = from_node.value().get().GetOutputPins();
+  const auto &to_pins = to_node.value().get().GetInputPins();
+  if (from_pins.size() != 1 || to_pins.size() != 1) {
+    Logger::Error("Data flow is not valid");
+  }
+  link_manager_.AddLink(
+      data_flow_ptr->GetElementId(), from_pins[0].GetId(), to_pins[0].GetId());
 }
 
 void EditorCanvas::DrawNode() const {
@@ -146,10 +146,22 @@ void EditorCanvas::FirstFrame() {
 
 auto EditorCanvas::GetContext() -> ed::EditorContext * {
   if (context_ == nullptr) {
-    Logger::Trace(
-        "[EditorCanvas {}] Initializing EditorCanvas context", GetId());
-    context_ = ed::CreateEditor();
+    config_.UserPointer = this;
+    config_.SaveNodeSettings = [](ed::NodeId node_id, const char *data,
+                                   size_t size, ed::SaveReasonFlags reason,
+                                   void *user_pointer) -> bool {
+      auto *self = static_cast<EditorCanvas *>(user_pointer);
+      auto node = self->dfd_->GetNodeById(node_id.Get());
+      auto pos = ed::GetNodePosition(node_id);
+      node->SetPosition(pos.x, pos.y);
+      Logger::Trace("[EditorCanvas {}] Saved position of node({})",
+          self->GetId(), node_id.Get());
+      return true;
+    };
+    Logger::Trace("[EditorCanvas {}] First open", GetId());
+    context_ = ed::CreateEditor(&config_);
   }
+
   return context_;
 }
 
@@ -167,7 +179,7 @@ void EditorCanvas::HandleRightClick() {
       open_popup_position.x, open_popup_position.y);
   ed::Suspend();
   if (ed::ShowBackgroundContextMenu()) {
-    Logger::Trace("[EditorCanvas {}] ShowBackgroundContextMenu", GetId());
+    Logger::Trace("[EditorCanvas {}] Show Background Context Menu", GetId());
     create_new_node_popup_.Open();
   }
   ed::Resume();
