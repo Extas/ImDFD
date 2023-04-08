@@ -24,7 +24,7 @@ void DfdManager::OpenDfdFormFile(const std::filesystem::path &filepath) {
         std::istreambuf_iterator<char>());
     file.close();
 
-    auto loaded_dfd = Dfd::DeSerialize(content);
+    auto loaded_dfd = Dfd::LoadFromJsonString(content);
     current_dfd_ = loaded_dfd;
 
     dfd_loaded_callbacks_(current_dfd_);

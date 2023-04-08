@@ -205,9 +205,8 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
   return nullptr;
 }
 
-[[nodiscard]] auto Dfd::DeSerialize(std::string json_str)
+[[nodiscard]] auto Dfd::DeSerialize(nlohmann::json json)
     -> std::shared_ptr<Dfd> {
-  auto json = nlohmann::json::parse(json_str);
   auto id = json["id"].get<uint64_t>();
   auto name = json["name"].get<std::string>();
 
@@ -240,5 +239,10 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
     dfd->data_flows_.push_back(data_flow);
   }
 
+  return dfd;
+}
+auto Dfd::LoadFromJsonString(const std::string &json) -> std::shared_ptr<Dfd> {
+  auto json_obj = nlohmann::json::parse(json);
+  auto dfd = DeSerialize(json_obj);
   return dfd;
 }

@@ -31,8 +31,10 @@ public:
   void CreateExampleData();
 
   [[nodiscard]] auto GetJsonString() const -> std::string;
+  [[nodiscard]] static auto LoadFromJsonString(const std::string &json)
+      -> std::shared_ptr<Dfd>;
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
-  [[nodiscard]] static auto DeSerialize(std::string json)
+  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
       -> std::shared_ptr<Dfd>;
 
   [[nodiscard]] auto IsValid() const -> bool override;
@@ -54,7 +56,5 @@ private:
   auto CreateDataFlow(const std::string &name,
       const std::shared_ptr<DfdNode> &src, const std::shared_ptr<DfdNode> &dst,
       const std::pair<float, float> &pos) -> std::shared_ptr<DataFlow>;
-
-
 };
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DFD_H_
