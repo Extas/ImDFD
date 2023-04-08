@@ -3,7 +3,6 @@
 # -----------------------------------------------------
 asap_push_module(dfd_editor)
 
-add_subdirectory(signal)
 add_subdirectory(dfd_model)
 add_subdirectory(node_model)
 
