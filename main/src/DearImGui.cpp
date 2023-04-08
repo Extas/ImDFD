@@ -5,15 +5,15 @@
 #include <dfd_editor/MultCanvasWindow.h>
 #include <dfd_editor/NotificationWindow.h>
 #include <dfd_model/Dfd.h>
+#include <filesystem>
+#include <fstream>
 #include <memory>
 #include <ui/BaseWindow.h>
-#include <ui/MainMenuBar.h>
 
-#include <filesystem>
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   Logger::Trace("Initializing Dear ImGui");
   IMGUI_CHECKVERSION();
-  context_ = ImGui::CreateContext();
+  ImGui::CreateContext();
 
   IoConfig();
 
@@ -53,8 +53,13 @@ void DearImGui::Draw() {
 
   ImGui::ShowDemoWindow();
 
-  MainMenuBar menu_bar;
-  menu_bar.Show();
+  menu_bar_.Show();
+
+  if (menu_bar_.GetFileDialog().HasSelected()) {
+    auto test_file = OpenTextFile(menu_bar_.GetFileDialog().GetSelected());
+    menu_bar_.GetFileDialog().ClearSelected();
+  }
+
   for (auto &window : windows_) {
     window->Draw();
   }
@@ -94,13 +99,13 @@ void DearImGui::IoConfig() {
 
   // font
   constexpr float kFontSize = 26.0F;
-  const auto fonts_dir =
+  const auto kFontsDir =
       std::filesystem::current_path().parent_path() / "data" / "fonts";
-  if (std::filesystem::exists(fonts_dir)) {
-    for (const auto &font_path :
-        std::filesystem::directory_iterator(fonts_dir)) {
-      if (font_path.path().extension() == ".ttf") {
-        imgui_io.Fonts->AddFontFromFileTTF(font_path.path().string().data(),
+  if (std::filesystem::exists(kFontsDir)) {
+    for (const auto &kFontPath :
+        std::filesystem::directory_iterator(kFontsDir)) {
+      if (kFontPath.path().extension() == ".ttf") {
+        imgui_io.Fonts->AddFontFromFileTTF(kFontPath.path().string().data(),
             kFontSize, nullptr, imgui_io.Fonts->GetGlyphRangesChineseFull());
         break;
       }
@@ -110,4 +115,19 @@ void DearImGui::IoConfig() {
 
 void DearImGui::AddWindow(std::shared_ptr<BaseWindow> window) {
   windows_.push_back(std::move(window));
+}
+
+auto DearImGui::OpenTextFile(const std::filesystem::path &filepath)
+    -> std::string {
+  std::string ret = "Error opening file!";
+
+  std::ifstream file(filepath);
+  if (file.is_open()) {
+    std::string content((std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>());
+    file.close();
+    return content;
+  }
+
+  return ret;
 }

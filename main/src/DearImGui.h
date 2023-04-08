@@ -1,8 +1,9 @@
 #ifndef IMDFD__DEARIMGUI_H_
 #define IMDFD__DEARIMGUI_H_
 
-#include "ui/BaseWindow.h"
 #include <GLFW/glfw3.h>
+#include <ui/BaseWindow.h>
+#include <ui/MainMenuBar.h>
 
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -19,11 +20,16 @@ public:
   static void Shutdown();
 
 private:
+  static auto OpenTextFile(const std::filesystem::path &filepath)
+      -> std::string;
+
   inline static ImGuiContext *context_ = nullptr;
   static void IoConfig();
 
   inline static std::vector<std::shared_ptr<BaseWindow>> windows_;
   static void AddWindow(std::shared_ptr<BaseWindow> window);
+
+  inline static MainMenuBar menu_bar_;
 };
 
 #endif // IMDFD__DEARIMGUI_H_
