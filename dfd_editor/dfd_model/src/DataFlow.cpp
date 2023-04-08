@@ -40,6 +40,7 @@ auto DataFlow::Create(std::string name, std::shared_ptr<DfdNode> source,
   data_flow->Connect();
   return data_flow;
 }
+
 DataFlow::DataFlow(std::string name, std::shared_ptr<DfdNode> source,
     std::shared_ptr<DfdNode> destination, std::pair<float, float> pos)
     : DfdNode(std::move(name), pos), source_(std::move(source)),
@@ -51,6 +52,7 @@ DataFlow::DataFlow(uint64_t id, std::string name,
     : DfdNode(id, std::move(name), pos), source_(std::move(source)),
       destination_(std::move(destination)) {
 }
+
 auto DataFlow::DeSerialize(nlohmann::json json,
     std::function<std::shared_ptr<DfdNode>(uint64_t)> find_node_by_id)
     -> std::shared_ptr<DataFlow> {

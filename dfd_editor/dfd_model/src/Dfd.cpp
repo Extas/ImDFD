@@ -115,7 +115,7 @@ auto Dfd::CreateDataFlow(const std::string &name,
   data_flows_.push_back(data_flow);
   return data_flow;
 }
-auto Dfd::FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
+auto Dfd::GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
   auto iter = std::find_if(data_processes_.begin(), data_processes_.end(),
       [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter != data_processes_.end()) {
@@ -148,8 +148,8 @@ auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
 }
 auto Dfd::AddDataFlow(const std::string &name, uint64_t src_node_id,
     uint64_t dst_node_id) -> uint64_t {
-  auto src = FindNodeById(src_node_id);
-  auto dst = FindNodeById(dst_node_id);
+  auto src = GetNodeById(src_node_id);
+  auto dst = GetNodeById(dst_node_id);
   if (src && dst) {
     auto data_flow = CreateDataFlow(name, src, dst, {0, 0});
     return data_flow->GetElementId();
@@ -195,6 +195,14 @@ auto Dfd::DeleteNode(uint64_t node_id) -> bool {
       data_flows_.end());
 
   return true;
+}
+auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
+  auto iter = std::find_if(data_flows_.begin(), data_flows_.end(),
+      [flow_id](const auto &flow) { return flow->GetElementId() == flow_id; });
+  if (iter != data_flows_.end()) {
+    return *iter;
+  }
+  return nullptr;
 }
 
 [[nodiscard]] auto Dfd::DeSerialize(nlohmann::json json)

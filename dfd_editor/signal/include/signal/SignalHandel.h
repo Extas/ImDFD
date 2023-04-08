@@ -3,6 +3,7 @@
 #define IMDFD_DFD_EDITOR_SIGNAL_INCLUDE_SIGNAL_SIGNALHANDEL_H_
 
 #include <sigslot/signal.hpp>
+#include <cstdint>
 
 class Dfd;
 
@@ -21,6 +22,9 @@ public:
   sigslot::signal<const std::shared_ptr<Dfd> &> create_new_dfd_;
   sigslot::signal<int64_t, const std::string &, std::pair<float, float>>
       create_new_node_;
+
+  sigslot::signal<uint64_t> selected_node_;
+  sigslot::signal<uint64_t> selected_link_;
 
 private:
   SignalHandel() = default;

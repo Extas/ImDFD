@@ -31,31 +31,37 @@ private:
   NodeManager node_manager_;
   LinkManager link_manager_;
 
+  std::vector<ed::NodeId> selected_nodes_;
+  std::vector<ed::LinkId> selected_links_;
+
+  CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup(GetId());
+
   void DrawNode() const;
   void DrawLink();
   void HandleInteractions();
   void HandleDelete();
+
   void HandleRightClick();
 
+  void UpdateDrawData();
+  void UpdateSelected();
+
+  void AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr);
+
+  auto GetContext() -> ed::EditorContext *;
   void ConnectSignals();
 
-  // Canvas state
   bool is_first_frame_ = true;
   auto IsFirstFrame() -> bool;
   void FirstFrame();
-  void UpdateDrawData();
-
-  auto GetContext() -> ed::EditorContext *;
-
-  CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup(GetId());
 
 public:
   EditorCanvas(EditorCanvas &&) = delete;
   EditorCanvas(const EditorCanvas &) = delete;
   auto operator=(EditorCanvas &&) -> EditorCanvas & = delete;
   auto operator=(const EditorCanvas &) -> EditorCanvas & = delete;
+
   ~EditorCanvas() override;
-  void AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr);
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_

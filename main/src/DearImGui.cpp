@@ -22,9 +22,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui_ImplOpenGL3_Init(glsl_version);
   ImGui::StyleColorsDark();
 
-  auto info = ElementInfo("test", "test");
   AddWindow(std::make_shared<BaseWindow>("test"));
-  AddWindow(std::make_shared<InfoWindow>(info));
   AddWindow(std::make_shared<NotificationWindow>());
   Logger::Info("Welcome to the ImDFD");
 
@@ -32,12 +30,17 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
       std::make_shared<MultCanvasWindow>("Node Editor Window");
   AddWindow(mult_canvas_window);
 
+  auto info_window = std::make_shared<InfoWindow>();
+  AddWindow(info_window);
+
   auto test_dfd = std::make_shared<Dfd>("test_dfd");
   test_dfd->CreateTestData();
+
   auto test_seri = test_dfd->Serialize();
   auto test_dfd2 = Dfd::DeSerialize(test_seri);
+
   mult_canvas_window->LoadDfd(test_dfd2);
-  auto str = test_dfd->Serialize();
+  info_window->LoadDfd(test_dfd2);
 }
 
 void DearImGui::NewFrame() {
