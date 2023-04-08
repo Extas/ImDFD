@@ -12,14 +12,20 @@ MainMenuBar::MainMenuBar() {
 void MainMenuBar::SetupFileMenu() {
   auto &file_menu = GetOrAddMenu("File");
 
-  file_menu.AddItem("New", [this]() { Logger::Trace("New menu item clicked"); });
+  file_menu.AddItem(
+      "New", [this]() { Logger::Trace("New menu item clicked"); });
   file_menu.AddItem("Open", [this]() {
+    ImGui::FileBrowser open_dialog;
+    file_dialog_ = open_dialog;
     Logger::Trace("Open menu item clicked");
     file_dialog_.SetTitle("Open File");
     // file_dialog_.SetTypeFilters({".h", ".cpp"});
     file_dialog_.Open();
   });
   file_menu.AddItem("Save", [this]() {
+    ImGui::FileBrowser save_dialog(ImGuiFileBrowserFlags_EnterNewFilename |
+                                   ImGuiFileBrowserFlags_CreateNewDir);
+    file_dialog_ = save_dialog;
     Logger::Trace("Save menu item clicked");
     file_dialog_.SetTitle("Save File");
     // file_dialog_.SetTypeFilters({".h", ".cpp"});
@@ -27,6 +33,9 @@ void MainMenuBar::SetupFileMenu() {
   });
 
   file_menu.AddItem("Save As", [this]() {
+    ImGui::FileBrowser save_dialog(ImGuiFileBrowserFlags_EnterNewFilename |
+                                   ImGuiFileBrowserFlags_CreateNewDir);
+    file_dialog_ = save_dialog;
     Logger::Trace("Save As menu item clicked");
     file_dialog_.SetTitle("Save File As");
     // file_dialog_.SetTypeFilters({".h", ".cpp"});
@@ -43,7 +52,8 @@ void MainMenuBar::SetupEditMenu() {
   edit_menu.AddItem("Redo", []() { Logger::Trace("Redo menu item clicked"); });
   edit_menu.AddItem("Cut", []() { Logger::Trace("Cut menu item clicked"); });
   edit_menu.AddItem("Copy", []() { Logger::Trace("Copy menu item clicked"); });
-  edit_menu.AddItem("Paste", []() { Logger::Trace("Paste menu item clicked"); });
+  edit_menu.AddItem(
+      "Paste", []() { Logger::Trace("Paste menu item clicked"); });
   edit_menu.AddItem(
       "Delete", []() { Logger::Trace("Delete menu item clicked"); });
 }
@@ -64,7 +74,8 @@ void MainMenuBar::SetupHelpMenu() {
 
   help_menu.AddItem("Documentation",
       []() { Logger::Trace("Documentation menu item clicked"); });
-  help_menu.AddItem("About", []() { Logger::Trace("About menu item clicked"); });
+  help_menu.AddItem(
+      "About", []() { Logger::Trace("About menu item clicked"); });
 }
 
 auto MainMenuBar::GetFileDialog() -> ImGui::FileBrowser & {

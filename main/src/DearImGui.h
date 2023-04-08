@@ -20,6 +20,9 @@ public:
   static void Shutdown();
 
 private:
+  static auto OpenTextFile(const std::filesystem::path &filepath)
+      -> std::string;
+
   inline static ImGuiContext *context_ = nullptr;
   static void IoConfig();
 
