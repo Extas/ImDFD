@@ -6,7 +6,6 @@
 #include <dfd_editor/NotificationWindow.h>
 #include <dfd_model/Dfd.h>
 #include <filesystem>
-#include <fstream>
 #include <memory>
 #include <ui/BaseWindow.h>
 
@@ -33,14 +32,13 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   auto info_window = std::make_shared<InfoWindow>();
   AddWindow(info_window);
 
-  auto test_dfd = std::make_shared<Dfd>("test_dfd");
-  test_dfd->CreateTestData();
+  dfd_manager_.AddDfdLoadedCallback(
+      [mult_canvas_window, info_window](const std::shared_ptr<Dfd> &dfd) {
+        mult_canvas_window->LoadDfd(dfd);
+        info_window->LoadDfd(dfd);
+      });
 
-  auto test_seri = test_dfd->Serialize();
-  auto test_dfd2 = Dfd::DeSerialize(test_seri);
-
-  mult_canvas_window->LoadDfd(test_dfd2);
-  info_window->LoadDfd(test_dfd2);
+  dfd_manager_.NewDfd();
 }
 
 void DearImGui::NewFrame() {
@@ -57,11 +55,6 @@ void DearImGui::Draw() {
   ImGui::ShowDemoWindow();
 
   menu_bar_.Show();
-
-  if (menu_bar_.GetFileDialog().HasSelected()) {
-    auto test_file = OpenTextFile(menu_bar_.GetFileDialog().GetSelected());
-    menu_bar_.GetFileDialog().ClearSelected();
-  }
 
   for (auto &window : windows_) {
     window->Draw();
@@ -118,19 +111,4 @@ void DearImGui::IoConfig() {
 
 void DearImGui::AddWindow(std::shared_ptr<BaseWindow> window) {
   windows_.push_back(std::move(window));
-}
-
-auto DearImGui::OpenTextFile(const std::filesystem::path &filepath)
-    -> std::string {
-  std::string ret = "Error opening file!";
-
-  std::ifstream file(filepath);
-  if (file.is_open()) {
-    std::string content((std::istreambuf_iterator<char>(file)),
-        std::istreambuf_iterator<char>());
-    file.close();
-    return content;
-  }
-
-  return ret;
 }

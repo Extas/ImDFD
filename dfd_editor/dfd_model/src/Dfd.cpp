@@ -10,7 +10,7 @@ Dfd::Dfd(std::string name) : name_(std::move(name)) {
 Dfd::Dfd(uint64_t id, std::string name) : Element(id), name_(std::move(name)) {
 }
 
-void Dfd::CreateTestData() {
+void Dfd::CreateExampleData() {
   auto external_entity =
       CreateExternalEntityNode("ExternalEntity", std::make_pair(0, 0));
   auto data_storage =
@@ -205,8 +205,9 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
   return nullptr;
 }
 
-[[nodiscard]] auto Dfd::DeSerialize(nlohmann::json json)
+[[nodiscard]] auto Dfd::DeSerialize(std::string json_str)
     -> std::shared_ptr<Dfd> {
+  auto json = nlohmann::json::parse(json_str);
   auto id = json["id"].get<uint64_t>();
   auto name = json["name"].get<std::string>();
 
@@ -235,7 +236,7 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
 
   for (const auto &flow_json : json["data_flows"]) {
     auto data_flow = DataFlow::DeSerialize(
-        flow_json, [&](uint64_t nodeId) { return dfd->FindNodeById(nodeId); });
+        flow_json, [&](uint64_t nodeId) { return dfd->GetNodeById(nodeId); });
     dfd->data_flows_.push_back(data_flow);
   }
 

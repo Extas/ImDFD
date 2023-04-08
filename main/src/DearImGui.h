@@ -2,6 +2,7 @@
 #define IMDFD__DEARIMGUI_H_
 
 #include <GLFW/glfw3.h>
+#include <dfd_editor/DfdManager.h>
 #include <ui/BaseWindow.h>
 #include <ui/MainMenuBar.h>
 
@@ -20,9 +21,6 @@ public:
   static void Shutdown();
 
 private:
-  static auto OpenTextFile(const std::filesystem::path &filepath)
-      -> std::string;
-
   inline static ImGuiContext *context_ = nullptr;
   static void IoConfig();
 
@@ -30,6 +28,7 @@ private:
   static void AddWindow(std::shared_ptr<BaseWindow> window);
 
   inline static MainMenuBar menu_bar_;
+  inline static DfdManager dfd_manager_;
 };
 
 #endif // IMDFD__DEARIMGUI_H_

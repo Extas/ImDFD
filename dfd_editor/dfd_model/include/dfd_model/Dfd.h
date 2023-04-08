@@ -28,11 +28,11 @@ public:
       uint64_t dst_node_id) -> uint64_t;
   auto DeleteFlow(uint64_t flow_id) -> bool;
 
-  void CreateTestData();
+  void CreateExampleData();
 
   [[nodiscard]] auto GetJsonString() const -> std::string;
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
-  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
+  [[nodiscard]] static auto DeSerialize(std::string json)
       -> std::shared_ptr<Dfd>;
 
   [[nodiscard]] auto IsValid() const -> bool override;
