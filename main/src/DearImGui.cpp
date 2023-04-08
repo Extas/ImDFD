@@ -7,7 +7,6 @@
 #include <dfd_model/Dfd.h>
 #include <memory>
 #include <ui/BaseWindow.h>
-#include <ui/MainMenuBar.h>
 
 #include <filesystem>
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
@@ -53,8 +52,14 @@ void DearImGui::Draw() {
 
   ImGui::ShowDemoWindow();
 
-  MainMenuBar menu_bar;
-  menu_bar.Show();
+  menu_bar_.Show();
+
+  if (menu_bar_.GetFileDialog().HasSelected()) {
+    // std::cout << "Selected filename: " <<
+    // menu_bar_.GetFileDialog().GetSelected().string() << std::endl;
+    menu_bar_.GetFileDialog().ClearSelected();
+  }
+
   for (auto &window : windows_) {
     window->Draw();
   }

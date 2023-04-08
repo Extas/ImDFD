@@ -10,44 +10,68 @@ MainMenuBar::MainMenuBar() {
 }
 
 void MainMenuBar::SetupFileMenu() {
-  auto &fileMenu = GetOrAddMenu("File");
+  auto &file_menu = GetOrAddMenu("File");
 
-  fileMenu.AddItem("New", []() { Logger::Trace("New menu item clicked"); });
-  fileMenu.AddItem("Open", []() { Logger::Trace("Open menu item clicked"); });
-  fileMenu.AddItem("Save", []() { Logger::Trace("Save menu item clicked"); });
-  fileMenu.AddItem(
-      "Save As", []() { Logger::Trace("Save As menu item clicked"); });
-  fileMenu.AddItem(
+  file_menu.AddItem("New", [this]() { Logger::Trace("New menu item clicked"); });
+  file_menu.AddItem("Open", [this]() {
+    Logger::Trace("Open menu item clicked");
+    file_dialog_.SetTitle("Open File");
+    // file_dialog_.SetTypeFilters({".h", ".cpp"});
+    file_dialog_.Open();
+  });
+  file_menu.AddItem("Save", [this]() {
+    Logger::Trace("Save menu item clicked");
+    file_dialog_.SetTitle("Save File");
+    // file_dialog_.SetTypeFilters({".h", ".cpp"});
+    file_dialog_.Open();
+  });
+
+  file_menu.AddItem("Save As", [this]() {
+    Logger::Trace("Save As menu item clicked");
+    file_dialog_.SetTitle("Save File As");
+    // file_dialog_.SetTypeFilters({".h", ".cpp"});
+    file_dialog_.Open();
+  });
+  file_menu.AddItem(
       "Exit", []() { Logger::Trace("Save As menu item clicked"); });
 }
 
 void MainMenuBar::SetupEditMenu() {
-  auto &editMenu = GetOrAddMenu("Edit");
+  auto &edit_menu = GetOrAddMenu("Edit");
 
-  editMenu.AddItem("Undo", []() { Logger::Trace("Undo menu item clicked"); });
-  editMenu.AddItem("Redo", []() { Logger::Trace("Redo menu item clicked"); });
-  editMenu.AddItem("Cut", []() { Logger::Trace("Cut menu item clicked"); });
-  editMenu.AddItem("Copy", []() { Logger::Trace("Copy menu item clicked"); });
-  editMenu.AddItem("Paste", []() { Logger::Trace("Paste menu item clicked"); });
-  editMenu.AddItem(
+  edit_menu.AddItem("Undo", []() { Logger::Trace("Undo menu item clicked"); });
+  edit_menu.AddItem("Redo", []() { Logger::Trace("Redo menu item clicked"); });
+  edit_menu.AddItem("Cut", []() { Logger::Trace("Cut menu item clicked"); });
+  edit_menu.AddItem("Copy", []() { Logger::Trace("Copy menu item clicked"); });
+  edit_menu.AddItem("Paste", []() { Logger::Trace("Paste menu item clicked"); });
+  edit_menu.AddItem(
       "Delete", []() { Logger::Trace("Delete menu item clicked"); });
 }
 
 void MainMenuBar::SetupViewMenu() {
-  auto &viewMenu = GetOrAddMenu("View");
+  auto &view_menu = GetOrAddMenu("View");
 
-  viewMenu.AddItem(
+  view_menu.AddItem(
       "Zoom In", []() { Logger::Trace("Zoom In menu item clicked"); });
-  viewMenu.AddItem(
+  view_menu.AddItem(
       "Zoom Out", []() { Logger::Trace("Zoom Out menu item clicked"); });
-  viewMenu.AddItem(
+  view_menu.AddItem(
       "Reset Zoom", []() { Logger::Trace("Reset Zoom menu item clicked"); });
 }
 
 void MainMenuBar::SetupHelpMenu() {
-  auto &helpMenu = GetOrAddMenu("Help");
+  auto &help_menu = GetOrAddMenu("Help");
 
-  helpMenu.AddItem("Documentation",
+  help_menu.AddItem("Documentation",
       []() { Logger::Trace("Documentation menu item clicked"); });
-  helpMenu.AddItem("About", []() { Logger::Trace("About menu item clicked"); });
+  help_menu.AddItem("About", []() { Logger::Trace("About menu item clicked"); });
+}
+
+auto MainMenuBar::GetFileDialog() -> ImGui::FileBrowser & {
+  return file_dialog_;
+}
+
+void MainMenuBar::Show() {
+  BaseMenuBar::Show();
+  file_dialog_.Display();
 }

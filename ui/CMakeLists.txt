@@ -47,6 +47,11 @@ target_link_libraries(${MODULE_TARGET_NAME}
   imgui
 )
 
+find_package(imgui_filebrowser)
+target_include_directories(
+  ${MODULE_TARGET_NAME}
+  PUBLIC ${imgui_filebrowser_SOURCE_DIR})
+
 target_include_directories(
   ${MODULE_TARGET_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
