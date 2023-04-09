@@ -20,42 +20,50 @@ public:
 
   void DrawContents() override;
 
+  void NavigateToElement(uint64_t element_id);
+  void ResetZoom();
+
   [[nodiscard]] auto GetId() const -> int64_t;
 
   bool open_ = false;
 
 private:
-  int64_t canvas_id_ = static_cast<int64_t>(0);
-  ed::EditorContext *context_ = nullptr;
-  std::shared_ptr<Dfd> dfd_;
-  NodeManager node_manager_;
-  LinkManager link_manager_;
-
+  auto GetOrInitContext() -> ed::EditorContext *;
+  void LoadDrawData();
+  auto IsFirstFrame() -> bool;
+  void FirstFrame();
   void DrawNode() const;
   void DrawLink();
   void HandleInteractions();
   void HandleDelete();
-  void HandleRightClick();
+  void UpdateSelected();
 
-  void ConnectSignals();
+  int64_t canvas_id_ = static_cast<int64_t>(0);
+  ed::EditorContext *context_ = nullptr;
+  ed::Config config_;
 
-  // Canvas state
-  bool is_first_frame_ = true;
-  auto IsFirstFrame() -> bool;
-  void FirstFrame();
-  void UpdateDrawData();
+  std::shared_ptr<Dfd> dfd_;
+  NodeManager node_manager_;
+  LinkManager link_manager_;
 
-  auto GetContext() -> ed::EditorContext *;
+  std::vector<ed::NodeId> selected_nodes_;
+  std::vector<ed::LinkId> selected_links_;
 
   CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup(GetId());
+
+  void HandleRightClick();
+  void LoadLinkFromFlow(const std::shared_ptr<DataFlow> &data_flow_ptr);
+
+  void ConnectSignals();
+  bool is_first_frame_ = true;
 
 public:
   EditorCanvas(EditorCanvas &&) = delete;
   EditorCanvas(const EditorCanvas &) = delete;
   auto operator=(EditorCanvas &&) -> EditorCanvas & = delete;
   auto operator=(const EditorCanvas &) -> EditorCanvas & = delete;
+
   ~EditorCanvas() override;
-  void AddLink(const std::shared_ptr<DataFlow> &data_flow_ptr);
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_

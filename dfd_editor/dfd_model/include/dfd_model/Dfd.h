@@ -28,9 +28,11 @@ public:
       uint64_t dst_node_id) -> uint64_t;
   auto DeleteFlow(uint64_t flow_id) -> bool;
 
-  void CreateTestData();
+  void CreateExampleData();
 
   [[nodiscard]] auto GetJsonString() const -> std::string;
+  [[nodiscard]] static auto LoadFromJsonString(const std::string &json)
+      -> std::shared_ptr<Dfd>;
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
   [[nodiscard]] static auto DeSerialize(nlohmann::json json)
       -> std::shared_ptr<Dfd>;
@@ -38,6 +40,9 @@ public:
   [[nodiscard]] auto IsValid() const -> bool override;
 
   [[nodiscard]] auto GetName() const -> std::string;
+
+  auto GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode>;
+  auto GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow>;
 
 private:
   std::string name_;
@@ -51,7 +56,5 @@ private:
   auto CreateDataFlow(const std::string &name,
       const std::shared_ptr<DfdNode> &src, const std::shared_ptr<DfdNode> &dst,
       const std::pair<float, float> &pos) -> std::shared_ptr<DataFlow>;
-
-  auto FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode>;
 };
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DFD_H_

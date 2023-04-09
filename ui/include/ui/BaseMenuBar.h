@@ -20,7 +20,7 @@ public:
       const std::function<void()> &callback = nullptr);
 
   // DrawCustom the menu bar
-  void Show();
+  virtual void Show();
 
 private:
   std::vector<Menu> m_Menus;

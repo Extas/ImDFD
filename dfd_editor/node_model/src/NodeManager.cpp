@@ -38,7 +38,7 @@ auto NodeManager::AddDataStorageNode(uint64_t node_id, std::string *name,
   return node;
 }
 
-auto NodeManager::GetNode(uint64_t node_id)
+auto NodeManager::GetNodeById(uint64_t node_id)
     -> std::optional<std::reference_wrapper<Node>> {
   for (auto &node_ptr : nodes_) {
     if (node_ptr->GetId() == node_id) {
