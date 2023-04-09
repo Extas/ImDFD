@@ -1,16 +1,51 @@
 #include <logging/Logger.h>
 #include <node_model/element/Node.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui_internal.h>
+
+void ImGuiEx_BeginColumn() {
+  ImGui::BeginGroup();
+}
+
+void ImGuiEx_NextColumn() {
+  ImGui::EndGroup();
+  ImGui::SameLine();
+  ImGui::BeginGroup();
+}
+
+void ImGuiEx_EndColumn() {
+  ImGui::EndGroup();
+}
 
 void Node::Draw() const {
   ed::BeginNode(GetId());
   ImGui::Text("%s", GetName().c_str());
+  auto name_width = ImGui::CalcTextSize(GetName().c_str()).x;
+  auto pin_width = ImGui::CalcTextSize("-> In").x;
+  auto padding = std::max(name_width / 2 - pin_width, 0.0f);
+  ImGui::BeginGroup();
   for (const auto &kPin : GetInputPins()) {
     kPin.Draw();
   }
+  ImGui::EndGroup();
+  ImGui::SameLine();
+
+  ImGui::Dummy(ImVec2(padding, 0));
+  ImGui::SameLine();
+
+  ImGui::BeginGroup();
+  DrawCustomContent();
+  ImGui::EndGroup();
+  ImGui::SameLine();
+  ImGui::Dummy(ImVec2(padding, 0));
+  ImGui::SameLine();
+
+  ImGui::BeginGroup();
   for (const auto &kPin : GetOutputPins()) {
     kPin.Draw();
   }
-  DrawCustomContent();
+  ImGui::EndGroup();
+
   ed::EndNode();
 }
 

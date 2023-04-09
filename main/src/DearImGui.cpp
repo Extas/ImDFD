@@ -21,7 +21,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui_ImplOpenGL3_Init(glsl_version);
   ImGui::StyleColorsDark();
 
-  AddWindow(std::make_shared<BaseWindow>("test"));
+  // AddWindow
   AddWindow(std::make_shared<NotificationWindow>());
   Logger::Info("Welcome to the ImDFD");
 
