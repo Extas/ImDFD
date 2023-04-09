@@ -18,20 +18,25 @@ void Dfd::CreateExampleData() {
   auto data_process =
       CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
-  auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
-  auto data_item2 = DataItem::CreateIntegerDataItem("DataItem2", 0, 3);
-  data_storage->AddDataItem(data_item);
-  data_storage->AddDataItem(data_item2);
-  data_items_.push_back(data_item);
+  //  auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
+  //  auto data_item2 = DataItem::CreateIntegerDataItem("DataItem2", 0, 3);
+  auto string_data_item = DataItem::CreateDataItem("DataItem1", "string");
+  string_data_item->AddDataDef("format", "string", "nnnn-nnnn-nnnn-nnnn");
+  auto integer_data_item = DataItem::CreateDataItem("DataItem2", "integer");
+  integer_data_item->AddDataDef("min", "integer", "0");
+  integer_data_item->AddDataDef("max", "integer", "3");
+  data_storage->AddDataItem(string_data_item);
+  data_storage->AddDataItem(integer_data_item);
+  data_items_.push_back(string_data_item);
 
   auto data_flow_1 = CreateDataFlow(
       "DataFlow1", external_entity, data_process, std::make_pair(0, 0));
-  data_flow_1->AddDataItem(data_item);
+  data_flow_1->AddDataItem(string_data_item);
   data_flows_.push_back(data_flow_1);
 
   auto data_flow_2 = CreateDataFlow(
       "DataFlow2", data_process, data_storage, std::make_pair(0, 0));
-  data_flow_2->AddDataItem(data_item2);
+  data_flow_2->AddDataItem(integer_data_item);
   data_flows_.push_back(data_flow_2);
 }
 
