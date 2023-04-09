@@ -6,6 +6,7 @@
 #include "data_type/DataItemType.h"
 
 #include <memory>
+#include <optional>
 #include <vector>
 
 class DataItem : public Element {
@@ -26,6 +27,20 @@ public:
   [[nodiscard]] static auto DeSerialize(nlohmann::json json)
       -> std::shared_ptr<DataItem>;
   [[nodiscard]] auto IsValid() const -> bool override;
+
+  [[nodiscard]] auto GetName()
+      -> std::optional<std::reference_wrapper<std::string>> {
+    return name_;
+  }
+
+  [[nodiscard]] auto GetDataType() const -> std::shared_ptr<DataItemType> {
+    return data_type_;
+  }
+
+  [[nodiscard]] auto GetSubDataItems() const
+      -> const std::vector<std::shared_ptr<DataItem>> & {
+    return sub_data_items_;
+  }
 
 private:
   DataItem(std::string name, std::shared_ptr<DataItemType> data_type)

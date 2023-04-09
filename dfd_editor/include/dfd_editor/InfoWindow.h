@@ -36,9 +36,14 @@ public:
   [[nodiscard]] auto GetDescription()
       -> std::optional<std::reference_wrapper<std::string>>;
 
+  [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>>;
+
 private:
+  std::unordered_map<std::string, bool> editing_;
+
   std::optional<std::reference_wrapper<std::string>> name_;
   std::optional<std::reference_wrapper<std::string>> description_;
+  std::vector<std::shared_ptr<DataItem>> data_items_;
   std::shared_ptr<Element> current_element_;
 };
 
@@ -54,6 +59,9 @@ public:
   static void DrawEditableTextValue(
       std::optional<std::reference_wrapper<std::string>> text,
       const std::string &label = "");
+
+  static void DrawDataItems(
+      const std::vector<std::shared_ptr<DataItem>> &items);
 
   void LoadDfd(const std::shared_ptr<Dfd> &dfd);
 

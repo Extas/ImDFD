@@ -10,11 +10,18 @@ public:
   [[nodiscard]] virtual auto Serialize() const -> nlohmann::json = 0;
   [[nodiscard]] static auto DeSerialize(nlohmann::json json)
       -> std::shared_ptr<DataItemType>;
+
+  [[nodiscard]] static std::vector<std::string> GetDerivedTypeNames() {
+    return type_names_;
+  }
+
+  inline static std::vector<std::string> type_names_;
 };
 
 class StringDataType : public DataItemType {
 public:
   explicit StringDataType(std::string fmt) : fmt_(std::move(fmt)) {
+    type_names_.push_back("string");
   }
 
   std::string fmt_{};
@@ -35,6 +42,7 @@ class IntegerDataType : public DataItemType {
 public:
   IntegerDataType(int min_value, int max_value)
       : min_value_(min_value), max_value_(max_value) {
+    type_names_.push_back("integer");
   }
 
   int min_value_{};

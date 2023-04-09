@@ -18,6 +18,8 @@ public:
   [[nodiscard]] static auto DeSerialize(nlohmann::json json)
       -> std::shared_ptr<DataStorage>;
 
+  void AddDataItem(std::shared_ptr<DataItem> data_item);
+
   std::vector<std::shared_ptr<DataItem>> stored_data_items_;
 
 private:

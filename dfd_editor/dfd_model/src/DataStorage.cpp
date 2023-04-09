@@ -24,3 +24,6 @@ auto DataStorage::DeSerialize(nlohmann::json json)
 
   return Create(id, name, pos);
 }
+void DataStorage::AddDataItem(std::shared_ptr<DataItem> data_item) {
+  stored_data_items_.push_back(data_item);
+}

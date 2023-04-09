@@ -19,14 +19,19 @@ void Dfd::CreateExampleData() {
       CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
   auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
-  data_storage->stored_data_items_.push_back(data_item);
+  auto data_item2 = DataItem::CreateIntegerDataItem("DataItem2", 0, 3);
+  data_storage->AddDataItem(data_item);
+  data_storage->AddDataItem(data_item2);
   data_items_.push_back(data_item);
 
   auto data_flow_1 = CreateDataFlow(
       "DataFlow1", external_entity, data_process, std::make_pair(0, 0));
+  data_flow_1->AddDataItem(data_item);
+  data_flows_.push_back(data_flow_1);
 
   auto data_flow_2 = CreateDataFlow(
       "DataFlow2", data_process, data_storage, std::make_pair(0, 0));
+  data_flow_2->AddDataItem(data_item2);
   data_flows_.push_back(data_flow_2);
 }
 
