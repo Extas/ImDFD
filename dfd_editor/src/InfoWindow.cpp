@@ -1,4 +1,5 @@
 #include <dfd_editor/InfoWindow.h>
+#include <string>
 InfoWindow::InfoWindow() : BaseWindow("Info") {
   SignalHandel::Instance().selected_node_.connect([this](int64_t node_id) {
     auto node = dfd_->GetNodeById(node_id);
@@ -28,11 +29,17 @@ void InfoWindow::DrawContents() {
 
   DrawDataItems(info_.GetDataItems());
 }
+
 void InfoWindow::DrawDataItems(
     const std::vector<std::shared_ptr<DataItem>> &items) {
   ImGui::Text("Data Items:");
+
   for (const auto &kDataItem : items) {
-    DrawEditableTextValue(kDataItem->GetName(), "Name:");
+    DrawDataTypeSelector(kDataItem);
+    ImGui::SameLine();
+
+    DrawEditableTextValue(
+        kDataItem->GetName(), "##" + std::to_string(kDataItem->GetElementId()));
   }
 }
 void InfoWindow::DrawEditableTextValue(
@@ -48,7 +55,7 @@ void InfoWindow::DrawEditableTextValue(
       return;
     }
 
-    auto button_name = "Edit##" + label;
+    auto button_name = "Edit##" + label + text.value().get();
     if (ImGui::Button(button_name.c_str())) {
       editing_state = true;
       if (text.has_value()) {
@@ -59,8 +66,6 @@ void InfoWindow::DrawEditableTextValue(
       }
     }
   } else {
-    ImGui::Text("%s", label.c_str());
-    ImGui::SameLine();
     ImGui::InputText("##editable_text", buffer, sizeof(buffer));
 
     if (ImGui::Button("OK")) {
@@ -74,7 +79,8 @@ auto InfoWindow::DrawTextValue(
 
   if (text.has_value()) {
     if (!label.empty()) {
-      ImGui::Text("%s", label.c_str());
+      auto new_label = label.substr(0, label.find("##"));
+      ImGui::Text("%s", new_label.c_str());
     }
     ImGui::SameLine();
     ImGui::Text("%s", text.value().c_str());
@@ -124,4 +130,39 @@ auto Info::GetDataItems() -> std::vector<std::shared_ptr<DataItem>> {
 }
 void InfoWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   dfd_ = dfd;
+}
+
+void InfoWindow::DrawDataTypeSelector(std::shared_ptr<DataItem> data_item) {
+  static std::unordered_map<uint64_t, bool> popup_open;
+
+  auto id = data_item->GetElementId();
+  auto current_type_name = data_item->GetDateTypeName();
+
+  // 获取 DataItemType 的派生类名称
+  auto type_names = DataItem::GetDerivedTypeNames();
+
+  // 按钮标签和 Popup 标签
+  std::string button_label =
+      current_type_name + "##" + std::to_string(id) + "##";
+  std::string popup_label = "data_type_popup_##" + std::to_string(id);
+
+  if (ImGui::Button(button_label.c_str())) {
+    popup_open[id] = true;
+    ImGui::OpenPopup(popup_label.c_str());
+  }
+
+  if (popup_open[id]) {
+    if (ImGui::BeginPopup(popup_label.c_str())) {
+      for (const auto &kTypeName : type_names) {
+        if (ImGui::Button(kTypeName.c_str())) {
+          // 更新数据项的类型并关闭 Popup 菜单
+          //          data_item->SetType(kTypeName);
+          popup_open[id] = false;
+        }
+      }
+      ImGui::EndPopup();
+    } else {
+      popup_open[id] = false;
+    }
+  }
 }

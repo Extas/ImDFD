@@ -63,6 +63,8 @@ public:
   static void DrawDataItems(
       const std::vector<std::shared_ptr<DataItem>> &items);
 
+  static void DrawDataTypeSelector(std::shared_ptr<DataItem> data_item);
+
   void LoadDfd(const std::shared_ptr<Dfd> &dfd);
 
 private:

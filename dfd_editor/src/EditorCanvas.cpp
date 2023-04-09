@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <dfd_editor/EditorCanvas.h>
 #include <signal/SignalHandel.h>
 
@@ -232,6 +233,7 @@ void EditorCanvas::LoadDrawData() {
 }
 
 void EditorCanvas::UpdateSelected() {
+  static unsigned int last_selected_id = 0;
   selected_nodes_.resize(ed::GetSelectedObjectCount());
   selected_links_.resize(ed::GetSelectedObjectCount());
   int node_count = ed::GetSelectedNodes(
@@ -243,9 +245,17 @@ void EditorCanvas::UpdateSelected() {
   selected_links_.resize(link_count);
 
   if (selected_nodes_.size() == 1) {
-    SignalHandel::Instance().selected_node_(selected_nodes_[0].Get());
+    const auto kSelectedId = selected_nodes_[0].Get();
+    if (last_selected_id != kSelectedId) {
+      last_selected_id = kSelectedId;
+      SignalHandel::Instance().selected_node_(kSelectedId);
+    }
   } else if (selected_links_.size() == 1) {
-    SignalHandel::Instance().selected_link_(selected_links_[0].Get());
+    const auto kSelectedId = selected_links_[0].Get();
+    if (last_selected_id != kSelectedId) {
+      last_selected_id = kSelectedId;
+      SignalHandel::Instance().selected_link_(kSelectedId);
+    }
   }
 }
 
