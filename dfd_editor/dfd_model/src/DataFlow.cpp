@@ -70,7 +70,7 @@ auto DataFlow::DeSerialize(nlohmann::json json,
   // Deserialize data_items_
   auto data_items_json = json["data_items"].get<nlohmann::json>();
   for (const auto &kItem : data_items_json) {
-    data_flow->data_items_.push_back(DataItem::DeSerialize(kItem));
+    data_flow->data_items_.push_back(DataItem::Deserialize(kItem));
   }
 
   return data_flow;

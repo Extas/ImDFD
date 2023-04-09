@@ -20,17 +20,17 @@ auto DataItem::Serialize() const -> nlohmann::json {
   return json;
 }
 
-auto DataItem::DeSerialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
+auto DataItem::Deserialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
   uint64_t id = json.at("id");
   std::string name = json.at("name");
   std::string type_name = json.at("type");
 
   auto data_item =
-      std::make_shared<DataItem>(id, std::move(name), std::move(type_name));
+      CreateDataItemWithId(id, std::move(name), std::move(type_name));
   data_item->data_json = json.at("data");
 
   for (const auto &sub_data_item_json : json.at("sub_data_items")) {
-    auto sub_data_item = DeSerialize(sub_data_item_json);
+    auto sub_data_item = Deserialize(sub_data_item_json);
     data_item->sub_data_items_.push_back(sub_data_item);
   }
 

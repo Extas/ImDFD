@@ -33,7 +33,7 @@ public:
   }
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
-  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
+  [[nodiscard]] static auto Deserialize(nlohmann::json json)
       -> std::shared_ptr<DataItem>;
   [[nodiscard]] auto IsValid() const -> bool override;
 

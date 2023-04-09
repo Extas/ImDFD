@@ -239,7 +239,7 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
   }
 
   for (const auto &item_json : json["data_items"]) {
-    auto data_item = DataItem::DeSerialize(item_json);
+    auto data_item = DataItem::Deserialize(item_json);
     dfd->data_items_.push_back(data_item);
   }
 
