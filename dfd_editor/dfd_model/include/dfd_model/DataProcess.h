@@ -13,10 +13,11 @@ public:
   static auto Create(uint64_t id, const std::string &name,
       std::pair<float, float> pos) -> std::shared_ptr<DataProcess>;
 
-  std::string process_description_;
-  std::shared_ptr<Dfd> sub_dfd_;
-
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
+  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
+      -> std::shared_ptr<DataProcess>;
+
+  std::shared_ptr<Dfd> sub_dfd_;
 
 private:
   DataProcess(const std::string &name, std::pair<float, float> pos);

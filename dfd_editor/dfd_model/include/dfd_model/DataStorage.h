@@ -11,6 +11,13 @@ public:
       -> std::shared_ptr<DataStorage>;
   static auto Create(uint64_t id, std::string name, std::pair<float, float> pos)
       -> std::shared_ptr<DataStorage>;
+
+  [[nodiscard]] auto Serialize() const -> nlohmann::json override {
+    return DfdNode::Serialize("DataStorage");
+  }
+  [[nodiscard]] static auto DeSerialize(nlohmann::json json)
+      -> std::shared_ptr<DataStorage>;
+
   std::vector<std::shared_ptr<DataItem>> stored_data_items_;
 
 private:

@@ -1,11 +1,11 @@
 #include <node_model/DataProcessNode.h>
+#include <node_model/util/widgets.h>
 
 void DataProcessNode::DrawCustomContent() const {
 
-  ImGui::Text("%s", data_processing_.GetDescription().c_str());
+  //  ImGui::Text("%s", data_processing_.GetDescription().c_str());
 
-  std::string button_name =
-      "Navigate to Sub Data Flow Diagram##" + std::to_string(GetId());
+  std::string button_name = "Open Sub DFD##" + std::to_string(GetId());
   if (ImGui::Button(button_name.c_str())) {
     NavigateToNodeEditorById(data_processing_.GetSubDataFlowDiagramId());
   }

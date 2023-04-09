@@ -5,15 +5,14 @@
 #include <dfd_editor/MultCanvasWindow.h>
 #include <dfd_editor/NotificationWindow.h>
 #include <dfd_model/Dfd.h>
+#include <filesystem>
 #include <memory>
 #include <ui/BaseWindow.h>
-#include <ui/MainMenuBar.h>
 
-#include <filesystem>
 void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   Logger::Trace("Initializing Dear ImGui");
   IMGUI_CHECKVERSION();
-  context_ = ImGui::CreateContext();
+  ImGui::CreateContext();
 
   IoConfig();
 
@@ -22,7 +21,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui_ImplOpenGL3_Init(glsl_version);
   ImGui::StyleColorsDark();
 
-  AddWindow(std::make_shared<BaseWindow>("test"));
+  // AddWindow
   AddWindow(std::make_shared<NotificationWindow>());
   Logger::Info("Welcome to the ImDFD");
 
@@ -33,13 +32,13 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   auto info_window = std::make_shared<InfoWindow>();
   AddWindow(info_window);
 
-  auto test_dfd = std::make_shared<Dfd>("test_dfd");
-  test_dfd->CreateTestData();
+  dfd_manager_.AddDfdLoadedCallback(
+      [mult_canvas_window, info_window](const std::shared_ptr<Dfd> &dfd) {
+        mult_canvas_window->LoadDfd(dfd);
+        info_window->LoadDfd(dfd);
+      });
 
-  mult_canvas_window->LoadDfd(test_dfd);
-  info_window->LoadDfd(test_dfd);
-
-  auto str = test_dfd->Serialize();
+  dfd_manager_.NewDfd();
 }
 
 void DearImGui::NewFrame() {
@@ -55,8 +54,8 @@ void DearImGui::Draw() {
 
   ImGui::ShowDemoWindow();
 
-  MainMenuBar menu_bar;
-  menu_bar.Show();
+  menu_bar_.Show();
+
   for (auto &window : windows_) {
     window->Draw();
   }
@@ -96,13 +95,13 @@ void DearImGui::IoConfig() {
 
   // font
   constexpr float kFontSize = 26.0F;
-  const auto fonts_dir =
+  const auto kFontsDir =
       std::filesystem::current_path().parent_path() / "data" / "fonts";
-  if (std::filesystem::exists(fonts_dir)) {
-    for (const auto &font_path :
-        std::filesystem::directory_iterator(fonts_dir)) {
-      if (font_path.path().extension() == ".ttf") {
-        imgui_io.Fonts->AddFontFromFileTTF(font_path.path().string().data(),
+  if (std::filesystem::exists(kFontsDir)) {
+    for (const auto &kFontPath :
+        std::filesystem::directory_iterator(kFontsDir)) {
+      if (kFontPath.path().extension() == ".ttf") {
+        imgui_io.Fonts->AddFontFromFileTTF(kFontPath.path().string().data(),
             kFontSize, nullptr, imgui_io.Fonts->GetGlyphRangesChineseFull());
         break;
       }

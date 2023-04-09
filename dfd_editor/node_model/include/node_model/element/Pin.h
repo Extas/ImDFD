@@ -25,7 +25,6 @@ public:
     ed::BeginPin(GetId(), pin_kind);
     ImGui::Text("%s", GetName().c_str());
     ed::EndPin();
-    ImGui::SameLine();
   }
 
 private:
@@ -45,7 +44,7 @@ public:
   }
 
 private:
-  std::string default_name_ = "Out";
+  std::string default_name_ = "Out ->";
 };
 
 class InPin : public Pin {
@@ -61,7 +60,7 @@ public:
   }
 
 private:
-  std::string default_name_ = "In";
+  std::string default_name_ = "-> In";
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_PIN_H_

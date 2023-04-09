@@ -14,24 +14,43 @@ class DataFlow;
 
 class DfdNode : public Element {
 public:
-  explicit DfdNode(std::string name, std::pair<float, float> pos)
-      : name_(std::move(name)), position_(pos) {
+  explicit DfdNode(std::string name, std::pair<float, float> pos,
+      std::string description = "")
+      : name_(std::move(name)), position_(pos),
+        description_(std::move(description)) {
   }
 
-  DfdNode(uint64_t id, std::string name, std::pair<float, float> pos)
-      : Element(id), name_(std::move(name)), position_(pos) {
+  DfdNode(uint64_t id, std::string name, std::pair<float, float> pos,
+      std::string description = "")
+      : Element(id), name_(std::move(name)), position_(pos),
+        description_(std::move(description)) {
+  }
+
+  void SetPosition(float x, float y) {
+    position_ = {x, y};
   }
 
   std::string name_;
   std::pair<float, float> position_;
   std::string description_{};
+  std::vector<std::weak_ptr<DataFlow>> input_data_flows_;
+  std::vector<std::weak_ptr<DataFlow>> output_data_flows_;
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override {
     nlohmann::json json;
     json["id"] = GetElementId();
     json["name"] = name_;
-    json["position"] = {position_.first, position_.second};
+    json["pos"] = {position_.first, position_.second};
     json["description"] = description_;
+    return json;
+  }
+
+  [[nodiscard]] auto Serialize(const std::string &node_type) const
+      -> nlohmann::json {
+    nlohmann::json json;
+    json["node_type"] = node_type;
+    auto base_json = DfdNode::Serialize();
+    json.insert(base_json.begin(), base_json.end());
     return json;
   }
 
@@ -39,9 +58,7 @@ public:
     return false;
   }
 
-  std::vector<std::weak_ptr<DataFlow>> input_data_flows_;
-  std::vector<std::weak_ptr<DataFlow>> output_data_flows_;
-
+public:
   DfdNode(const DfdNode &other) = delete;
   DfdNode(DfdNode &&other) noexcept
       : Element(std::move(other)), name_(std::move(other.name_)),
