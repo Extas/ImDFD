@@ -30,9 +30,15 @@ void InfoWindow::DrawContents() {
   DrawDataItems(info_.GetDataItems());
 }
 
-void InfoWindow::DrawDataItems(
-    const std::vector<std::shared_ptr<DataItem>> &items) {
+void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
   ImGui::Text("Data Items:");
+
+  ImGui::SameLine();
+  if (ImGui::Button("Detail##")) {
+    data_item_popup_.LoadDataItems(items);
+    data_item_popup_.Open();
+  }
+  data_item_popup_.Draw();
 
   for (const auto &kDataItem : items) {
     DrawDataTypeSelector(kDataItem);
@@ -125,7 +131,7 @@ auto Info::GetDescription()
     -> std::optional<std::reference_wrapper<std::string>> {
   return description_;
 }
-auto Info::GetDataItems() -> std::vector<std::shared_ptr<DataItem>> {
+auto Info::GetDataItems() -> std::vector<std::shared_ptr<DataItem>> & {
   return data_items_;
 }
 void InfoWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
@@ -138,10 +144,8 @@ void InfoWindow::DrawDataTypeSelector(std::shared_ptr<DataItem> data_item) {
   auto id = data_item->GetElementId();
   auto current_type_name = data_item->GetDateTypeName();
 
-  // 获取 DataItemType 的派生类名称
   auto type_names = DataItem::GetDerivedTypeNames();
 
-  // 按钮标签和 Popup 标签
   std::string button_label =
       current_type_name + "##" + std::to_string(id) + "##";
   std::string popup_label = "data_type_popup_##" + std::to_string(id);
@@ -155,7 +159,6 @@ void InfoWindow::DrawDataTypeSelector(std::shared_ptr<DataItem> data_item) {
     if (ImGui::BeginPopup(popup_label.c_str())) {
       for (const auto &kTypeName : type_names) {
         if (ImGui::Button(kTypeName.c_str())) {
-          // 更新数据项的类型并关闭 Popup 菜单
           //          data_item->SetType(kTypeName);
           popup_open[id] = false;
         }

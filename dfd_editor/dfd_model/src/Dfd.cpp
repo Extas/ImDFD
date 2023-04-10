@@ -18,13 +18,14 @@ void Dfd::CreateExampleData() {
   auto data_process =
       CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
-  //  auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
-  //  auto data_item2 = DataItem::CreateIntegerDataItem("DataItem2", 0, 3);
   auto string_data_item = DataItem::CreateDataItem("DataItem1", "string");
   string_data_item->AddDataDef("format", "string", "nnnn-nnnn-nnnn-nnnn");
   auto integer_data_item = DataItem::CreateDataItem("DataItem2", "integer");
   integer_data_item->AddDataDef("min", "integer", "0");
   integer_data_item->AddDataDef("max", "integer", "3");
+  integer_data_item->AddSubDataItem(string_data_item);
+  integer_data_item->AddSubDataItem(string_data_item);
+  integer_data_item->AddSubDataItem(string_data_item);
   data_storage->AddDataItem(string_data_item);
   data_storage->AddDataItem(integer_data_item);
   data_items_.push_back(string_data_item);

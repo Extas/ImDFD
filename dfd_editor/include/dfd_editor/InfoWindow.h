@@ -1,6 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
 
+#include "DataItemPopup.h"
 #include "logging/Logger.h"
 #include <dfd_model/DataFlow.h>
 #include <dfd_model/DataItem.h>
@@ -36,7 +37,7 @@ public:
   [[nodiscard]] auto GetDescription()
       -> std::optional<std::reference_wrapper<std::string>>;
 
-  [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>>;
+  [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>> &;
 
 private:
   std::unordered_map<std::string, bool> editing_;
@@ -60,8 +61,7 @@ public:
       std::optional<std::reference_wrapper<std::string>> text,
       const std::string &label = "");
 
-  static void DrawDataItems(
-      const std::vector<std::shared_ptr<DataItem>> &items);
+  static void DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items);
 
   static void DrawDataTypeSelector(std::shared_ptr<DataItem> data_item);
 
@@ -70,6 +70,8 @@ public:
 private:
   std::shared_ptr<Dfd> dfd_;
   Info info_;
+
+  inline static DataItemPopup data_item_popup_;
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_

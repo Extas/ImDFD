@@ -10,6 +10,8 @@
 #include <set>
 #include <vector>
 
+class DataFlow;
+
 class DataItem : public Element {
 public:
   using DataDescription = std::string;
@@ -59,6 +61,11 @@ public:
     return data_json;
   }
 
+  [[nodiscard]] auto GetDataFlows() const
+      -> std::vector<std::shared_ptr<DataFlow>> {
+    return data_flows_;
+  }
+
   DataItem(std::string name, std::string type_name)
       : name_(std::move(name)), data_type_name_(std::move(type_name)) {
   }
@@ -73,6 +80,8 @@ private:
   std::string data_type_name_;
   nlohmann::json data_json;
   std::vector<std::shared_ptr<DataItem>> sub_data_items_;
+
+  std::vector<std::shared_ptr<DataFlow>> data_flows_;
 
   inline static std::set<std::string> all_type_names_;
 };

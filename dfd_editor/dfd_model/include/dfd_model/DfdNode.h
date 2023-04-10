@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <optional>
 
 #include <nlohmann/json.hpp>
 
@@ -28,6 +29,16 @@ public:
 
   void SetPosition(float x, float y) {
     position_ = {x, y};
+  }
+
+  [[nodiscard]] auto GetName()
+      -> std::optional<std::reference_wrapper<std::string>> {
+    return name_;
+  }
+
+  [[nodiscard]] auto GetDescription()
+      -> std::optional<std::reference_wrapper<std::string>> {
+    return description_;
   }
 
   std::string name_;
