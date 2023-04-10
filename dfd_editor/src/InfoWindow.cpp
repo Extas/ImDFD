@@ -1,5 +1,6 @@
 #include <dfd_editor/InfoWindow.h>
 #include <string>
+
 InfoWindow::InfoWindow() : BaseWindow("Info") {
   SignalHandel::Instance().selected_node_.connect([this](int64_t node_id) {
     auto node = dfd_->GetNodeById(node_id);
@@ -142,7 +143,7 @@ void InfoWindow::DrawDataTypeSelector(std::shared_ptr<DataItem> data_item) {
   static std::unordered_map<uint64_t, bool> popup_open;
 
   auto id = data_item->GetElementId();
-  auto current_type_name = data_item->GetDateTypeName();
+  auto current_type_name = data_item->GetDateTypeName().value().get();
 
   auto type_names = DataItem::GetDerivedTypeNames();
 

@@ -25,13 +25,14 @@ public:
       std::string type_name) -> std::shared_ptr<DataItem>;
 
   void AddDataDef(DataDescription data_description,
-      DataValueType data_value_type, DataValue data_value) {
-    data_json[data_description] = {
-        {"type", std::move(data_value_type)}, {"value", std::move(data_value)}};
-  }
+      DataValueType data_value_type, DataValue data_value);
 
   void AddSubDataItem(std::shared_ptr<DataItem> sub_data_item) {
     sub_data_items_.push_back(std::move(sub_data_item));
+  }
+
+  void AddDataFlow(std::shared_ptr<DataFlow> data_flow) {
+    data_flows_.push_back(std::move(data_flow));
   }
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
@@ -48,7 +49,8 @@ public:
     return all_type_names_;
   }
 
-  [[nodiscard]] auto GetDateTypeName() const -> std::string {
+  [[nodiscard]] auto GetDateTypeName()
+      -> std::optional<std::reference_wrapper<std::string>> {
     return data_type_name_;
   }
 

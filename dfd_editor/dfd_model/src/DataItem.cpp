@@ -50,3 +50,8 @@ auto DataItem::CreateDataItemWithId(uint64_t id, std::string name,
       std::make_shared<DataItem>(id, std::move(name), std::move(type_name));
   return data_item;
 }
+void DataItem::AddDataDef(DataItem::DataDescription data_description,
+    DataItem::DataValueType data_value_type, DataItem::DataValue data_value) {
+  data_json[data_description] = {
+	  {"type", std::move(data_value_type)}, {"value", std::move(data_value)}};
+}

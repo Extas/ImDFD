@@ -11,12 +11,11 @@ public:
   void Draw() override;
 
   void LoadDataItems(std::vector<std::shared_ptr<DataItem>> &data_items);
-  void DrawDataItems();
-
 private:
   std::vector<std::shared_ptr<DataItem>> *data_items_{};
+  void DrawDataItems();
+  void DrawDataItem(std::shared_ptr<DataItem>);
   void DrawAddDataItemButton();
-  void AddDataItem();
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_DATAITEMPOPUP_H_
