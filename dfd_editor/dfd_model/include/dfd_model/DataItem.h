@@ -35,6 +35,10 @@ public:
     data_flows_.push_back(std::move(data_flow));
   }
 
+  void SetDataJson(nlohmann::json data_json) {
+    this->data_json_ = data_json;
+  }
+
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
   [[nodiscard]] static auto Deserialize(nlohmann::json json)
       -> std::shared_ptr<DataItem>;
@@ -60,7 +64,7 @@ public:
   }
 
   [[nodiscard]] auto GetDataJson() const -> nlohmann::json {
-    return data_json;
+    return data_json_;
   }
 
   [[nodiscard]] auto GetDataFlows() const
@@ -80,7 +84,7 @@ public:
 private:
   std::string name_;
   std::string data_type_name_;
-  nlohmann::json data_json;
+  nlohmann::json data_json_;
   std::vector<std::shared_ptr<DataItem>> sub_data_items_;
 
   std::vector<std::shared_ptr<DataFlow>> data_flows_;

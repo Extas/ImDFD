@@ -18,6 +18,8 @@ public:
   auto operator=(const SignalHandel &) -> SignalHandel & = delete;
 
   sigslot::signal<int64_t> navigate_sub_diagram_onclick_;
+  sigslot::signal<int64_t> navigate_element_onclick_;
+
   sigslot::signal<const std::shared_ptr<Dfd> &> create_new_dfd_;
   sigslot::signal<int64_t, const std::string &, std::pair<float, float>>
       create_new_node_;

@@ -31,6 +31,8 @@ void EditorCanvas::DrawContents() {
 
   UpdateSelected();
 
+  Navigate();
+
   ed::End();
   ed::SetCurrentEditor(nullptr);
 }
@@ -200,6 +202,9 @@ void EditorCanvas::ConnectSignals() {
           ed::SetNodePosition(new_node_id, ImVec2(pos.first, pos.second));
         }
       });
+
+  SignalHandel::Instance().navigate_element_onclick_.connect(
+      [this](int64_t element_id) { NavigateToElement(element_id); });
 }
 
 void EditorCanvas::LoadDrawData() {
@@ -255,21 +260,29 @@ void EditorCanvas::UpdateSelected() {
     if (last_selected_id != kSelectedId) {
       last_selected_id = kSelectedId;
       SignalHandel::Instance().selected_link_(kSelectedId);
+      Logger::Trace("[EditorCanvas {}] Selected link {}", GetId(), kSelectedId);
     }
   }
 }
 
 void EditorCanvas::NavigateToElement(uint64_t element_id) {
-  auto node = node_manager_.GetNodeById(element_id);
-  if (node.has_value()) {
-    ed::SelectNode(ed::NodeId(element_id), false);
-  } else {
-    ed::SelectLink(ed::LinkId(element_id), false);
-  }
-
-  ed::NavigateToSelection();
+  navigate_id = element_id;
+  need_navigate_ = true;
 }
 
 void EditorCanvas::ResetZoom() {
   ed::NavigateToContent();
+}
+
+void EditorCanvas::Navigate() {
+  if (need_navigate_) {
+    auto node = node_manager_.GetNodeById(navigate_id);
+    if (node.has_value()) {
+      ed::SelectNode(ed::NodeId(navigate_id), false);
+    } else {
+      ed::SelectLink(ed::LinkId(navigate_id), false);
+    }
+    ed::NavigateToSelection();
+    need_navigate_ = false;
+  }
 }

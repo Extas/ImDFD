@@ -9,7 +9,7 @@ auto DataItem::Serialize() const -> nlohmann::json {
   json["id"] = GetElementId();
   json["name"] = name_;
   json["type"] = data_type_name_;
-  json["data"] = data_json;
+  json["data"] = data_json_;
 
   nlohmann::json sub_data_items_json = nlohmann::json::array();
   for (const auto &sub_data_item : sub_data_items_) {
@@ -27,7 +27,7 @@ auto DataItem::Deserialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
 
   auto data_item =
       CreateDataItemWithId(id, std::move(name), std::move(type_name));
-  data_item->data_json = json.at("data");
+  data_item->data_json_ = json.at("data");
 
   for (const auto &sub_data_item_json : json.at("sub_data_items")) {
     auto sub_data_item = Deserialize(sub_data_item_json);
@@ -52,6 +52,6 @@ auto DataItem::CreateDataItemWithId(uint64_t id, std::string name,
 }
 void DataItem::AddDataDef(DataItem::DataDescription data_description,
     DataItem::DataValueType data_value_type, DataItem::DataValue data_value) {
-  data_json[data_description] = {
-	  {"type", std::move(data_value_type)}, {"value", std::move(data_value)}};
+  data_json_[data_description] = {
+      {"type", std::move(data_value_type)}, {"value", std::move(data_value)}};
 }
