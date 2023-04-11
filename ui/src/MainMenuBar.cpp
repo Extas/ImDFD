@@ -10,11 +10,13 @@ MainMenuBar::MainMenuBar() {
   SetupHelpMenu();
 }
 
+static bool has_opened = false;
 void MainMenuBar::Show() {
   BaseMenuBar::Show();
   file_dialog_.Display();
 
   if (file_dialog_.HasSelected()) {
+    has_opened = true;
     switch (file_operate_type_) {
     case 0:
       SignalHandel::Instance().menu_open_click_(
@@ -52,7 +54,17 @@ void MainMenuBar::SetupFileMenu() {
 
   file_menu.AddItem("Save", [this]() {
     Logger::Trace("Save menu item clicked");
-    SignalHandel::Instance().menu_save_click_();
+    if (has_opened) {
+      SignalHandel::Instance().menu_save_click_();
+    } else {
+      ImGui::FileBrowser save_dialog(ImGuiFileBrowserFlags_EnterNewFilename |
+                                     ImGuiFileBrowserFlags_CreateNewDir);
+      file_operate_type_ = 1;
+      file_dialog_ = save_dialog;
+      file_dialog_.SetTitle("Save File As");
+      file_dialog_.Open();
+      has_opened = true;
+    }
   });
 
   file_menu.AddItem("Save As", [this]() {
@@ -64,6 +76,7 @@ void MainMenuBar::SetupFileMenu() {
     file_dialog_ = save_dialog;
     file_dialog_.SetTitle("Save File As");
     file_dialog_.Open();
+    has_opened = true;
   });
 }
 

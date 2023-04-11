@@ -44,9 +44,14 @@ void DfdManager::SaveAsDfdToFile(
 }
 
 void DfdManager::NewDfd() {
-  current_dfd_ = std::make_shared<Dfd>("example");
-  current_dfd_->CreateExampleData();
-  dfd_loaded_callbacks_(current_dfd_);
+  auto path = std::filesystem::current_path().parent_path() / "data" / "example.dfd";
+  if (!std::filesystem::exists(path)) {
+    current_dfd_ = std::make_shared<Dfd>("example");
+    current_dfd_->CreateExampleData();
+    dfd_loaded_callbacks_(current_dfd_);
+    return;
+  }
+  OpenDfdFormFile(path);
 }
 
 void DfdManager::SaveDfd() {

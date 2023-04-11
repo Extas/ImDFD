@@ -26,14 +26,20 @@ auto NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
 auto NodeManager::AddExternalEntityNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode> {
   auto node = std::make_shared<ExternalEntityNode>(node_id, name, position);
-  node->AddOutputPin((node_id << 16) + 1ULL, nullptr);
+  uint64_t input_pin_id = (node_id << 16) + 1ULL;
+  node->AddInputPin(input_pin_id, nullptr);
+  uint64_t output_pin_id = input_pin_id + 1ULL;
+  node->AddOutputPin(output_pin_id, nullptr);
   AddNode(node);
   return node;
 }
 auto NodeManager::AddDataStorageNode(uint64_t node_id, std::string *name,
     std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode> {
   auto node = std::make_shared<DataStorageNode>(node_id, name, position);
-  node->AddInputPin((node_id << 16) + 1ULL, nullptr);
+  uint64_t input_pin_id = (node_id << 16) + 1ULL;
+  node->AddInputPin(input_pin_id, nullptr);
+  uint64_t output_pin_id = input_pin_id + 1ULL;
+  node->AddOutputPin(output_pin_id, nullptr);
   AddNode(node);
   return node;
 }
