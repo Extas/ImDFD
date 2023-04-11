@@ -18,15 +18,26 @@ void Dfd::CreateExampleData() {
   auto data_process =
       CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
-  auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
-  data_storage->stored_data_items_.push_back(data_item);
-  data_items_.push_back(data_item);
+  auto string_data_item = DataItem::CreateDataItem("DataItem1", "string");
+  string_data_item->AddDataDef("format", "string", "nnnn-nnnn-nnnn-nnnn");
+  auto integer_data_item = DataItem::CreateDataItem("DataItem2", "integer");
+  integer_data_item->AddDataDef("min", "integer", "0");
+  integer_data_item->AddDataDef("max", "integer", "3");
+  integer_data_item->AddSubDataItem(string_data_item);
+  integer_data_item->AddSubDataItem(string_data_item);
+  integer_data_item->AddSubDataItem(string_data_item);
+  data_storage->AddDataItem(string_data_item);
+  data_storage->AddDataItem(integer_data_item);
+  data_items_.push_back(string_data_item);
 
   auto data_flow_1 = CreateDataFlow(
       "DataFlow1", external_entity, data_process, std::make_pair(0, 0));
+  data_flow_1->AddDataItem(string_data_item);
+  data_flows_.push_back(data_flow_1);
 
   auto data_flow_2 = CreateDataFlow(
       "DataFlow2", data_process, data_storage, std::make_pair(0, 0));
+  data_flow_2->AddDataItem(integer_data_item);
   data_flows_.push_back(data_flow_2);
 }
 
@@ -229,7 +240,7 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
   }
 
   for (const auto &item_json : json["data_items"]) {
-    auto data_item = DataItem::DeSerialize(item_json);
+    auto data_item = DataItem::Deserialize(item_json);
     dfd->data_items_.push_back(data_item);
   }
 

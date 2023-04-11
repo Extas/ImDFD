@@ -6,17 +6,17 @@ void CreateNewNodePopup::DrawContents() {
   if (ImGui::MenuItem("Date Process")) {
     Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
         "Date Process");
-    SignalHandel::Instance().create_new_node_(canvas_id_, "DataProcess", pos_);
+    SignalHandel::Instance().create_new_node_(canvas_id_, "DataProcess", GetPosition());
   }
   if (ImGui::MenuItem("External Entity")) {
     Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
         "External Entity");
     SignalHandel::Instance().create_new_node_(
-        canvas_id_, "ExternalEntity", pos_);
+        canvas_id_, "ExternalEntity", GetPosition());
   }
   if (ImGui::MenuItem("Data Store")) {
     Logger::Trace("[CreateNewNodePopup {}] MenuItem {} Clicked", canvas_id_,
         "Data Store");
-    SignalHandel::Instance().create_new_node_(canvas_id_, "DataStorage", pos_);
+    SignalHandel::Instance().create_new_node_(canvas_id_, "DataStorage", GetPosition());
   }
 }

@@ -70,7 +70,7 @@ auto DataFlow::DeSerialize(nlohmann::json json,
   // Deserialize data_items_
   auto data_items_json = json["data_items"].get<nlohmann::json>();
   for (const auto &kItem : data_items_json) {
-    data_flow->data_items_.push_back(DataItem::DeSerialize(kItem));
+    data_flow->data_items_.push_back(DataItem::Deserialize(kItem));
   }
 
   return data_flow;
@@ -78,4 +78,13 @@ auto DataFlow::DeSerialize(nlohmann::json json,
 auto DataFlow::HasNode(uint64_t node_id) const -> bool {
   return source_->GetElementId() == node_id ||
          destination_->GetElementId() == node_id;
+}
+
+void DataFlow::AddDataItem(std::shared_ptr<DataItem> data_item) {
+  data_item->AddDataFlow(shared_from_this());
+  data_items_.push_back(std::move(data_item));
+}
+void DataFlow::RemoveDataItem(const std::shared_ptr<DataItem>& data_item) {
+  data_item->DeleteDataFlow(shared_from_this());
+  data_items_.erase(std::remove(data_items_.begin(), data_items_.end(), data_item), data_items_.end());
 }

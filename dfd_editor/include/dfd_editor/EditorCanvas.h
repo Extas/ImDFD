@@ -9,6 +9,7 @@
 #include <node_model/NodeManager.h>
 #include <node_model/element/Link.h>
 #include <signal/SignalHandel.h>
+#include <stdint.h>
 #include <ui/BaseWindow.h>
 
 #include <vector>
@@ -56,6 +57,10 @@ private:
 
   void ConnectSignals();
   bool is_first_frame_ = true;
+
+  void Navigate();
+  uint64_t navigate_id = -1;
+  bool need_navigate_ = false;
 
 public:
   EditorCanvas(EditorCanvas &&) = delete;

@@ -1,49 +1,59 @@
-#include "dfd_model/data_type/DataItemType.h"
 #include <dfd_model/DataItem.h>
-#include <nlohmann/json.hpp>
-
-auto DataItem::Serialize() const -> nlohmann::json {
-  nlohmann::json json;
-  json["id"] = GetElementId();
-  json["name"] = name_;
-  json["data_type"] = data_type_->Serialize();
-  return json;
-}
 
 auto DataItem::IsValid() const -> bool {
   return true;
 }
 
-auto DataItem::DeSerialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
-  auto id = json["id"].get<uint64_t>();
-  auto name = json["name"].get<std::string>();
-  auto data_type_json = json["data_type"];
-  auto base_data_type = DataItemType::DeSerialize(data_type_json);
+auto DataItem::Serialize() const -> nlohmann::json {
+  nlohmann::json json;
+  json["id"] = GetElementId();
+  json["name"] = name_;
+  json["type"] = data_type_name_;
+  json["data"] = data_json_;
 
-  std::shared_ptr<DataItemType> data_type;
-
-  if (data_type_json["type"] == "string") {
-    auto string_data_type =
-        std::dynamic_pointer_cast<StringDataType>(base_data_type);
-    data_type = string_data_type;
-  } else if (data_type_json["type"] == "integer") {
-    auto integer_data_type =
-        std::dynamic_pointer_cast<IntegerDataType>(base_data_type);
-    data_type = integer_data_type;
-  } else {
-    throw std::runtime_error("Unknown data type");
+  nlohmann::json sub_data_items_json = nlohmann::json::array();
+  for (const auto &sub_data_item : sub_data_items_) {
+    sub_data_items_json.push_back(sub_data_item->Serialize());
   }
+  json["sub_data_items"] = sub_data_items_json;
 
-  return std::shared_ptr<DataItem>(new DataItem(id, name, data_type));
+  return json;
 }
 
-auto DataItemType::DeSerialize(nlohmann::json json)
-    -> std::shared_ptr<DataItemType> {
-  if (json["type"] == "string") {
-    return StringDataType::DeSerialize(json);
+auto DataItem::Deserialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
+  uint64_t id = json.at("id");
+  std::string name = json.at("name");
+  std::string type_name = json.at("type");
+
+  auto data_item =
+      CreateDataItemWithId(id, std::move(name), std::move(type_name));
+  data_item->data_json_ = json.at("data");
+
+  for (const auto &sub_data_item_json : json.at("sub_data_items")) {
+    auto sub_data_item = Deserialize(sub_data_item_json);
+    data_item->sub_data_items_.push_back(sub_data_item);
   }
-  if (json["type"] == "integer") {
-    return IntegerDataType::DeSerialize(json);
-  }
-  throw std::runtime_error("Unknown data type");
+
+  return data_item;
+}
+auto DataItem::CreateDataItem(std::string name, std::string type_name)
+    -> std::shared_ptr<DataItem> {
+  all_type_names_.insert(type_name);
+  auto data_item =
+      std::make_shared<DataItem>(std::move(name), std::move(type_name));
+  all_items_.push_back(data_item);
+  return data_item;
+}
+auto DataItem::CreateDataItemWithId(uint64_t id, std::string name,
+    std::string type_name) -> std::shared_ptr<DataItem> {
+  all_type_names_.insert(type_name);
+  auto data_item =
+      std::make_shared<DataItem>(id, std::move(name), std::move(type_name));
+  all_items_.push_back(data_item);
+  return data_item;
+}
+void DataItem::AddDataDef(DataItem::DataDescription data_description,
+    DataItem::DataValueType data_value_type, DataItem::DataValue data_value) {
+  data_json_[data_description] = {
+      {"type", std::move(data_value_type)}, {"value", std::move(data_value)}};
 }

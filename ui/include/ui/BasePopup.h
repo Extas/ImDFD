@@ -2,7 +2,9 @@
 #define IMDFD_UI_INCLUDE_UI_BASEPOPUP_H_
 
 #include <imgui.h>
+#include <signal/SignalHandel.h>
 #include <string>
+#include <ui/BasePopup.h>
 
 class BasePopup {
 public:
@@ -11,6 +13,7 @@ public:
 
   virtual ~BasePopup() = default;
 
+
   virtual void DrawContents() = 0;
 
   virtual void Draw();
@@ -18,8 +21,25 @@ public:
 private:
   std::string title_;
   bool is_open_ = false;
+  std::pair<float, float> pos_;
 
 public:
+  void SetPosition(float x, float y) {
+    pos_ = {x, y};
+  }
+
+  [[nodiscard]] auto GetPosition() const -> std::pair<float, float> {
+    return pos_;
+  }
+
+  [[nodiscard]] auto IsOpen() const -> bool {
+    return is_open_;
+  }
+
+  [[nodiscard]] auto GetTitle() const -> const std::string & {
+    return title_;
+  }
+
   void Close() {
     is_open_ = false;
   }

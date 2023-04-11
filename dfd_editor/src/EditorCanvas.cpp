@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <dfd_editor/EditorCanvas.h>
 #include <signal/SignalHandel.h>
 
@@ -29,6 +30,8 @@ void EditorCanvas::DrawContents() {
   HandleDelete();
 
   UpdateSelected();
+
+  Navigate();
 
   ed::End();
   ed::SetCurrentEditor(nullptr);
@@ -199,6 +202,9 @@ void EditorCanvas::ConnectSignals() {
           ed::SetNodePosition(new_node_id, ImVec2(pos.first, pos.second));
         }
       });
+
+  SignalHandel::Instance().navigate_element_onclick_.connect(
+      [this](int64_t element_id) { NavigateToElement(element_id); });
 }
 
 void EditorCanvas::LoadDrawData() {
@@ -232,6 +238,7 @@ void EditorCanvas::LoadDrawData() {
 }
 
 void EditorCanvas::UpdateSelected() {
+  static unsigned int last_selected_id = 0;
   selected_nodes_.resize(ed::GetSelectedObjectCount());
   selected_links_.resize(ed::GetSelectedObjectCount());
   int node_count = ed::GetSelectedNodes(
@@ -243,23 +250,39 @@ void EditorCanvas::UpdateSelected() {
   selected_links_.resize(link_count);
 
   if (selected_nodes_.size() == 1) {
-    SignalHandel::Instance().selected_node_(selected_nodes_[0].Get());
+    const auto kSelectedId = selected_nodes_[0].Get();
+    if (last_selected_id != kSelectedId) {
+      last_selected_id = kSelectedId;
+      SignalHandel::Instance().selected_node_(kSelectedId);
+    }
   } else if (selected_links_.size() == 1) {
-    SignalHandel::Instance().selected_link_(selected_links_[0].Get());
+    const auto kSelectedId = selected_links_[0].Get();
+    if (last_selected_id != kSelectedId) {
+      last_selected_id = kSelectedId;
+      SignalHandel::Instance().selected_link_(kSelectedId);
+      Logger::Trace("[EditorCanvas {}] Selected link {}", GetId(), kSelectedId);
+    }
   }
 }
 
 void EditorCanvas::NavigateToElement(uint64_t element_id) {
-  auto node = node_manager_.GetNodeById(element_id);
-  if (node.has_value()) {
-    ed::SelectNode(ed::NodeId(element_id), false);
-  } else {
-    ed::SelectLink(ed::LinkId(element_id), false);
-  }
-
-  ed::NavigateToSelection();
+  navigate_id = element_id;
+  need_navigate_ = true;
 }
 
 void EditorCanvas::ResetZoom() {
   ed::NavigateToContent();
+}
+
+void EditorCanvas::Navigate() {
+  if (need_navigate_) {
+    auto node = node_manager_.GetNodeById(navigate_id);
+    if (node.has_value()) {
+      ed::SelectNode(ed::NodeId(navigate_id), false);
+    } else {
+      ed::SelectLink(ed::LinkId(navigate_id), false);
+    }
+    ed::NavigateToSelection();
+    need_navigate_ = false;
+  }
 }
