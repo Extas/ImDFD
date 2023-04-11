@@ -40,9 +40,10 @@ public:
   [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>> &;
 
   [[nodiscard]] auto GetElement() -> std::shared_ptr<Element>;
-  private:
-  std::unordered_map<std::string, bool> editing_;
+  bool has_data_items_ = false;
+private:
 
+  std::unordered_map<std::string, bool> editing_;
   std::optional<std::reference_wrapper<std::string>> name_;
   std::optional<std::reference_wrapper<std::string>> description_;
   std::vector<std::shared_ptr<DataItem>> data_items_;

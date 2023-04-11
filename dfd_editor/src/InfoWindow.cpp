@@ -28,7 +28,9 @@ void InfoWindow::DrawContents() {
   DrawEditableTextValue(info_.GetDescription(), "Description:");
   ImGui::Separator();
 
-  DrawDataItems(info_.GetDataItems());
+  if (info_.has_data_items_) {
+    DrawDataItems(info_.GetDataItems());
+  }
 }
 
 void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
@@ -42,11 +44,12 @@ void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
   data_item_popup_.Draw();
 
   for (const auto &kDataItem : items) {
-    DrawDataTypeSelector(kDataItem);
+    ImGui::Indent();
+    ImGui::BulletText("%s", kDataItem->GetName().value().get().c_str());
     ImGui::SameLine();
-
-    DrawEditableTextValue(
-        kDataItem->GetName(), "##" + std::to_string(kDataItem->GetElementId()));
+    ImGui::Text(
+        "Type: %s", kDataItem->GetDateTypeName().value().get().c_str());
+    ImGui::Unindent();
   }
 }
 void InfoWindow::DrawEditableTextValue(
@@ -102,6 +105,7 @@ void Info::LoadNode(const std::shared_ptr<DfdNode> &node) {
     if (auto data_process = std::dynamic_pointer_cast<DataProcess>(node)) {
       description_ = std::ref(node->description_);
     } else if (auto data_store = std::dynamic_pointer_cast<DataStorage>(node)) {
+      has_data_items_ = true;
       data_items_ = data_store->stored_data_items_;
     } else if (auto data_flow = std::dynamic_pointer_cast<DataFlow>(node)) {
     }
@@ -110,11 +114,13 @@ void Info::LoadNode(const std::shared_ptr<DfdNode> &node) {
 void Info::LoadLink(const std::shared_ptr<DataFlow> &link) {
   if (link) {
     name_ = link->name_;
+    has_data_items_ = true;
     data_items_ = link->data_items_;
   }
 }
 void Info::LoadElement(const std::shared_ptr<Element> &element) {
   current_element_ = element;
+  has_data_items_ = false;
   if (current_element_) {
     if (auto link = std::dynamic_pointer_cast<DataFlow>(current_element_)) {
       LoadLink(link);
