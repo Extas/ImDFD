@@ -84,3 +84,7 @@ void DataFlow::AddDataItem(std::shared_ptr<DataItem> data_item) {
   data_item->AddDataFlow(shared_from_this());
   data_items_.push_back(std::move(data_item));
 }
+void DataFlow::RemoveDataItem(const std::shared_ptr<DataItem>& data_item) {
+  data_item->DeleteDataFlow(shared_from_this());
+  data_items_.erase(std::remove(data_items_.begin(), data_items_.end(), data_item), data_items_.end());
+}

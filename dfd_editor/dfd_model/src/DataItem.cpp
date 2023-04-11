@@ -41,6 +41,7 @@ auto DataItem::CreateDataItem(std::string name, std::string type_name)
   all_type_names_.insert(type_name);
   auto data_item =
       std::make_shared<DataItem>(std::move(name), std::move(type_name));
+  all_items_.push_back(data_item);
   return data_item;
 }
 auto DataItem::CreateDataItemWithId(uint64_t id, std::string name,
@@ -48,6 +49,7 @@ auto DataItem::CreateDataItemWithId(uint64_t id, std::string name,
   all_type_names_.insert(type_name);
   auto data_item =
       std::make_shared<DataItem>(id, std::move(name), std::move(type_name));
+  all_items_.push_back(data_item);
   return data_item;
 }
 void DataItem::AddDataDef(DataItem::DataDescription data_description,

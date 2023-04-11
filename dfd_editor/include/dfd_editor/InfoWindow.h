@@ -39,7 +39,8 @@ public:
 
   [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>> &;
 
-private:
+  [[nodiscard]] auto GetElement() -> std::shared_ptr<Element>;
+  private:
   std::unordered_map<std::string, bool> editing_;
 
   std::optional<std::reference_wrapper<std::string>> name_;
@@ -61,7 +62,7 @@ public:
       std::optional<std::reference_wrapper<std::string>> text,
       const std::string &label = "");
 
-  static void DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items);
+  void DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items);
 
   static void DrawDataTypeSelector(std::shared_ptr<DataItem> data_item);
 

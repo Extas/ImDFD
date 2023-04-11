@@ -6,17 +6,44 @@
 #include <ui/Widgets.h>
 #include <vector>
 
-// 在DataItemPopup.cpp中实现
 DataItemPopup::DataItemPopup() : BasePopup("Data Items") {
 }
 
 void DataItemPopup::DrawContents() {
   DrawDataItems();
+
   DrawAddDataItemButton();
+  ImGui::SameLine();
+  DarwAddDataItemPopup();
 
   if (ImGui::Button("Close")) {
     ImGui::CloseCurrentPopup();
   }
+}
+void DataItemPopup::DarwAddDataItemPopup() {
+  auto all_data_items = DataItem::GetAllItems();
+
+  std::map<uint64_t, std::string> data_items_map;
+  for (const auto &data_item : all_data_items) {
+    data_items_map[data_item->GetElementId()] =
+        data_item->GetName().value().get();
+  }
+
+  imdfd::ui::widgets::ListWithFilterPopup popup(
+      "My List", data_items_map, [this, &all_data_items](uint64_t item_id) {
+        for (const auto &data_item : all_data_items) {
+          if (data_item->GetElementId() == item_id) {
+            data_items_->push_back(data_item);
+            break;
+          }
+        }
+      });
+
+  if (ImGui::Button("Add Existing Data Item")) {
+    popup.Open();
+  }
+
+  popup.Draw();
 }
 
 void DataItemPopup::Draw() {
@@ -39,6 +66,9 @@ void DataItemPopup::DrawDataItems() {
 
 void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
   ImGui::PushID(data_item->GetElementId());
+
+  bool should_remove_data_item = false;
+
   imdfd::ui::widgets::DrawInputText(
       data_item->GetName().value().get(), "Name: ");
   imdfd::ui::widgets::DrawInputText(
@@ -83,7 +113,6 @@ void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
     }
     data_json[update.second.first]["value"] = update.second.second;
   }
-  // 删除选定的 Data Definitions
   for (const auto &key : keys_to_remove) {
     data_json.erase(key);
   }
@@ -112,27 +141,19 @@ void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
 
   ImGui::Unindent();
 
-  //  auto sub_data_items = data_item->GetSubDataItems();
-  //  if (!sub_data_items.empty()) {
-  //    static bool is_expanded = false; // 控制展开状态的变量
-  //    ImGui::Text("Sub Data Items: ");
-  //    ImGui::SetNextItemWidth(100);
-  //    ImGui::SameLine();
-  //    ImGui::Checkbox("Expand", &is_expanded); // 展开控件
-  //    ImGui::Indent();
-  //    if (is_expanded) { // 如果展开了，则显示所有子数据项
-  //      for (const auto &sub_data_item : sub_data_items) {
-  //        auto sub_data_item_name = sub_data_item->GetName().value().get();
-  //        DrawDataItem(sub_data_item);
-  //      }
-  //    } else { // 否则只显示子数据项的名称
-  //      for (const auto &sub_data_item : sub_data_items) {
-  //        auto sub_data_item_name = sub_data_item->GetName().value().get();
-  //        ImGui::Text("%s", sub_data_item_name.c_str());
-  //      }
-  //    }
-  //    ImGui::Unindent();
-  //  }
+  if (ImGui::Button("Delete Data Item")) {
+    should_remove_data_item = true;
+  }
+
+  if (should_remove_data_item) {
+    if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
+      std::dynamic_pointer_cast<DataFlow>(element_)->RemoveDataItem(data_item);
+    }
+    if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
+      std::dynamic_pointer_cast<DataStorage>(element_)->RemoveDataItem(
+          data_item);
+    }
+  }
 
   ImGui::PopID();
   ImGui::Separator();
@@ -144,6 +165,27 @@ void DataItemPopup::LoadDataItems(
 }
 
 void DataItemPopup::DrawAddDataItemButton() {
-  if (ImGui::Button("Add Data Item")) {
+  if (ImGui::Button("Create New Data Item")) {
+    if (data_items_ != nullptr) {
+      if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
+        std::dynamic_pointer_cast<DataFlow>(element_)->AddDataItem(
+            DataItem::CreateDataItem("New Data Item", "No Type"));
+      }
+      if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
+        std::dynamic_pointer_cast<DataStorage>(element_)->AddDataItem(
+            DataItem::CreateDataItem("New Data Item", "No Type"));
+      }
+    }
+  }
+}
+
+void DataItemPopup::SetDataFlow(std::shared_ptr<Element> data_flow) {
+  element_ = data_flow;
+  if (std::dynamic_pointer_cast<DataFlow>(data_flow) != nullptr) {
+    LoadDataItems(std::dynamic_pointer_cast<DataFlow>(data_flow)->data_items_);
+  }
+  if (std::dynamic_pointer_cast<DataStorage>(data_flow) != nullptr) {
+    LoadDataItems(
+        std::dynamic_pointer_cast<DataStorage>(data_flow)->stored_data_items_);
   }
 }

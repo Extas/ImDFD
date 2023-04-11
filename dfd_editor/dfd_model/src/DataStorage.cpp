@@ -46,3 +46,8 @@ auto DataStorage::Serialize() const -> nlohmann::json {
 
   return json;
 }
+void DataStorage::RemoveDataItem(const std::shared_ptr<DataItem> &data_item) {
+  stored_data_items_.erase(std::remove(stored_data_items_.begin(),
+                               stored_data_items_.end(), data_item),
+      stored_data_items_.end());
+}

@@ -36,7 +36,7 @@ void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
 
   ImGui::SameLine();
   if (ImGui::Button("Detail##")) {
-    data_item_popup_.LoadDataItems(items);
+    data_item_popup_.SetDataFlow(info_.GetElement());
     data_item_popup_.Open();
   }
   data_item_popup_.Draw();
@@ -134,6 +134,9 @@ auto Info::GetDescription()
 }
 auto Info::GetDataItems() -> std::vector<std::shared_ptr<DataItem>> & {
   return data_items_;
+}
+auto Info::GetElement() -> std::shared_ptr<Element> {
+  return current_element_;
 }
 void InfoWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   dfd_ = dfd;

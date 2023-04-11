@@ -35,6 +35,10 @@ public:
     data_flows_.push_back(std::move(data_flow));
   }
 
+  void DeleteDataFlow(std::shared_ptr<DataFlow> data_flow) {
+    data_flows_.erase(std::remove(data_flows_.begin(), data_flows_.end(), data_flow), data_flows_.end());
+  }
+
   void SetDataJson(nlohmann::json data_json) {
     this->data_json_ = data_json;
   }
@@ -56,6 +60,17 @@ public:
   [[nodiscard]] auto GetDateTypeName()
       -> std::optional<std::reference_wrapper<std::string>> {
     return data_type_name_;
+  }
+
+  [[nodiscard]] static auto GetAllItems()
+      -> std::vector<std::shared_ptr<DataItem>> {
+
+    all_items_.erase(std::remove_if(all_items_.begin(), all_items_.end(),
+                         [](const std::shared_ptr<DataItem> &item) {
+                           return item->GetDataFlows().empty();
+                         }),
+        all_items_.end());
+    return all_items_;
   }
 
   [[nodiscard]] auto GetSubDataItems() const
@@ -90,6 +105,7 @@ private:
   std::vector<std::shared_ptr<DataFlow>> data_flows_;
 
   inline static std::set<std::string> all_type_names_;
+  inline static std::vector<std::shared_ptr<DataItem>> all_items_;
 };
 
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DATAITEM_H_

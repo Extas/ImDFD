@@ -17,7 +17,7 @@ public:
       -> std::shared_ptr<DataStorage>;
 
   void AddDataItem(std::shared_ptr<DataItem> data_item);
-
+  void RemoveDataItem(const std::shared_ptr<DataItem>& data_item);
   std::vector<std::shared_ptr<DataItem>> stored_data_items_;
 
 private:

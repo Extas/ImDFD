@@ -17,6 +17,38 @@ void imdfd::ui::widgets::DrawInputText(
   ImGui::InputText(("##" + label).c_str(), &str_ref);
 }
 
+
+
+void imdfd::ui::widgets::DrawListWithFilter(
+    std::map<uint64_t, std::string> list,
+    const std::function<void(uint64_t)>& callback) {
+  static std::string filter;
+
+  ImGui::Text("Filter:");
+  ImGui::SameLine();
+  ImGui::InputText("##Filter", &filter);
+
+  ImGui::Separator();
+  ImGui::Text("Items:");
+
+  for (const auto &item : list) {
+    if (filter.empty() || item.second.find(filter) != std::string::npos) {
+      ImGui::PushID(item.first);
+      ImGui::Text("%s", item.second.c_str());
+      ImGui::SameLine();
+      if (ImGui::Button("Select")) {
+        if (callback) {
+          callback(item.first);
+        }
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::PopID();
+    }
+  }
+}
+
+
+
 auto imdfd::ui::widgets::DrawEditableInputTexts(std::vector<std::string> texts,
     std::uint64_t id) -> std::vector<std::string> {
   if (!texts.empty()) {
