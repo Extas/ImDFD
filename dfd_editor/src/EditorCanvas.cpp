@@ -4,7 +4,8 @@
 
 #include <imgui.h>
 #include <imgui_node_editor.h>
-
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui_internal.h>
 #include <logging/Logger.h>
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
@@ -85,7 +86,24 @@ void EditorCanvas::HandleInteractions() {
           output_pin = node_manager_.GetOutputPinById(to_pin_id.Get());
         }
         if (!input_pin.has_value() || !output_pin.has_value()) {
-          Logger::Warn("[EditorCanvas {}] Invalid pin", GetId());
+          auto showLabel = [](const char* label, ImColor color)
+          {
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetTextLineHeight());
+            auto size = ImGui::CalcTextSize(label);
+
+            auto padding = ImGui::GetStyle().FramePadding;
+            auto spacing = ImGui::GetStyle().ItemSpacing;
+
+            ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(spacing.x, -spacing.y));
+
+            auto rectMin = ImGui::GetCursorScreenPos() - padding;
+            auto rectMax = ImGui::GetCursorScreenPos() + size + padding;
+
+            auto drawList = ImGui::GetWindowDrawList();
+            drawList->AddRectFilled(rectMin, rectMax, color, size.y * 0.15f);
+            ImGui::TextUnformatted(label);
+          };
+          showLabel("x Incompatible Pin Kind", ImColor(45, 32, 32, 180));
           ed::RejectNewItem();
         } else if (ed::AcceptNewItem()) {
           auto source_node =
