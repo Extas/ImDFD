@@ -86,7 +86,7 @@ asap_add_library(node_editor STATIC
         WARNING
         SOURCES
         ${IMGUI_NODE_EDITOR_SRC}
-        )
+        ${imgui_node_editor_SOURCE_DIR}/examples/blueprints-example/utilities/builders.cpp)
 target_link_libraries(node_editor PRIVATE imgui)
 target_include_directories(node_editor PUBLIC
         ${imgui_node_editor_SOURCE_DIR}/)
