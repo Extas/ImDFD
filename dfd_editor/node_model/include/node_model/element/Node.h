@@ -4,6 +4,7 @@
 #include "DrawObj.h"
 #include "Pin.h"
 
+#include <examples/blueprints-example/utilities/builders.h>
 #include <imgui_node_editor.h>
 namespace ed = ax::NodeEditor;
 
@@ -19,9 +20,8 @@ public:
       : DrawObj(node_id, name), position_(position) {
   }
 
-  void Draw() const override;
-  virtual void DrawCustomContent() const {
-  }
+  void Draw() override;
+  virtual void DrawCustomContent() const = 0;
 
   [[nodiscard]] auto GetInputPins() const -> const std::vector<InPin> &;
   [[nodiscard]] auto GetOutputPins() const -> const std::vector<OutPin> &;
@@ -45,6 +45,8 @@ private:
   std::vector<InPin> input_pins_;
   std::vector<OutPin> output_pins_;
   std::pair<float, float> *position_;
+
+  ed::Utilities::BlueprintNodeBuilder node_builder_;
 
 public:
   Node(Node &&other) noexcept

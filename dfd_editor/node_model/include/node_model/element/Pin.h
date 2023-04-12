@@ -22,9 +22,7 @@ public:
   }
 
   virtual void DrawCustom(ed::PinKind pin_kind) const {
-    ed::BeginPin(GetId(), pin_kind);
     ImGui::Text("%s", GetName().c_str());
-    ed::EndPin();
   }
 
 private:
@@ -39,7 +37,7 @@ public:
     }
   }
 
-  void Draw() const override {
+  void Draw() override {
     Pin::DrawCustom(ed::PinKind::Output);
   }
 
@@ -55,7 +53,7 @@ public:
     }
   }
 
-  void Draw() const override {
+  void Draw() override {
     Pin::DrawCustom(ed::PinKind::Input);
   }
 

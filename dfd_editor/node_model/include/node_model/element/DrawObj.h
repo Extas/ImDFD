@@ -11,7 +11,7 @@ public:
       : id_(obj_id), name_(name) {
   }
 
-  virtual void Draw() const = 0;
+  virtual void Draw() = 0;
 
   [[nodiscard]] auto GetName() const -> const std::string & {
     return *name_;

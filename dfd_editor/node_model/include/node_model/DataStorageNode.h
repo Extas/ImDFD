@@ -12,6 +12,9 @@ public:
       uint64_t node_id, std::string *name, std::pair<float, float> *position)
       : Node(node_id, name, position) {
   }
+
+  void DrawCustomContent() const override {};
+
 };
 
 #endif // IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_DATASTORAGENODE_H_

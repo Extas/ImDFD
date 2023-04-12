@@ -3,12 +3,13 @@
 
 void DataProcessNode::DrawCustomContent() const {
 
-  //  ImGui::Text("%s", data_processing_.GetDescription().c_str());
-
+//  ImGui::Text("%s", data_processing_.GetDescription().c_str());
+  ImGui::Spring(1, 0);
   std::string button_name = "Open Sub DFD##" + std::to_string(GetId());
   if (ImGui::Button(button_name.c_str())) {
     NavigateToNodeEditorById(data_processing_.GetSubDataFlowDiagramId());
   }
+  ImGui::Spring(1, 0);
 }
 
 void DataProcessNode::NavigateToNodeEditorById(int64_t node_editor_id) {
