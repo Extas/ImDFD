@@ -19,9 +19,10 @@ public:
   virtual void Draw();
 
 private:
+  std::pair<float, float> pos_;
   std::string title_;
   bool is_open_ = false;
-  std::pair<float, float> pos_;
+
 
 public:
   void SetPosition(float x, float y) {

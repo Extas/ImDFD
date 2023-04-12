@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <dfd_editor/EditorCanvas.h>
 #include <signal/SignalHandel.h>
 
@@ -86,15 +85,16 @@ void EditorCanvas::HandleInteractions() {
           output_pin = node_manager_.GetOutputPinById(to_pin_id.Get());
         }
         if (!input_pin.has_value() || !output_pin.has_value()) {
-          auto showLabel = [](const char* label, ImColor color)
-          {
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetTextLineHeight());
+          auto showLabel = [](const char *label, ImColor color) {
+            ImGui::SetCursorPosY(
+                ImGui::GetCursorPosY() - ImGui::GetTextLineHeight());
             auto size = ImGui::CalcTextSize(label);
 
             auto padding = ImGui::GetStyle().FramePadding;
             auto spacing = ImGui::GetStyle().ItemSpacing;
 
-            ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(spacing.x, -spacing.y));
+            ImGui::SetCursorPos(
+                ImGui::GetCursorPos() + ImVec2(spacing.x, -spacing.y));
 
             auto rectMin = ImGui::GetCursorScreenPos() - padding;
             auto rectMax = ImGui::GetCursorScreenPos() + size + padding;
@@ -197,17 +197,17 @@ EditorCanvas::~EditorCanvas() {
 
 void EditorCanvas::HandleRightClick() {
   auto open_popup_position = ImGui::GetMousePos();
-  create_new_node_popup_.SetPosition(
+  create_new_node_list_popup_.SetPosition(
       open_popup_position.x, open_popup_position.y);
   ed::Suspend();
   if (ed::ShowBackgroundContextMenu()) {
     Logger::Trace("[EditorCanvas {}] Show Background Context Menu", GetId());
-    create_new_node_popup_.Open();
+    create_new_node_list_popup_.Open();
   }
   ed::Resume();
 
   ed::Suspend();
-  create_new_node_popup_.Draw();
+  create_new_node_list_popup_.Draw();
   ed::Resume();
 }
 
@@ -284,7 +284,7 @@ void EditorCanvas::UpdateSelected() {
 }
 
 void EditorCanvas::NavigateToElement(uint64_t element_id) {
-  navigate_id = element_id;
+  navigate_id_ = element_id;
   need_navigate_ = true;
 }
 
@@ -294,11 +294,11 @@ void EditorCanvas::ResetZoom() {
 
 void EditorCanvas::Navigate() {
   if (need_navigate_) {
-    auto node = node_manager_.GetNodeById(navigate_id);
+    auto node = node_manager_.GetNodeById(navigate_id_);
     if (node.has_value()) {
-      ed::SelectNode(ed::NodeId(navigate_id), false);
+      ed::SelectNode(ed::NodeId(navigate_id_), false);
     } else {
-      ed::SelectLink(ed::LinkId(navigate_id), false);
+      ed::SelectLink(ed::LinkId(navigate_id_), false);
     }
     ed::NavigateToSelection();
     need_navigate_ = false;

@@ -16,17 +16,42 @@ void DrawTextWithLabel(const std::string &text, const std::string &label);
 
 void DrawInputText(std::string &str_ref, const std::string &label);
 
-void DrawListWithFilter(std::map<uint64_t, std::string> list, const std::function<void(uint64_t)>& callback);
+void DrawListWithFilter(std::map<uint64_t, std::string> list,
+    const std::function<void(uint64_t)> &callback);
+
+void DrawMenuItemList(std::map<uint64_t, std::string> list,
+    const std::function<void(uint64_t)> &callback);
 
 auto DrawEditableInputTexts(std::vector<std::string> texts, std::uint64_t id)
     -> std::vector<std::string>;
 
+class MenuItemListPopup : public BasePopup {
+public:
+  MenuItemListPopup(std::string title, std::map<uint64_t, std::string> list,
+      const std::function<void(uint64_t, std::pair<float, float>)> &callback)
+      : BasePopup(std::move(title)), list_(std::move(list)),
+        callback_(callback) {
+  }
+
+  void DrawContents() override {
+    auto new_callback = [this](uint64_t id) {
+      callback_(id, GetPosition());
+    };
+    imdfd::ui::widgets::DrawMenuItemList(list_, new_callback);
+  }
+
+private:
+  std::map<uint64_t, std::string> list_;
+  std::function<void(uint64_t, std::pair<float, float>)> callback_;
+};
+
 class ListWithFilterPopup : public BasePopup {
 public:
-  ListWithFilterPopup(std::string title,
-      std::map<uint64_t, std::string> list,
-      const std::function<void(uint64_t)>& callback)
-      : BasePopup(std::move(title)), list_(std::move(list)), callback_(callback) {}
+  ListWithFilterPopup(std::string title, std::map<uint64_t, std::string> list,
+      const std::function<void(uint64_t)> &callback)
+      : BasePopup(std::move(title)), list_(std::move(list)),
+        callback_(callback) {
+  }
 
   void DrawContents() override {
     imdfd::ui::widgets::DrawListWithFilter(list_, callback_);
@@ -36,7 +61,6 @@ private:
   std::map<uint64_t, std::string> list_;
   std::function<void(uint64_t)> callback_;
 };
-
 
 } // namespace imdfd::ui::widgets
 

@@ -17,8 +17,6 @@ void imdfd::ui::widgets::DrawInputText(
   ImGui::InputText(("##" + label).c_str(), &str_ref);
 }
 
-
-
 void imdfd::ui::widgets::DrawListWithFilter(
     std::map<uint64_t, std::string> list,
     const std::function<void(uint64_t)>& callback) {
@@ -47,6 +45,16 @@ void imdfd::ui::widgets::DrawListWithFilter(
   }
 }
 
+void imdfd::ui::widgets::DrawMenuItemList(std::map<uint64_t, std::string> list,
+    const std::function<void(uint64_t)> &callback) {
+  for (const auto &item : list) {
+    if (ImGui::MenuItem(item.second.c_str())) {
+	  if (callback) {
+		callback(item.first);
+	  }
+	}
+  }
+}
 
 
 auto imdfd::ui::widgets::DrawEditableInputTexts(std::vector<std::string> texts,

@@ -1,7 +1,7 @@
 #ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_EDITORCANVAS_H_
 
-#include <dfd_editor/CreateNewNodePopup.h>
+#include <cstdint>
 #include <dfd_editor/NotificationWindow.h>
 #include <dfd_model/Dfd.h>
 #include <imgui_node_editor.h>
@@ -9,8 +9,8 @@
 #include <node_model/NodeManager.h>
 #include <node_model/element/Link.h>
 #include <signal/SignalHandel.h>
-#include <stdint.h>
 #include <ui/BaseWindow.h>
+#include <ui/Widgets.h>
 
 #include <vector>
 namespace ed = ax::NodeEditor;
@@ -50,7 +50,37 @@ private:
   std::vector<ed::NodeId> selected_nodes_;
   std::vector<ed::LinkId> selected_links_;
 
-  CreateNewNodePopup create_new_node_popup_ = CreateNewNodePopup(GetId());
+  imdfd::ui::widgets::MenuItemListPopup create_new_node_list_popup_ =
+      imdfd::ui::widgets::MenuItemListPopup("Create New Node",
+          std::map<uint64_t, std::string>{
+              {0, "Data Process"}, {1, "External Entity"}, {2, "Data Store"}},
+          [this](uint64_t index, std::pair<float, float> pos) {
+            switch (index) {
+            case 0: {
+              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                  canvas_id_, "Data Process");
+              SignalHandel::Instance().create_new_node_(
+                  canvas_id_, "DataProcess", pos);
+              break;
+            }
+            case 1: {
+              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                  canvas_id_, "External Entity");
+              SignalHandel::Instance().create_new_node_(
+                  canvas_id_, "ExternalEntity", pos);
+              break;
+            }
+            case 2: {
+              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                  canvas_id_, "Data Store");
+              SignalHandel::Instance().create_new_node_(
+                  canvas_id_, "DataStorage", pos);
+              break;
+            }
+            default:
+              break;
+            }
+          });
 
   void HandleRightClick();
   void LoadLinkFromFlow(const std::shared_ptr<DataFlow> &data_flow_ptr);
@@ -59,7 +89,7 @@ private:
   bool is_first_frame_ = true;
 
   void Navigate();
-  uint64_t navigate_id = -1;
+  uint64_t navigate_id_ = -1;
   bool need_navigate_ = false;
 
 public:
