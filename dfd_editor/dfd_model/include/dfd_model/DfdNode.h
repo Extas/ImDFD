@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include <vector>
+#include <optional>
 
 #include <nlohmann/json.hpp>
 
@@ -26,9 +27,25 @@ public:
         description_(std::move(description)) {
   }
 
+  void SetPosition(float x, float y) {
+    position_ = {x, y};
+  }
+
+  [[nodiscard]] auto GetName()
+      -> std::optional<std::reference_wrapper<std::string>> {
+    return name_;
+  }
+
+  [[nodiscard]] auto GetDescription()
+      -> std::optional<std::reference_wrapper<std::string>> {
+    return description_;
+  }
+
   std::string name_;
   std::pair<float, float> position_;
   std::string description_{};
+  std::vector<std::weak_ptr<DataFlow>> input_data_flows_;
+  std::vector<std::weak_ptr<DataFlow>> output_data_flows_;
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override {
     nlohmann::json json;
@@ -52,9 +69,7 @@ public:
     return false;
   }
 
-  std::vector<std::weak_ptr<DataFlow>> input_data_flows_;
-  std::vector<std::weak_ptr<DataFlow>> output_data_flows_;
-
+public:
   DfdNode(const DfdNode &other) = delete;
   DfdNode(DfdNode &&other) noexcept
       : Element(std::move(other)), name_(std::move(other.name_)),

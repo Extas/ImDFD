@@ -1,6 +1,7 @@
 #include <ui/MainMenuBar.h>
 
 #include <logging/Logger.h>
+#include <signal/SignalHandel.h>
 
 MainMenuBar::MainMenuBar() {
   SetupFileMenu();
@@ -9,40 +10,74 @@ MainMenuBar::MainMenuBar() {
   SetupHelpMenu();
 }
 
+static bool has_opened = false;
+void MainMenuBar::Show() {
+  BaseMenuBar::Show();
+  file_dialog_.Display();
+
+  if (file_dialog_.HasSelected()) {
+    has_opened = true;
+    switch (file_operate_type_) {
+    case 0:
+      SignalHandel::Instance().menu_open_click_(
+          file_dialog_.GetSelected().string());
+      break;
+    case 1:
+      SignalHandel::Instance().menu_saveas_click_(
+          file_dialog_.GetSelected().string());
+      break;
+    }
+    file_dialog_.ClearSelected();
+  }
+}
+
 void MainMenuBar::SetupFileMenu() {
   auto &file_menu = GetOrAddMenu("File");
 
-  file_menu.AddItem(
-      "New", [this]() { Logger::Trace("New menu item clicked"); });
+  file_menu.AddItem("New", [this]() {
+    Logger::Trace("New menu item clicked");
+
+    SignalHandel::Instance().menu_new_click_();
+  });
+
   file_menu.AddItem("Open", [this]() {
-    ImGui::FileBrowser open_dialog;
-    file_dialog_ = open_dialog;
     Logger::Trace("Open menu item clicked");
+
+    ImGui::FileBrowser open_dialog;
+    file_operate_type_ = 0;
+    file_dialog_ = open_dialog;
+
     file_dialog_.SetTitle("Open File");
     // file_dialog_.SetTypeFilters({".h", ".cpp"});
     file_dialog_.Open();
   });
+
   file_menu.AddItem("Save", [this]() {
-    ImGui::FileBrowser save_dialog(ImGuiFileBrowserFlags_EnterNewFilename |
-                                   ImGuiFileBrowserFlags_CreateNewDir);
-    file_dialog_ = save_dialog;
     Logger::Trace("Save menu item clicked");
-    file_dialog_.SetTitle("Save File");
-    // file_dialog_.SetTypeFilters({".h", ".cpp"});
-    file_dialog_.Open();
+    if (has_opened) {
+      SignalHandel::Instance().menu_save_click_();
+    } else {
+      ImGui::FileBrowser save_dialog(ImGuiFileBrowserFlags_EnterNewFilename |
+                                     ImGuiFileBrowserFlags_CreateNewDir);
+      file_operate_type_ = 1;
+      file_dialog_ = save_dialog;
+      file_dialog_.SetTitle("Save File As");
+      file_dialog_.Open();
+      has_opened = true;
+    }
   });
 
   file_menu.AddItem("Save As", [this]() {
+    Logger::Trace("Save As menu item clicked");
+
     ImGui::FileBrowser save_dialog(ImGuiFileBrowserFlags_EnterNewFilename |
                                    ImGuiFileBrowserFlags_CreateNewDir);
+    file_operate_type_ = 1;
     file_dialog_ = save_dialog;
-    Logger::Trace("Save As menu item clicked");
     file_dialog_.SetTitle("Save File As");
-    // file_dialog_.SetTypeFilters({".h", ".cpp"});
     file_dialog_.Open();
+    has_opened = true;
   });
-  file_menu.AddItem(
-      "Exit", []() { Logger::Trace("Save As menu item clicked"); });
 }
 
 void MainMenuBar::SetupEditMenu() {
@@ -76,13 +111,4 @@ void MainMenuBar::SetupHelpMenu() {
       []() { Logger::Trace("Documentation menu item clicked"); });
   help_menu.AddItem(
       "About", []() { Logger::Trace("About menu item clicked"); });
-}
-
-auto MainMenuBar::GetFileDialog() -> ImGui::FileBrowser & {
-  return file_dialog_;
-}
-
-void MainMenuBar::Show() {
-  BaseMenuBar::Show();
-  file_dialog_.Display();
 }

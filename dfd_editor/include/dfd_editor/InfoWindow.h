@@ -1,85 +1,79 @@
-#ifndef INFOWINDOW_H
-#define INFOWINDOW_H
+#ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
+#define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
 
+#include "DataItemPopup.h"
+#include "logging/Logger.h"
+#include <dfd_model/DataFlow.h>
+#include <dfd_model/DataItem.h>
+#include <dfd_model/DataProcess.h>
+#include <dfd_model/DataStorage.h>
+#include <dfd_model/Dfd.h>
+#include <dfd_model/DfdNode.h>
+#include <dfd_model/Element.h>
+#include <dfd_model/ExternalEntity.h>
 #include <imgui.h>
+#include <signal/SignalHandel.h>
 #include <ui/BaseWindow.h>
 
+#include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
 
-class ElementInfo {
+class Info {
 public:
-  std::string name_;
-  std::string description_;
-  std::vector<std::string> data_items_;
-  std::vector<std::string> input_streams_;
-  std::vector<std::string> output_streams_;
+  Info() = default;
 
-  ElementInfo() = default;
+  void LoadNode(const std::shared_ptr<DfdNode> &node);
 
-  ElementInfo(std::string name, std::string description)
-      : name_(std::move(name)), description_(std::move(description)) {
-  }
+  void LoadLink(const std::shared_ptr<DataFlow> &link);
+
+  void LoadElement(const std::shared_ptr<Element> &element);
+
+  [[nodiscard]] auto GetName()
+      -> std::optional<std::reference_wrapper<std::string>>;
+
+  [[nodiscard]] auto GetDescription()
+      -> std::optional<std::reference_wrapper<std::string>>;
+
+  [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>> &;
+
+  [[nodiscard]] auto GetElement() -> std::shared_ptr<Element>;
+  bool has_data_items_ = false;
+private:
+
+  std::unordered_map<std::string, bool> editing_;
+  std::optional<std::reference_wrapper<std::string>> name_;
+  std::optional<std::reference_wrapper<std::string>> description_;
+  std::vector<std::shared_ptr<DataItem>> data_items_;
+  std::shared_ptr<Element> current_element_;
 };
 
 class InfoWindow : public BaseWindow {
 public:
-  explicit InfoWindow(ElementInfo &info)
-      : BaseWindow("Info"), element_info_(info) {
-  }
+  explicit InfoWindow();
 
-  void DrawContents() override {
+  void DrawContents() override;
 
-    ImGui::Text("%s", element_info_.name_.c_str());
-    ImGui::Separator();
-    ImGui::Text("%s", element_info_.description_.c_str());
+  static auto DrawTextValue(const std::optional<std::string> &text,
+      const std::string &label = "") -> bool;
 
-    if (!element_info_.data_items_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Data Items:");
-      for (auto &item : element_info_.data_items_) {
-        ImGui::Text("- %s", item.c_str());
-      }
-    }
+  static void DrawEditableTextValue(
+      std::optional<std::reference_wrapper<std::string>> text,
+      const std::string &label = "");
 
-    if (!element_info_.input_streams_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Input Streams:");
-      for (auto &stream : element_info_.input_streams_) {
-        ImGui::Text("- %s", stream.c_str());
-      }
-    }
+  void DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items);
 
-    if (!element_info_.output_streams_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Output Streams:");
-      for (auto &stream : element_info_.output_streams_) {
-        ImGui::Text("- %s", stream.c_str());
-      }
-    }
+  static void DrawDataTypeSelector(std::shared_ptr<DataItem> data_item);
 
-    // if (!info.description.empty()) {
-    //   ImGui::Separator();
-    //   ImGui::Text("Description:");
-    //   ImGui::InputTextMultiline("##Description", &info.description,
-    //       ImVec2(-1.0f, ImGui::GetTextLineHeight() * 3));
-    // }
-
-    if (!element_info_.name_.empty()) {
-      ImGui::Separator();
-      ImGui::Text("Jump to:");
-      if (ImGui::Button("Data Item Definition")) {
-      }
-      if (ImGui::Button("Input Stream Definition")) {
-      }
-      if (ImGui::Button("Output Stream Definition")) {
-      }
-    }
-  }
+  void LoadDfd(const std::shared_ptr<Dfd> &dfd);
 
 private:
-  ElementInfo element_info_;
+  std::shared_ptr<Dfd> dfd_;
+  Info info_;
+
+  inline static DataItemPopup data_item_popup_;
 };
 
-#endif // INFOWINDOW_H
+#endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_

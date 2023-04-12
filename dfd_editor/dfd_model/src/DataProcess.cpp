@@ -14,6 +14,7 @@ DataProcess::DataProcess(
 }
 auto DataProcess::Serialize() const -> nlohmann::json {
   nlohmann::json json = DfdNode::Serialize("DataProcess");
+  json["sub_dfd_"] = sub_dfd_->Serialize();
 
   return json;
 }
@@ -33,6 +34,7 @@ auto DataProcess::DeSerialize(nlohmann::json json)
   auto pos = json["pos"].get<std::pair<float, float>>();
 
   auto data_process = Create(id, name, pos);
+  data_process->sub_dfd_ = Dfd::DeSerialize(json["sub_dfd_"]);
 
   return data_process;
 }

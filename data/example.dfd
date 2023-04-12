@@ -1,0 +1,182 @@
+{
+    "data_flows": [
+        {
+            "data_items": [
+                {
+                    "data": {
+                        "format": {
+                            "type": "string",
+                            "value": "nnnn-nnnn-nnnn-nnnn"
+                        }
+                    },
+                    "id": 106,
+                    "name": "DataItem1",
+                    "sub_data_items": [],
+                    "type": "string"
+                }
+            ],
+            "description": "",
+            "destination_id": 104,
+            "id": 108,
+            "name": "订单",
+            "pos": [
+                0.0,
+                0.0
+            ],
+            "source_id": 102
+        },
+        {
+            "data_items": [
+                {
+                    "data": {
+                        "format": {
+                            "type": "string",
+                            "value": "nnnn-nnnn-nnnn-nnnn"
+                        }
+                    },
+                    "id": 106,
+                    "name": "DataItem1",
+                    "sub_data_items": [],
+                    "type": "string"
+                }
+            ],
+            "description": "",
+            "destination_id": 104,
+            "id": 108,
+            "name": "DataFlow1",
+            "pos": [
+                0.0,
+                0.0
+            ],
+            "source_id": 102
+        },
+        {
+            "data_items": [],
+            "description": "",
+            "destination_id": 104,
+            "id": 163,
+            "name": "New Dataflow",
+            "pos": [
+                0.0,
+                0.0
+            ],
+            "source_id": 162
+        },
+        {
+            "data_items": [],
+            "description": "",
+            "destination_id": 162,
+            "id": 164,
+            "name": "New Dataflow",
+            "pos": [
+                0.0,
+                0.0
+            ],
+            "source_id": 104
+        },
+        {
+            "data_items": [],
+            "description": "",
+            "destination_id": 165,
+            "id": 167,
+            "name": "New Dataflow",
+            "pos": [
+                0.0,
+                0.0
+            ],
+            "source_id": 104
+        },
+        {
+            "data_items": [],
+            "description": "",
+            "destination_id": 166,
+            "id": 168,
+            "name": "New Dataflow",
+            "pos": [
+                0.0,
+                0.0
+            ],
+            "source_id": 104
+        }
+    ],
+    "data_items": [
+        {
+            "data": {
+                "format": {
+                    "type": "string",
+                    "value": "nnnn-nnnn-nnnn-nnnn"
+                }
+            },
+            "id": 106,
+            "name": "DataItem1",
+            "sub_data_items": [],
+            "type": "string"
+        }
+    ],
+    "data_processes": [
+        {
+            "description": "数据流图",
+            "id": 104,
+            "name": "销售管理系统",
+            "node_type": "DataProcess",
+            "pos": [
+                428.0,
+                -3.0
+            ],
+            "sub_dfd_": {
+                "data_flows": [],
+                "data_items": [],
+                "data_processes": [],
+                "data_storages": [],
+                "external_entities": [],
+                "id": 105,
+                "name": "DataProcess_dfd"
+            }
+        }
+    ],
+    "data_storages": [],
+    "external_entities": [
+        {
+            "description": "",
+            "id": 102,
+            "name": "顾客",
+            "node_type": "ExternalEntity",
+            "pos": [
+                78.0,
+                -131.0
+            ]
+        },
+        {
+            "description": "",
+            "id": 162,
+            "name": "采购部门",
+            "node_type": "ExternalEntity",
+            "pos": [
+                92.0,
+                157.0
+            ]
+        },
+        {
+            "description": "",
+            "id": 165,
+            "name": "仓库",
+            "node_type": "ExternalEntity",
+            "pos": [
+                926.0,
+                -83.0
+            ]
+        },
+        {
+            "description": "",
+            "id": 166,
+            "name": "经理",
+            "node_type": "ExternalEntity",
+            "pos": [
+                956.0,
+                173.0
+            ]
+        }
+    ],
+    "id": 101,
+    "name": "example"
+}

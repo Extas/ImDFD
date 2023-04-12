@@ -4,20 +4,20 @@
 asap_push_module(ui)
 
 asap_declare_module(
-  MODULE_NAME
-  "ui"
-  DESCRIPTION
-  "UI component library for ImGui"
-  GITHUB_REPO
-  "https://github.com/extas/ImDFD"
-  AUTHOR_MAINTAINER
-  "Extas"
-  VERSION_MAJOR
-  "1"
-  VERSION_MINOR
-  "0"
-  VERSION_PATCH
-  "0")
+        MODULE_NAME
+        "ui"
+        DESCRIPTION
+        "UI component library for ImGui"
+        GITHUB_REPO
+        "https://github.com/extas/ImDFD"
+        AUTHOR_MAINTAINER
+        "Extas"
+        VERSION_MAJOR
+        "1"
+        VERSION_MINOR
+        "0"
+        VERSION_PATCH
+        "0")
 
 # -----------------------------------------------------
 # Main module target
@@ -25,48 +25,46 @@ asap_declare_module(
 set(MODULE_TARGET_NAME "ui")
 
 file(GLOB_RECURSE SOURCES
-  CONFIGURE_DEPENDS
-  src/*.cpp
-  include/*.h)
+        CONFIGURE_DEPENDS
+        src/*.cpp
+        include/*.h)
 
 asap_add_library(
-  ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
+        ${MODULE_TARGET_NAME} STATIC WARNING SOURCES
 
-  ${SOURCES}
-)
+        ${SOURCES})
 
 asap_set_language_standards(${MODULE_TARGET_NAME} CXX 17)
 
 target_link_libraries(${MODULE_TARGET_NAME}
-  PRIVATE
-  logging
-)
+        PRIVATE
+        signal
+        logging)
 
 target_link_libraries(${MODULE_TARGET_NAME}
-  PUBLIC
-  imgui
-)
+        PUBLIC
+        imgui)
 
 find_package(imgui_filebrowser)
 target_include_directories(
-  ${MODULE_TARGET_NAME}
-  PUBLIC ${imgui_filebrowser_SOURCE_DIR})
+        ${MODULE_TARGET_NAME}
+        PUBLIC ${imgui_filebrowser_SOURCE_DIR})
 
 target_include_directories(
-  ${MODULE_TARGET_NAME}
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+        ${MODULE_TARGET_NAME}
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
 target_include_directories(${MODULE_TARGET_NAME}
-  PRIVATE ${CMAKE_BINARY_DIR}/include)
+        PRIVATE ${CMAKE_BINARY_DIR}/include)
 target_include_directories(${MODULE_TARGET_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # -----------------------------------------------------
 # Tests
 # -----------------------------------------------------
-if(ASAP_BUILD_TESTS)
-  # add_subdirectory(test)
-endif()
+if (ASAP_BUILD_TESTS)
+    # add_subdirectory(test)
+endif ()
 
 asap_pop_module(ui)

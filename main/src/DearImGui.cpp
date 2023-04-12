@@ -6,7 +6,6 @@
 #include <dfd_editor/NotificationWindow.h>
 #include <dfd_model/Dfd.h>
 #include <filesystem>
-#include <fstream>
 #include <memory>
 #include <ui/BaseWindow.h>
 
@@ -22,9 +21,7 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
   ImGui_ImplOpenGL3_Init(glsl_version);
   ImGui::StyleColorsDark();
 
-  auto info = ElementInfo("test", "test");
-  AddWindow(std::make_shared<BaseWindow>("test"));
-  AddWindow(std::make_shared<InfoWindow>(info));
+  // AddWindow
   AddWindow(std::make_shared<NotificationWindow>());
   Logger::Info("Welcome to the ImDFD");
 
@@ -32,12 +29,16 @@ void DearImGui::Init(GLFWwindow *window, const char *glsl_version) {
       std::make_shared<MultCanvasWindow>("Node Editor Window");
   AddWindow(mult_canvas_window);
 
-  auto test_dfd = std::make_shared<Dfd>("test_dfd");
-  test_dfd->CreateTestData();
-  auto test_seri = test_dfd->Serialize();
-  auto test_dfd2 = Dfd::DeSerialize(test_seri);
-  mult_canvas_window->LoadDfd(test_dfd2);
-  auto str = test_dfd->Serialize();
+  auto info_window = std::make_shared<InfoWindow>();
+  AddWindow(info_window);
+
+  dfd_manager_.AddDfdLoadedCallback(
+      [mult_canvas_window, info_window](const std::shared_ptr<Dfd> &dfd) {
+        mult_canvas_window->LoadDfd(dfd);
+        info_window->LoadDfd(dfd);
+      });
+
+  dfd_manager_.NewDfd();
 }
 
 void DearImGui::NewFrame() {
@@ -54,11 +55,6 @@ void DearImGui::Draw() {
   ImGui::ShowDemoWindow();
 
   menu_bar_.Show();
-
-  if (menu_bar_.GetFileDialog().HasSelected()) {
-    auto test_file = OpenTextFile(menu_bar_.GetFileDialog().GetSelected());
-    menu_bar_.GetFileDialog().ClearSelected();
-  }
 
   for (auto &window : windows_) {
     window->Draw();
@@ -90,6 +86,9 @@ void DearImGui::Shutdown() {
 
 void DearImGui::IoConfig() {
   auto &imgui_io = ImGui::GetIO();
+  auto ini_path = std::filesystem::current_path().parent_path() / "data" /
+                  "imgui.ini";
+  ImGui::LoadIniSettingsFromDisk(ini_path.string().data());
 
   // docking and multi-viewport enable
   imgui_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -115,19 +114,4 @@ void DearImGui::IoConfig() {
 
 void DearImGui::AddWindow(std::shared_ptr<BaseWindow> window) {
   windows_.push_back(std::move(window));
-}
-
-auto DearImGui::OpenTextFile(const std::filesystem::path &filepath)
-    -> std::string {
-  std::string ret = "Error opening file!";
-
-  std::ifstream file(filepath);
-  if (file.is_open()) {
-    std::string content((std::istreambuf_iterator<char>(file)),
-        std::istreambuf_iterator<char>());
-    file.close();
-    return content;
-  }
-
-  return ret;
 }

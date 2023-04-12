@@ -11,6 +11,8 @@ MultCanvasWindow::MultCanvasWindow(std::string title)
 void MultCanvasWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   Logger::Trace("[MultCanvasWindow] Loading DFD into NodeEditor ({}: {})",
       dfd->GetElementId(), dfd->GetName());
+  dfds_.clear();
+  canvas_.clear();
   CreateNewCanvas(dfd);
   dfds_.push_back(dfd);
 
@@ -37,7 +39,6 @@ void MultCanvasWindow::DrawContents() {
 
       if (ImGui::BeginTabItem(
               tab_label.c_str(), &canvas->open_, tab_item_flags)) {
-        selected_canvas_id_ = -canvas->GetId();
         canvas->DrawContents();
         ImGui::EndTabItem();
       }

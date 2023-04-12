@@ -10,7 +10,7 @@ Dfd::Dfd(std::string name) : name_(std::move(name)) {
 Dfd::Dfd(uint64_t id, std::string name) : Element(id), name_(std::move(name)) {
 }
 
-void Dfd::CreateTestData() {
+void Dfd::CreateExampleData() {
   auto external_entity =
       CreateExternalEntityNode("ExternalEntity", std::make_pair(0, 0));
   auto data_storage =
@@ -18,15 +18,26 @@ void Dfd::CreateTestData() {
   auto data_process =
       CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
-  auto data_item = DataItem::CreateStringDataItem("DataItem1", "string");
-  data_storage->stored_data_items_.push_back(data_item);
-  data_items_.push_back(data_item);
+  auto string_data_item = DataItem::CreateDataItem("DataItem1", "string");
+  string_data_item->AddDataDef("format", "string", "nnnn-nnnn-nnnn-nnnn");
+  auto integer_data_item = DataItem::CreateDataItem("DataItem2", "integer");
+  integer_data_item->AddDataDef("min", "integer", "0");
+  integer_data_item->AddDataDef("max", "integer", "3");
+  integer_data_item->AddSubDataItem(string_data_item);
+  integer_data_item->AddSubDataItem(string_data_item);
+  integer_data_item->AddSubDataItem(string_data_item);
+  data_storage->AddDataItem(string_data_item);
+  data_storage->AddDataItem(integer_data_item);
+  data_items_.push_back(string_data_item);
 
   auto data_flow_1 = CreateDataFlow(
       "DataFlow1", external_entity, data_process, std::make_pair(0, 0));
+  data_flow_1->AddDataItem(string_data_item);
+  data_flows_.push_back(data_flow_1);
 
   auto data_flow_2 = CreateDataFlow(
       "DataFlow2", data_process, data_storage, std::make_pair(0, 0));
+  data_flow_2->AddDataItem(integer_data_item);
   data_flows_.push_back(data_flow_2);
 }
 
@@ -115,7 +126,7 @@ auto Dfd::CreateDataFlow(const std::string &name,
   data_flows_.push_back(data_flow);
   return data_flow;
 }
-auto Dfd::FindNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
+auto Dfd::GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
   auto iter = std::find_if(data_processes_.begin(), data_processes_.end(),
       [node_id](const auto &node) { return node->GetElementId() == node_id; });
   if (iter != data_processes_.end()) {
@@ -148,8 +159,8 @@ auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
 }
 auto Dfd::AddDataFlow(const std::string &name, uint64_t src_node_id,
     uint64_t dst_node_id) -> uint64_t {
-  auto src = FindNodeById(src_node_id);
-  auto dst = FindNodeById(dst_node_id);
+  auto src = GetNodeById(src_node_id);
+  auto dst = GetNodeById(dst_node_id);
   if (src && dst) {
     auto data_flow = CreateDataFlow(name, src, dst, {0, 0});
     return data_flow->GetElementId();
@@ -196,6 +207,14 @@ auto Dfd::DeleteNode(uint64_t node_id) -> bool {
 
   return true;
 }
+auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
+  auto iter = std::find_if(data_flows_.begin(), data_flows_.end(),
+      [flow_id](const auto &flow) { return flow->GetElementId() == flow_id; });
+  if (iter != data_flows_.end()) {
+    return *iter;
+  }
+  return nullptr;
+}
 
 [[nodiscard]] auto Dfd::DeSerialize(nlohmann::json json)
     -> std::shared_ptr<Dfd> {
@@ -221,15 +240,20 @@ auto Dfd::DeleteNode(uint64_t node_id) -> bool {
   }
 
   for (const auto &item_json : json["data_items"]) {
-    auto data_item = DataItem::DeSerialize(item_json);
+    auto data_item = DataItem::Deserialize(item_json);
     dfd->data_items_.push_back(data_item);
   }
 
   for (const auto &flow_json : json["data_flows"]) {
     auto data_flow = DataFlow::DeSerialize(
-        flow_json, [&](uint64_t nodeId) { return dfd->FindNodeById(nodeId); });
+        flow_json, [&](uint64_t nodeId) { return dfd->GetNodeById(nodeId); });
     dfd->data_flows_.push_back(data_flow);
   }
 
+  return dfd;
+}
+auto Dfd::LoadFromJsonString(const std::string &json) -> std::shared_ptr<Dfd> {
+  auto json_obj = nlohmann::json::parse(json);
+  auto dfd = DeSerialize(json_obj);
   return dfd;
 }

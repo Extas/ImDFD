@@ -21,6 +21,8 @@ public:
       -> std::shared_ptr<DataFlow>;
 
   void Connect();
+  void AddDataItem(std::shared_ptr<DataItem> data_item);
+  void RemoveDataItem(const std::shared_ptr<DataItem>& data_item);
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
   [[nodiscard]] static auto DeSerialize(nlohmann::json json,

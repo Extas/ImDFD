@@ -14,8 +14,6 @@ public:
 
   void Show() override;
 
-  auto GetFileDialog() -> ImGui::FileBrowser &;
-
 private:
   void SetupFileMenu();
   void SetupEditMenu();
@@ -23,6 +21,7 @@ private:
   void SetupHelpMenu();
 
   ImGui::FileBrowser file_dialog_;
+  int file_operate_type_ = 0;
 };
 
 #endif // MAINMENUBAR_H
