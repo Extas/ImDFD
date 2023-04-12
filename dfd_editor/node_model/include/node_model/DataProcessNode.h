@@ -18,6 +18,14 @@ public:
   }
 
   void DrawCustomContent() const override;
+  void DrawCustomStyleStart() const override {
+    ed::PushStyleColor(ed::StyleColor_NodeBorder, ImColor(200, 50, 50, 255));
+    ed::PushStyleVar(ed::StyleVar_NodeRounding, 50.0F);
+  }
+  void DrawCustomStyleEnd() const override {
+    ed::PopStyleColor();
+    ed::PopStyleVar();
+  }
 
   static void NavigateToNodeEditorById(int64_t node_editor_id);
   void SetProcessName(std::string *new_process_name);

@@ -22,6 +22,8 @@ public:
 
   void Draw() override;
   virtual void DrawCustomContent() const = 0;
+  virtual void DrawCustomStyleStart() const = 0;
+  virtual void DrawCustomStyleEnd() const = 0;
 
   [[nodiscard]] auto GetInputPins() const -> const std::vector<InPin> &;
   [[nodiscard]] auto GetOutputPins() const -> const std::vector<OutPin> &;

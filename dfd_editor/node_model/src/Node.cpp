@@ -3,11 +3,17 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 
 void Node::Draw() {
+  ed::PushStyleColor(ed::StyleColor_NodeBg, ImColor(75, 75, 75, 200));
+  DrawCustomStyleStart();
   node_builder_.Begin(GetId());
 
   node_builder_.Header();
+
   ImGui::Spring(0);
   ImGui::TextUnformatted(GetName().c_str());
+  ImGui::Spring(1);
+  ImGui::Dummy(ImVec2(0, 28));
+
   node_builder_.EndHeader();
 
   for (auto &input : input_pins_) {
@@ -25,6 +31,8 @@ void Node::Draw() {
     node_builder_.EndOutput();
   }
   node_builder_.End();
+  DrawCustomStyleEnd();
+  ed::PopStyleColor();
 }
 
 auto Node::GetPin(uint64_t pin_id) const
