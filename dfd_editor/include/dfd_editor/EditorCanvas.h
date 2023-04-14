@@ -50,41 +50,8 @@ private:
   std::vector<ed::NodeId> selected_nodes_;
   std::vector<ed::LinkId> selected_links_;
 
-  imdfd::ui::widgets::MenuItemListPopup create_new_node_list_popup_ =
-      imdfd::ui::widgets::MenuItemListPopup("Create New Node",
-          std::map<uint64_t, std::string>{
-              {0, "Data Process"}, {1, "External Entity"}, {2, "Data Store"}},
-          [this](uint64_t index, std::pair<float, float> pos) {
-            switch (index) {
-            case 0: {
-              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
-                  canvas_id_, "Data Process");
-              SignalHandel::Instance().create_new_node_(
-                  canvas_id_, "DataProcess", pos);
-              break;
-            }
-            case 1: {
-              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
-                  canvas_id_, "External Entity");
-              SignalHandel::Instance().create_new_node_(
-                  canvas_id_, "ExternalEntity", pos);
-              break;
-            }
-            case 2: {
-              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
-                  canvas_id_, "Data Store");
-              SignalHandel::Instance().create_new_node_(
-                  canvas_id_, "DataStorage", pos);
-              break;
-            }
-            default:
-              break;
-            }
-          });
-
+  void HandleCreateNewLink();
   void HandleRightClick();
-  void LoadLinkFromFlow(const std::shared_ptr<DataFlow> &data_flow_ptr);
-
   void ConnectSignals();
   bool is_first_frame_ = true;
 
@@ -92,12 +59,48 @@ private:
   uint64_t navigate_id_ = -1;
   bool need_navigate_ = false;
 
+  void LoadDataProcessNodes();
+  void LoadExternalEntityNodes();
+  void LoadDataStorageNodes();
+  void LoadDataFlowLinks();
+
+  imdfd::ui::widgets::MenuItemListPopup create_new_node_list_popup_ =
+      imdfd::ui::widgets::MenuItemListPopup("Create New Node",
+                                            std::map<uint64_t, std::string>{
+                                                {0, "Data Process"}, {1, "External Entity"}, {2, "Data Store"}},
+                                            [this](uint64_t index, std::pair<float, float> pos) {
+                                              switch (index) {
+                                              case 0: {
+                                                Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                                                              canvas_id_, "Data Process");
+                                                SignalHandel::Instance().create_new_node_(
+                                                    canvas_id_, "DataProcess", pos);
+                                                break;
+                                              }
+                                              case 1: {
+                                                Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                                                              canvas_id_, "External Entity");
+                                                SignalHandel::Instance().create_new_node_(
+                                                    canvas_id_, "ExternalEntity", pos);
+                                                break;
+                                              }
+                                              case 2: {
+                                                Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                                                              canvas_id_, "Data Store");
+                                                SignalHandel::Instance().create_new_node_(
+                                                    canvas_id_, "DataStorage", pos);
+                                                break;
+                                              }
+                                              default:
+                                                break;
+                                              }
+                                            });
 public:
   EditorCanvas(EditorCanvas &&) = delete;
   EditorCanvas(const EditorCanvas &) = delete;
+
   auto operator=(EditorCanvas &&) -> EditorCanvas & = delete;
   auto operator=(const EditorCanvas &) -> EditorCanvas & = delete;
-
   ~EditorCanvas() override;
 };
 

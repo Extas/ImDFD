@@ -20,7 +20,7 @@ private:
   void DrawDataItems();
   void DrawDataItem(std::shared_ptr<DataItem>);
   void DrawAddDataItemButton();
-  void DarwAddDataItemPopup();
+  void DrawAddDataItemPopup();
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_DATAITEMPOPUP_H_

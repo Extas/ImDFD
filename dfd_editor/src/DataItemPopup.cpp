@@ -14,13 +14,13 @@ void DataItemPopup::DrawContents() {
 
   DrawAddDataItemButton();
   ImGui::SameLine();
-  DarwAddDataItemPopup();
+  DrawAddDataItemPopup();
 
   if (ImGui::Button("Close")) {
     ImGui::CloseCurrentPopup();
   }
 }
-void DataItemPopup::DarwAddDataItemPopup() {
+void DataItemPopup::DrawAddDataItemPopup() {
   auto all_data_items = DataItem::GetAllItems();
 
   std::map<uint64_t, std::string> data_items_map;
