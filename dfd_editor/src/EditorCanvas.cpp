@@ -184,13 +184,18 @@ void EditorCanvas::HandleRightClick() {
   if (ed::ShowNodeContextMenu(&context_node_id_)) {
     Logger::Trace("[EditorCanvas {}] Show Node Context Menu", GetId());
     delete_node_popup_.Open();
-  } else if (ed::ShowBackgroundContextMenu()) {
+  } else if (ed::ShowLinkContextMenu(&context_link_id_)) {
+    Logger::Trace("[EditorCanvas {}] Show Link Context Menu", GetId());
+    delete_link_popup_.Open();
+  }
+  else if (ed::ShowBackgroundContextMenu()) {
     Logger::Trace("[EditorCanvas {}] Show Background Context Menu", GetId());
     create_new_node_list_popup_.Open();
   }
   ed::Resume();
 
   ed::Suspend();
+  delete_link_popup_.Draw();
   delete_node_popup_.Draw();
   create_new_node_list_popup_.Draw();
   ed::Resume();

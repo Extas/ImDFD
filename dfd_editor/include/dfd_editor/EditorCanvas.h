@@ -75,6 +75,16 @@ private:
         }
       });
 
+  ed::LinkId context_link_id_;
+  widgets::MenuItemListPopup delete_link_popup_ = widgets::MenuItemListPopup(
+      "Delete Link", std::map<uint64_t, std::string>{{0, "Delete"}},
+      [this](uint64_t index, std::pair<float, float> pos) {
+        if (index == 0) {
+          auto link_id = context_link_id_.Get();
+          dfd_->DeleteFlow(link_id);
+        }
+      });
+
   widgets::MenuItemListPopup create_new_node_list_popup_ =
       widgets::MenuItemListPopup("Create New Node",
           std::map<uint64_t, std::string>{
