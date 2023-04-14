@@ -33,13 +33,14 @@ public:
 
   [[nodiscard]] auto GetName()
       -> std::optional<std::reference_wrapper<std::string>>;
-
   [[nodiscard]] auto GetDescription()
       -> std::optional<std::reference_wrapper<std::string>>;
-
   [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>> &;
-
   [[nodiscard]] auto GetElement() -> std::shared_ptr<Element>;
+  [[nodiscard]] auto GetInFlows() -> std::vector<std::weak_ptr<DataFlow>>;
+  [[nodiscard]] auto GetOutFlows() -> std::vector<std::weak_ptr<DataFlow>>;
+
+
   bool has_data_items_ = false;
 private:
 
@@ -47,6 +48,8 @@ private:
   std::optional<std::reference_wrapper<std::string>> name_;
   std::optional<std::reference_wrapper<std::string>> description_;
   std::vector<std::shared_ptr<DataItem>> data_items_;
+  std::vector<std::weak_ptr<DataFlow>> inflows_;
+  std::vector<std::weak_ptr<DataFlow>> outflows_;
   std::shared_ptr<Element> current_element_;
 };
 
@@ -64,8 +67,6 @@ public:
       const std::string &label = "");
 
   void DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items);
-
-  static void DrawDataTypeSelector(std::shared_ptr<DataItem> data_item);
 
   void LoadDfd(const std::shared_ptr<Dfd> &dfd);
 

@@ -23,13 +23,22 @@ InfoWindow::InfoWindow() : BaseWindow("Info") {
 
 void InfoWindow::DrawContents() {
   DrawEditableTextValue(info_.GetName(), "Name:");
-  ImGui::Separator();
-
   DrawEditableTextValue(info_.GetDescription(), "Description:");
-  ImGui::Separator();
-
   if (info_.has_data_items_) {
     DrawDataItems(info_.GetDataItems());
+  }
+
+  if (!info_.GetInFlows().empty()) {
+    for(auto flows : info_.GetInFlows()) {
+      ImGui::Text("InFlows");
+      ImGui::Text(flows.lock()->GetName().value().get().c_str());
+    }
+  }
+  if (!info_.GetOutFlows().empty()) {
+    for(auto flows : info_.GetOutFlows()) {
+      ImGui::Text("OutFlows");
+      ImGui::Text(flows.lock()->GetName().value().get().c_str());
+    }
   }
 }
 
@@ -83,6 +92,7 @@ void InfoWindow::DrawEditableTextValue(
       text.value().get() = std::string(buffer);
     }
   }
+  ImGui::Separator();
 }
 auto InfoWindow::DrawTextValue(
     const std::optional<std::string> &text, const std::string &label) -> bool {
@@ -109,6 +119,8 @@ void Info::LoadNode(const std::shared_ptr<DfdNode> &node) {
       data_items_ = data_store->stored_data_items_;
     } else if (auto data_flow = std::dynamic_pointer_cast<DataFlow>(node)) {
     }
+    inflows_ = node->input_data_flows_;
+    outflows_ = node->output_data_flows_;
   }
 }
 void Info::LoadLink(const std::shared_ptr<DataFlow> &link) {
@@ -144,38 +156,12 @@ auto Info::GetDataItems() -> std::vector<std::shared_ptr<DataItem>> & {
 auto Info::GetElement() -> std::shared_ptr<Element> {
   return current_element_;
 }
+auto Info::GetInFlows() -> std::vector<std::weak_ptr<DataFlow>> {
+  return inflows_;
+}
+auto Info::GetOutFlows() -> std::vector<std::weak_ptr<DataFlow>> {
+  return outflows_;
+}
 void InfoWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   dfd_ = dfd;
-}
-
-void InfoWindow::DrawDataTypeSelector(std::shared_ptr<DataItem> data_item) {
-  static std::unordered_map<uint64_t, bool> popup_open;
-
-  auto id = data_item->GetElementId();
-  auto current_type_name = data_item->GetDateTypeName().value().get();
-
-  auto type_names = DataItem::GetDerivedTypeNames();
-
-  std::string button_label =
-      current_type_name + "##" + std::to_string(id) + "##";
-  std::string popup_label = "data_type_popup_##" + std::to_string(id);
-
-  if (ImGui::Button(button_label.c_str())) {
-    popup_open[id] = true;
-    ImGui::OpenPopup(popup_label.c_str());
-  }
-
-  if (popup_open[id]) {
-    if (ImGui::BeginPopup(popup_label.c_str())) {
-      for (const auto &kTypeName : type_names) {
-        if (ImGui::Button(kTypeName.c_str())) {
-          //          data_item->SetType(kTypeName);
-          popup_open[id] = false;
-        }
-      }
-      ImGui::EndPopup();
-    } else {
-      popup_open[id] = false;
-    }
-  }
 }
