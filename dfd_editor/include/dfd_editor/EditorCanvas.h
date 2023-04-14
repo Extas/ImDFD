@@ -14,6 +14,7 @@
 
 #include <vector>
 namespace ed = ax::NodeEditor;
+namespace widgets = imdfd::ui::widgets;
 
 class EditorCanvas : public BaseWindow {
 public:
@@ -64,37 +65,48 @@ private:
   void LoadDataStorageNodes();
   void LoadDataFlowLinks();
 
-  imdfd::ui::widgets::MenuItemListPopup create_new_node_list_popup_ =
-      imdfd::ui::widgets::MenuItemListPopup("Create New Node",
-                                            std::map<uint64_t, std::string>{
-                                                {0, "Data Process"}, {1, "External Entity"}, {2, "Data Store"}},
-                                            [this](uint64_t index, std::pair<float, float> pos) {
-                                              switch (index) {
-                                              case 0: {
-                                                Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
-                                                              canvas_id_, "Data Process");
-                                                SignalHandel::Instance().create_new_node_(
-                                                    canvas_id_, "DataProcess", pos);
-                                                break;
-                                              }
-                                              case 1: {
-                                                Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
-                                                              canvas_id_, "External Entity");
-                                                SignalHandel::Instance().create_new_node_(
-                                                    canvas_id_, "ExternalEntity", pos);
-                                                break;
-                                              }
-                                              case 2: {
-                                                Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
-                                                              canvas_id_, "Data Store");
-                                                SignalHandel::Instance().create_new_node_(
-                                                    canvas_id_, "DataStorage", pos);
-                                                break;
-                                              }
-                                              default:
-                                                break;
-                                              }
-                                            });
+  ed::NodeId context_node_id_;
+  widgets::MenuItemListPopup delete_node_popup_ = widgets::MenuItemListPopup(
+      "Delete Node", std::map<uint64_t, std::string>{{0, "Delete"}},
+      [this](uint64_t index, std::pair<float, float> pos) {
+        if (index == 0) {
+          auto node_id = context_node_id_.Get();
+          dfd_->DeleteNode(node_id);
+        }
+      });
+
+  widgets::MenuItemListPopup create_new_node_list_popup_ =
+      widgets::MenuItemListPopup("Create New Node",
+          std::map<uint64_t, std::string>{
+              {0, "Data Process"}, {1, "External Entity"}, {2, "Data Store"}},
+          [this](uint64_t index, std::pair<float, float> pos) {
+            switch (index) {
+            case 0: {
+              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                  canvas_id_, "Data Process");
+              SignalHandel::Instance().create_new_node_(
+                  canvas_id_, "DataProcess", pos);
+              break;
+            }
+            case 1: {
+              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                  canvas_id_, "External Entity");
+              SignalHandel::Instance().create_new_node_(
+                  canvas_id_, "ExternalEntity", pos);
+              break;
+            }
+            case 2: {
+              Logger::Trace("[MenuItemListPopup {}] MenuItem {} Clicked",
+                  canvas_id_, "Data Store");
+              SignalHandel::Instance().create_new_node_(
+                  canvas_id_, "DataStorage", pos);
+              break;
+            }
+            default:
+              break;
+            }
+          });
+
 public:
   EditorCanvas(EditorCanvas &&) = delete;
   EditorCanvas(const EditorCanvas &) = delete;
