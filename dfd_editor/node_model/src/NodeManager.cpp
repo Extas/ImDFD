@@ -10,36 +10,42 @@ auto NodeManager::AddNode(std::shared_ptr<Node> node) -> std::shared_ptr<Node> {
   return node;
 }
 
-auto NodeManager::AddDataProcessNode(uint64_t node_id, std::string *name,
-    std::pair<float, float> *position, std::string *description,
-    uint64_t sub_dfd_id) -> std::shared_ptr<DataProcessNode> {
+auto NodeManager::AddDataProcessNode(uint64_t node_id,
+    std::reference_wrapper<std::string> name,
+    std::reference_wrapper<std::pair<float, float>> position,
+    std::reference_wrapper<std::string> description, uint64_t sub_dfd_id)
+    -> std::shared_ptr<DataProcessNode> {
 
   auto node = std::make_shared<DataProcessNode>(
       node_id, name, position, description, sub_dfd_id);
   uint64_t input_pin_id = (node_id << 16) + 1ULL;
-  node->AddInputPin(input_pin_id, nullptr);
+  node->AddInputPin(input_pin_id);
   uint64_t output_pin_id = input_pin_id + 1ULL;
-  node->AddOutputPin(output_pin_id, nullptr);
+  node->AddOutputPin(output_pin_id);
   AddNode(node);
   return node;
 }
-auto NodeManager::AddExternalEntityNode(uint64_t node_id, std::string *name,
-    std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode> {
+auto NodeManager::AddExternalEntityNode(uint64_t node_id,
+    std::reference_wrapper<std::string> name,
+    std::reference_wrapper<std::pair<float, float>> position)
+    -> std::shared_ptr<ExternalEntityNode> {
   auto node = std::make_shared<ExternalEntityNode>(node_id, name, position);
   uint64_t input_pin_id = (node_id << 16) + 1ULL;
-  node->AddInputPin(input_pin_id, nullptr);
+  node->AddInputPin(input_pin_id);
   uint64_t output_pin_id = input_pin_id + 1ULL;
-  node->AddOutputPin(output_pin_id, nullptr);
+  node->AddOutputPin(output_pin_id);
   AddNode(node);
   return node;
 }
-auto NodeManager::AddDataStorageNode(uint64_t node_id, std::string *name,
-    std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode> {
+auto NodeManager::AddDataStorageNode(uint64_t node_id,
+    std::reference_wrapper<std::string> name,
+    std::reference_wrapper<std::pair<float, float>> position)
+    -> std::shared_ptr<DataStorageNode> {
   auto node = std::make_shared<DataStorageNode>(node_id, name, position);
   uint64_t input_pin_id = (node_id << 16) + 1ULL;
-  node->AddInputPin(input_pin_id, nullptr);
+  node->AddInputPin(input_pin_id);
   uint64_t output_pin_id = input_pin_id + 1ULL;
-  node->AddOutputPin(output_pin_id, nullptr);
+  node->AddOutputPin(output_pin_id);
   AddNode(node);
   return node;
 }

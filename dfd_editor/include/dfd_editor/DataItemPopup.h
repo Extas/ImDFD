@@ -12,11 +12,12 @@ public:
   void DrawContents() override;
   void Draw() override;
 
-  void LoadDataItems(std::vector<std::shared_ptr<DataItem>> &data_items);
+  void LoadDataItems(std::vector<std::shared_ptr<DataItem>> data_items);
   void SetDataFlow(std::shared_ptr<Element> data_flow);
+
 private:
   std::shared_ptr<Element> element_{};
-  std::vector<std::shared_ptr<DataItem>> *data_items_{};
+  std::vector<std::shared_ptr<DataItem>> data_items_;
   void DrawDataItems();
   void DrawDataItem(std::shared_ptr<DataItem>);
   void DrawAddDataItemButton();

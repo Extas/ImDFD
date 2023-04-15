@@ -33,7 +33,7 @@ void DataItemPopup::DrawAddDataItemPopup() {
       "My List", data_items_map, [this, &all_data_items](uint64_t item_id) {
         for (const auto &data_item : all_data_items) {
           if (data_item->GetElementId() == item_id) {
-            data_items_->push_back(data_item);
+            data_items_.push_back(data_item);
             break;
           }
         }
@@ -55,11 +55,11 @@ void DataItemPopup::Draw() {
 }
 
 void DataItemPopup::DrawDataItems() {
-  if (data_items_ == nullptr) {
+  if (data_items_.empty()) {
     return;
   }
 
-  for (const auto &data_item : *data_items_) {
+  for (const auto &data_item : data_items_) {
     DrawDataItem(data_item);
   }
 }
@@ -132,7 +132,7 @@ void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
   ImGui::Indent();
   for (const auto &data_flow : data_item->GetDataFlows()) {
     //    ImGui::BulletText("%s", data_flow->GetName().value().get().c_str());
-    if (ImGui::Button(data_flow->GetName().value().get().c_str())) {
+    if (ImGui::Button(data_flow->GetName().get().c_str())) {
       SignalHandel::Instance().navigate_element_onclick_(
           data_flow->GetElementId());
       ImGui::CloseCurrentPopup();
@@ -160,13 +160,13 @@ void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
 }
 
 void DataItemPopup::LoadDataItems(
-    std::vector<std::shared_ptr<DataItem>> &data_items) {
-  data_items_ = &data_items;
+    std::vector<std::shared_ptr<DataItem>> data_items) {
+  data_items_ = data_items;
 }
 
 void DataItemPopup::DrawAddDataItemButton() {
   if (ImGui::Button("Create New Data Item")) {
-    if (data_items_ != nullptr) {
+    if (!data_items_.empty()) {
       if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
         std::dynamic_pointer_cast<DataFlow>(element_)->AddDataItem(
             DataItem::CreateDataItem("New Data Item", "No Type"));
@@ -186,6 +186,6 @@ void DataItemPopup::SetDataFlow(std::shared_ptr<Element> data_flow) {
   }
   if (std::dynamic_pointer_cast<DataStorage>(data_flow) != nullptr) {
     LoadDataItems(
-        std::dynamic_pointer_cast<DataStorage>(data_flow)->stored_data_items_);
+        std::dynamic_pointer_cast<DataStorage>(data_flow)->GetDataItems());
   }
 }

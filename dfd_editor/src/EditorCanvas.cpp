@@ -187,8 +187,7 @@ void EditorCanvas::HandleRightClick() {
   } else if (ed::ShowLinkContextMenu(&context_link_id_)) {
     Logger::Trace("[EditorCanvas {}] Show Link Context Menu", GetId());
     delete_link_popup_.Open();
-  }
-  else if (ed::ShowBackgroundContextMenu()) {
+  } else if (ed::ShowBackgroundContextMenu()) {
     Logger::Trace("[EditorCanvas {}] Show Background Context Menu", GetId());
     create_new_node_list_popup_.Open();
   }
@@ -247,21 +246,21 @@ void EditorCanvas::LoadDataStorageNodes() {
   for (const auto &kDataStoragePtr : dfd_->data_storages_) {
     auto data_storage_node =
         node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
-            &kDataStoragePtr->name_, &kDataStoragePtr->position_);
+            kDataStoragePtr->GetName(), kDataStoragePtr->GetPosition());
   }
 }
 void EditorCanvas::LoadExternalEntityNodes() {
   for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
     auto external_entity_node =
         node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
-            &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
+            kExternalEntityPtr->GetName(), kExternalEntityPtr->GetPosition());
   }
 }
 void EditorCanvas::LoadDataProcessNodes() {
   for (const auto &kDataProcessPtr : dfd_->data_processes_) {
     auto data_process_node = node_manager_.AddDataProcessNode(
-        kDataProcessPtr->GetElementId(), &kDataProcessPtr->name_,
-        &kDataProcessPtr->position_, &kDataProcessPtr->description_,
+        kDataProcessPtr->GetElementId(), kDataProcessPtr->GetName(),
+        kDataProcessPtr->GetPosition(), kDataProcessPtr->GetDescription(),
         kDataProcessPtr->sub_dfd_->GetElementId());
 
     SignalHandel::Instance().create_new_dfd_(kDataProcessPtr->sub_dfd_);

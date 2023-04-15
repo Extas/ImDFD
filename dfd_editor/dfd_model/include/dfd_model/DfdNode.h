@@ -5,9 +5,9 @@
 #include "Element.h"
 
 #include <memory>
+#include <optional>
 #include <utility>
 #include <vector>
-#include <optional>
 
 #include <nlohmann/json.hpp>
 
@@ -31,22 +31,57 @@ public:
     position_ = {x, y};
   }
 
-  [[nodiscard]] auto GetName()
-      -> std::optional<std::reference_wrapper<std::string>> {
+  [[nodiscard]] auto GetName() -> std::reference_wrapper<std::string> {
     return name_;
   }
 
-  [[nodiscard]] auto GetDescription()
-      -> std::optional<std::reference_wrapper<std::string>> {
+  [[nodiscard]] auto GetDescription() -> std::reference_wrapper<std::string> {
     return description_;
   }
 
+  [[nodiscard]] auto GetPosition()
+      -> std::reference_wrapper<std::pair<float, float>> {
+    return position_;
+  }
+
+  [[nodiscard]] auto GetInputDataFlows()
+      -> std::vector<std::weak_ptr<DataFlow>> {
+    input_data_flows_.erase(
+        std::remove_if(input_data_flows_.begin(), input_data_flows_.end(),
+            [](const std::weak_ptr<DataFlow> &data_flow) {
+              return data_flow.expired();
+            }),
+        input_data_flows_.end());
+    return input_data_flows_;
+  }
+
+  [[nodiscard]] auto GetOutputDataFlows()
+      -> std::vector<std::weak_ptr<DataFlow>> {
+    output_data_flows_.erase(
+        std::remove_if(output_data_flows_.begin(), output_data_flows_.end(),
+            [](const std::weak_ptr<DataFlow> &data_flow) {
+              return data_flow.expired();
+            }),
+        output_data_flows_.end());
+    return output_data_flows_;
+  }
+
+  void AddInputDataFlow(std::weak_ptr<DataFlow> data_flow) {
+    input_data_flows_.push_back(data_flow);
+  }
+
+  void AddOutputDataFlow(std::weak_ptr<DataFlow> data_flow) {
+    output_data_flows_.push_back(data_flow);
+  }
+
+private:
   std::string name_;
   std::pair<float, float> position_;
   std::string description_{};
   std::vector<std::weak_ptr<DataFlow>> input_data_flows_;
   std::vector<std::weak_ptr<DataFlow>> output_data_flows_;
 
+public:
   [[nodiscard]] auto Serialize() const -> nlohmann::json override {
     nlohmann::json json;
     json["id"] = GetElementId();
@@ -68,8 +103,6 @@ public:
   [[nodiscard]] auto IsValid() const -> bool override {
     return false;
   }
-
-public:
   DfdNode(const DfdNode &other) = delete;
   DfdNode(DfdNode &&other) noexcept
       : Element(std::move(other)), name_(std::move(other.name_)),

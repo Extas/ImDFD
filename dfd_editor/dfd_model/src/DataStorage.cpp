@@ -51,3 +51,7 @@ void DataStorage::RemoveDataItem(const std::shared_ptr<DataItem> &data_item) {
                                stored_data_items_.end(), data_item),
       stored_data_items_.end());
 }
+auto DataStorage::GetDataItems() const
+    -> std::vector<std::shared_ptr<DataItem>> {
+  return stored_data_items_;
+}

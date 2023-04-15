@@ -1,4 +1,6 @@
 #include <dfd_editor/InfoWindow.h>
+#include <imgui.h>
+#include <signal/SignalHandel.h>
 #include <string>
 
 InfoWindow::InfoWindow() : BaseWindow("Info") {
@@ -24,21 +26,30 @@ InfoWindow::InfoWindow() : BaseWindow("Info") {
 void InfoWindow::DrawContents() {
   DrawEditableTextValue(info_.GetName(), "Name:");
   DrawEditableTextValue(info_.GetDescription(), "Description:");
-  if (info_.has_data_items_) {
-    DrawDataItems(info_.GetDataItems());
+  if (info_.GetDataItems().has_value()) {
+    DrawDataItems(info_.GetDataItems().value());
   }
 
-  if (!info_.GetInFlows().empty()) {
-    for(auto flows : info_.GetInFlows()) {
-      ImGui::Text("InFlows");
-      ImGui::Text(flows.lock()->GetName().value().get().c_str());
+  if (info_.GetInFlows().has_value()) {
+    ImGui::Text("In Flows");
+    for (auto flows : info_.GetInFlows().value()) {
+      if (ImGui::Button(flows.lock()->GetName().get().c_str())) {
+        SignalHandel::Instance().navigate_element_onclick_(
+            flows.lock()->GetElementId());
+      }
     }
+    ImGui::Separator();
   }
-  if (!info_.GetOutFlows().empty()) {
-    for(auto flows : info_.GetOutFlows()) {
-      ImGui::Text("OutFlows");
-      ImGui::Text(flows.lock()->GetName().value().get().c_str());
+  if (info_.GetOutFlows().has_value()) {
+
+    ImGui::Text("Out Flows");
+    for (auto flows : info_.GetOutFlows().value()) {
+      if (ImGui::Button(flows.lock()->GetName().get().c_str())) {
+        SignalHandel::Instance().navigate_element_onclick_(
+            flows.lock()->GetElementId());
+      }
     }
+    ImGui::Separator();
   }
 }
 
@@ -56,8 +67,7 @@ void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
     ImGui::Indent();
     ImGui::BulletText("%s", kDataItem->GetName().value().get().c_str());
     ImGui::SameLine();
-    ImGui::Text(
-        "Type: %s", kDataItem->GetDateTypeName().value().get().c_str());
+    ImGui::Text("Type: %s", kDataItem->GetDateTypeName().value().get().c_str());
     ImGui::Unindent();
   }
 }
@@ -111,28 +121,25 @@ auto InfoWindow::DrawTextValue(
 
 void Info::LoadNode(const std::shared_ptr<DfdNode> &node) {
   if (node) {
-    name_ = std::ref(node->name_);
+    name_ = node->GetName();
     if (auto data_process = std::dynamic_pointer_cast<DataProcess>(node)) {
-      description_ = std::ref(node->description_);
+      description_ = node->GetDescription();
     } else if (auto data_store = std::dynamic_pointer_cast<DataStorage>(node)) {
-      has_data_items_ = true;
-      data_items_ = data_store->stored_data_items_;
+      data_items_ = data_store->GetDataItems();
     } else if (auto data_flow = std::dynamic_pointer_cast<DataFlow>(node)) {
     }
-    inflows_ = node->input_data_flows_;
-    outflows_ = node->output_data_flows_;
+    inflows_ = node->GetInputDataFlows();
+    outflows_ = node->GetOutputDataFlows();
   }
 }
 void Info::LoadLink(const std::shared_ptr<DataFlow> &link) {
   if (link) {
-    name_ = link->name_;
-    has_data_items_ = true;
-    data_items_ = link->data_items_;
+    name_ = link->GetName();
+    data_items_ = std::ref(link->data_items_);
   }
 }
 void Info::LoadElement(const std::shared_ptr<Element> &element) {
   current_element_ = element;
-  has_data_items_ = false;
   if (current_element_) {
     if (auto link = std::dynamic_pointer_cast<DataFlow>(current_element_)) {
       LoadLink(link);
@@ -150,16 +157,18 @@ auto Info::GetDescription()
     -> std::optional<std::reference_wrapper<std::string>> {
   return description_;
 }
-auto Info::GetDataItems() -> std::vector<std::shared_ptr<DataItem>> & {
+auto Info::GetDataItems()
+    -> std::optional<std::vector<std::shared_ptr<DataItem>>> & {
   return data_items_;
 }
 auto Info::GetElement() -> std::shared_ptr<Element> {
   return current_element_;
 }
-auto Info::GetInFlows() -> std::vector<std::weak_ptr<DataFlow>> {
+auto Info::GetInFlows() -> std::optional<std::vector<std::weak_ptr<DataFlow>>> {
   return inflows_;
 }
-auto Info::GetOutFlows() -> std::vector<std::weak_ptr<DataFlow>> {
+auto Info::GetOutFlows()
+    -> std::optional<std::vector<std::weak_ptr<DataFlow>>> {
   return outflows_;
 }
 void InfoWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {

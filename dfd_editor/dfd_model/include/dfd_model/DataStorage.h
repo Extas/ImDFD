@@ -4,6 +4,7 @@
 
 #include "DataItem.h"
 #include "DfdNode.h"
+#include <functional>
 
 class DataStorage : public DfdNode {
 public:
@@ -17,10 +18,13 @@ public:
       -> std::shared_ptr<DataStorage>;
 
   void AddDataItem(std::shared_ptr<DataItem> data_item);
-  void RemoveDataItem(const std::shared_ptr<DataItem>& data_item);
-  std::vector<std::shared_ptr<DataItem>> stored_data_items_;
+  void RemoveDataItem(const std::shared_ptr<DataItem> &data_item);
+
+  [[nodiscard]] auto GetDataItems() const
+      -> std::vector<std::shared_ptr<DataItem>>;
 
 private:
+  std::vector<std::shared_ptr<DataItem>> stored_data_items_;
   DataStorage(std::string name, std::pair<float, float> pos);
   DataStorage(uint64_t id, std::string name, std::pair<float, float> pos);
 };

@@ -35,21 +35,21 @@ public:
       -> std::optional<std::reference_wrapper<std::string>>;
   [[nodiscard]] auto GetDescription()
       -> std::optional<std::reference_wrapper<std::string>>;
-  [[nodiscard]] auto GetDataItems() -> std::vector<std::shared_ptr<DataItem>> &;
+  [[nodiscard]] auto GetDataItems()
+      -> std::optional<std::vector<std::shared_ptr<DataItem>>> &;
   [[nodiscard]] auto GetElement() -> std::shared_ptr<Element>;
-  [[nodiscard]] auto GetInFlows() -> std::vector<std::weak_ptr<DataFlow>>;
-  [[nodiscard]] auto GetOutFlows() -> std::vector<std::weak_ptr<DataFlow>>;
+  [[nodiscard]] auto GetInFlows()
+      -> std::optional<std::vector<std::weak_ptr<DataFlow>>>;
+  [[nodiscard]] auto GetOutFlows()
+      -> std::optional<std::vector<std::weak_ptr<DataFlow>>>;
 
-
-  bool has_data_items_ = false;
 private:
-
   std::unordered_map<std::string, bool> editing_;
   std::optional<std::reference_wrapper<std::string>> name_;
   std::optional<std::reference_wrapper<std::string>> description_;
-  std::vector<std::shared_ptr<DataItem>> data_items_;
-  std::vector<std::weak_ptr<DataFlow>> inflows_;
-  std::vector<std::weak_ptr<DataFlow>> outflows_;
+  std::optional<std::vector<std::shared_ptr<DataItem>>> data_items_;
+  std::optional<std::vector<std::weak_ptr<DataFlow>>> inflows_;
+  std::optional<std::vector<std::weak_ptr<DataFlow>>> outflows_;
   std::shared_ptr<Element> current_element_;
 };
 

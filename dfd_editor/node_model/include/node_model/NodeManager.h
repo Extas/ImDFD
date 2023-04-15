@@ -16,13 +16,19 @@ public:
   auto AddNode(std::shared_ptr<Node>) -> std::shared_ptr<Node>;
   auto ClearNodes() -> void;
 
-  auto AddDataProcessNode(uint64_t node_id, std::string *name,
-      std::pair<float, float> *position, std::string *description,
-      uint64_t sub_dfd_id) -> std::shared_ptr<DataProcessNode>;
-  auto AddExternalEntityNode(uint64_t node_id, std::string *name,
-      std::pair<float, float> *position) -> std::shared_ptr<ExternalEntityNode>;
-  auto AddDataStorageNode(uint64_t node_id, std::string *name,
-      std::pair<float, float> *position) -> std::shared_ptr<DataStorageNode>;
+  auto AddDataProcessNode(uint64_t node_id,
+      std::reference_wrapper<std::string> name,
+      std::reference_wrapper<std::pair<float, float>> position,
+      std::reference_wrapper<std::string> description, uint64_t sub_dfd_id)
+      -> std::shared_ptr<DataProcessNode>;
+  auto AddExternalEntityNode(uint64_t node_id,
+      std::reference_wrapper<std::string> name,
+      std::reference_wrapper<std::pair<float, float>> position)
+      -> std::shared_ptr<ExternalEntityNode>;
+  auto AddDataStorageNode(uint64_t node_id,
+      std::reference_wrapper<std::string> name,
+      std::reference_wrapper<std::pair<float, float>> position)
+      -> std::shared_ptr<DataStorageNode>;
 
   [[nodiscard]] auto GetNodeById(uint64_t node_id)
       -> std::optional<std::reference_wrapper<Node>>;

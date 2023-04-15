@@ -81,8 +81,9 @@ auto Dfd::CreateDataProcessNode(const std::string &name,
   data_processes_.push_back(data_process);
 
   Logger::Trace("[DFD {}]: Create DataProcess Node ({}, pos({},{}))",
-      GetElementId(), data_process->name_, data_process->position_.first,
-      data_process->position_.second);
+      GetElementId(), data_process->GetName().get(),
+      data_process->GetPosition().get().first,
+      data_process->GetPosition().get().second);
   return data_process;
 }
 

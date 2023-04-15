@@ -3,8 +3,8 @@
 #include <utility>
 
 void DataFlow::Connect() {
-  source_->output_data_flows_.push_back(shared_from_this());
-  destination_->input_data_flows_.push_back(shared_from_this());
+  source_->AddOutputDataFlow(shared_from_this());
+  destination_->AddInputDataFlow(shared_from_this());
 }
 auto DataFlow::Serialize() const -> nlohmann::json {
   // Call the base class implementation
