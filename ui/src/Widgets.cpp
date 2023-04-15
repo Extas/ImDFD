@@ -4,9 +4,12 @@
 #include <unordered_map>
 void imdfd::ui::widgets::DrawTextWithLabel(
     const std::string &text, const std::string &label) {
-  ImGui::Text(label.c_str());
+  if (!label.empty()) {
+    auto new_label = label.substr(0, label.find("##"));
+    ImGui::Text("%s", new_label.c_str());
+  }
   ImGui::SameLine();
-  ImGui::Text(text.c_str());
+  ImGui::Text("%s", text.c_str());
 }
 
 void imdfd::ui::widgets::DrawInputText(
@@ -151,4 +154,30 @@ void imdfd::ui::widgets::DrawCustomTable(
   }
 
   ImGui::EndTable();
+}
+void imdfd::ui::widgets::DrawTextNextLineEdit(
+    std::reference_wrapper<std::string> text, const std::string &label) {
+  static std::unordered_map<std::string, bool> editing;
+  static char buffer[128];
+
+  auto &editing_state = editing[label];
+
+  if (!editing_state) {
+    imdfd::ui::widgets::DrawTextWithLabel(text.get(), label);
+
+    auto button_name = "Edit##" + label + text.get();
+    if (ImGui::Button(button_name.c_str())) {
+      editing_state = true;
+
+      strncpy(buffer, text.get().c_str(), sizeof(buffer));
+      buffer[sizeof(buffer) - 1] = '\0';
+    }
+  } else {
+    ImGui::InputText("##editable_text", buffer, sizeof(buffer));
+
+    if (ImGui::Button("OK")) {
+      editing_state = false;
+      text.get() = std::string(buffer);
+    }
+  }
 }

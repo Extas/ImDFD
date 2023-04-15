@@ -32,6 +32,10 @@ auto DataStorage::DeSerialize(nlohmann::json json)
   return data_storage;
 }
 void DataStorage::AddDataItem(std::shared_ptr<DataItem> data_item) {
+  if (std::find(data_items_.begin(), data_items_.end(), data_item) !=
+      data_items_.end()) {
+    return;
+  }
   data_items_.push_back(data_item);
 }
 

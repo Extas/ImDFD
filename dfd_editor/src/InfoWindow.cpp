@@ -1,3 +1,4 @@
+#include "dfd_model/DataItem.h"
 #include "logging/Logger.h"
 #include <dfd_editor/InfoWindow.h>
 #include <imgui.h>
@@ -27,8 +28,17 @@ InfoWindow::InfoWindow() : BaseWindow("Info") {
 
 void InfoWindow::DrawContents() {
   info_.Update();
-  DrawEditableTextValue(info_.GetName(), "Name:");
-  DrawEditableTextValue(info_.GetDescription(), "Description:");
+  auto name = info_.GetName();
+  if (name.has_value()) {
+    imdfd::ui::widgets::DrawTextNextLineEdit(name.value(), "Name:");
+    ImGui::Separator();
+  }
+  auto description = info_.GetDescription();
+  if (description.has_value()) {
+    imdfd::ui::widgets::DrawTextNextLineEdit(
+        description.value(), "Description:");
+    ImGui::Separator();
+  }
 
   auto &data_items = info_.GetDataItems();
   if (data_items.has_value()) {
@@ -54,7 +64,7 @@ void InfoWindow::DrawFlows() {
   if (kOutFlows.has_value() && !kOutFlows.value().empty()) {
 
     ImGui::Text("Out Flows");
-    for (auto flows : kOutFlows.value()) {
+    for (const auto &flows : kOutFlows.value()) {
       if (ImGui::Button(flows.lock()->GetName().get().c_str())) {
         SignalHandel::Instance().navigate_element_onclick_(
             flows.lock()->GetElementId());
@@ -67,72 +77,82 @@ void InfoWindow::DrawFlows() {
 void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
   ImGui::Text("Data Items:");
 
-  ImGui::SameLine();
-  if (ImGui::Button("Detail##")) {
-    data_item_popup_.SetElement(info_.GetElement());
-    data_item_popup_.Open();
-  }
-  data_item_popup_.Draw();
-
   using namespace imdfd::ui::widgets;
   auto column_names = std::vector<std::string>{"Name", "Type"};
   auto row_data =
       std::vector<std::vector<std::reference_wrapper<std::string>>>{};
-  for (const auto &kDataItem : items) {
+  static std::map<int, std::shared_ptr<DataItem>> row_map;
+  for (int i = 0; i < items.size(); i++) {
     row_data.push_back(std::vector<std::reference_wrapper<std::string>>{
-        kDataItem->GetName().value().get(),
-        kDataItem->GetDateTypeName().value().get()});
+        items[i]->GetName().value().get(),
+        items[i]->GetDateTypeName().value().get()});
+    row_map[i] = items[i];
   }
+  static bool is_data_item_popup_open = false;
   auto action_callbacks = std::map<std::string, std::function<void(int)>>{
-      {"Delete", [](int row) { Logger::Trace("action on row: {}", row); }}};
+      {"Detail##",
+          [this](int row) {
+            Logger::Trace("action on row: {}", row);
+            auto data_item_id = row_map[row]->GetElementId();
+            data_item_popup_.SetData(info_.GetElement(), data_item_id);
+            is_data_item_popup_open = true;
+          }},
+      {"Delete", [this](int row) {
+         Logger::Trace("action on row: {}", row);
+         auto data_item = info_.GetDataItems().value()[row];
+         auto element = info_.GetElement();
+         if (auto data_flow = std::dynamic_pointer_cast<DataFlow>(element)) {
+           data_flow->RemoveDataItem(data_item);
+         } else if (auto data_store =
+                        std::dynamic_pointer_cast<DataStorage>(element)) {
+           data_store->RemoveDataItem(data_item);
+         }
+       }}};
+  if (is_data_item_popup_open) {
+    data_item_popup_.Open();
+    is_data_item_popup_open = false;
+  }
+  data_item_popup_.Draw();
   DrawCustomTable(column_names, row_data, action_callbacks);
-}
-void InfoWindow::DrawEditableTextValue(
-    std::optional<std::reference_wrapper<std::string>> text,
-    const std::string &label) {
-  static std::unordered_map<std::string, bool> editing;
-  static char buffer[128];
 
-  auto &editing_state = editing[label];
-
-  if (!editing_state) {
-    if (!DrawTextValue(text, label)) {
-      return;
+  auto element = info_.GetElement();
+  if (ImGui::Button("Create New Data Item")) {
+    if (std::dynamic_pointer_cast<DataFlow>(element) != nullptr) {
+      std::dynamic_pointer_cast<DataFlow>(element)->AddDataItem(
+          DataItem::CreateDataItem("New Data Item", "No Type"));
     }
-
-    auto button_name = "Edit##" + label + text.value().get();
-    if (ImGui::Button(button_name.c_str())) {
-      editing_state = true;
-      if (text.has_value()) {
-        strncpy(buffer, text.value().get().c_str(), sizeof(buffer));
-        buffer[sizeof(buffer) - 1] = '\0';
-      } else {
-        buffer[0] = '\0';
-      }
-    }
-  } else {
-    ImGui::InputText("##editable_text", buffer, sizeof(buffer));
-
-    if (ImGui::Button("OK")) {
-      editing_state = false;
-      text.value().get() = std::string(buffer);
+    if (std::dynamic_pointer_cast<DataStorage>(element) != nullptr) {
+      Logger::Warn("Please create a new Data Item in Data Flow");
     }
   }
-  ImGui::Separator();
-}
-auto InfoWindow::DrawTextValue(
-    const std::optional<std::string> &text, const std::string &label) -> bool {
 
-  if (text.has_value()) {
-    if (!label.empty()) {
-      auto new_label = label.substr(0, label.find("##"));
-      ImGui::Text("%s", new_label.c_str());
-    }
-    ImGui::SameLine();
-    ImGui::Text("%s", text.value().c_str());
-    return true;
+  auto all_data_items = DataItem::GetAllItems();
+  std::map<uint64_t, std::string> data_items_map;
+  for (const auto &data_item : all_data_items) {
+    data_items_map[data_item->GetElementId()] =
+        data_item->GetName().value().get();
   }
-  return false;
+  imdfd::ui::widgets::ListWithFilterPopup popup(
+      "My List", data_items_map, [this, &all_data_items](uint64_t item_id) {
+        for (const auto &data_item : all_data_items) {
+          if (data_item->GetElementId() == item_id) {
+            auto element = info_.GetElement();
+            if (std::dynamic_pointer_cast<DataFlow>(element) != nullptr) {
+              std::dynamic_pointer_cast<DataFlow>(element)->AddDataItem(
+                  data_item);
+            }
+            if (std::dynamic_pointer_cast<DataStorage>(element) != nullptr) {
+              std::dynamic_pointer_cast<DataStorage>(element)->AddDataItem(
+                  data_item);
+            }
+            break;
+          }
+        }
+      });
+  if (ImGui::Button("Add Existing Data Item")) {
+    popup.Open();
+  }
+  popup.Draw();
 }
 
 void Info::LoadNode(const std::shared_ptr<DfdNode> &node) {

@@ -36,7 +36,9 @@ public:
   }
 
   void DeleteDataFlow(std::shared_ptr<DataFlow> data_flow) {
-    data_flows_.erase(std::remove(data_flows_.begin(), data_flows_.end(), data_flow), data_flows_.end());
+    data_flows_.erase(
+        std::remove(data_flows_.begin(), data_flows_.end(), data_flow),
+        data_flows_.end());
   }
 
   void SetDataJson(nlohmann::json data_json) {

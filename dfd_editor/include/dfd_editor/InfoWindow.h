@@ -60,13 +60,6 @@ public:
 
   void DrawContents() override;
 
-  static auto DrawTextValue(const std::optional<std::string> &text,
-      const std::string &label = "") -> bool;
-
-  static void DrawEditableTextValue(
-      std::optional<std::reference_wrapper<std::string>> text,
-      const std::string &label = "");
-
   void DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items);
 
   void LoadDfd(const std::shared_ptr<Dfd> &dfd);

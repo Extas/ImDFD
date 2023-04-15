@@ -22,6 +22,9 @@ void DrawListWithFilter(std::map<uint64_t, std::string> list,
 void DrawMenuItemList(std::map<uint64_t, std::string> list,
     const std::function<void(uint64_t)> &callback);
 
+void DrawTextNextLineEdit(
+    std::reference_wrapper<std::string> text, const std::string &label);
+
 void DrawEditableInputTexts(
     const std::vector<std::reference_wrapper<std::string>> &texts);
 
