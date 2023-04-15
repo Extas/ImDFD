@@ -42,6 +42,7 @@ public:
       -> std::optional<std::vector<std::weak_ptr<DataFlow>>>;
   [[nodiscard]] auto GetOutFlows()
       -> std::optional<std::vector<std::weak_ptr<DataFlow>>>;
+  void Update();
 
 private:
   std::unordered_map<std::string, bool> editing_;

@@ -24,26 +24,31 @@ InfoWindow::InfoWindow() : BaseWindow("Info") {
 }
 
 void InfoWindow::DrawContents() {
+  info_.Update();
   DrawEditableTextValue(info_.GetName(), "Name:");
   DrawEditableTextValue(info_.GetDescription(), "Description:");
-  if (info_.GetDataItems().has_value()) {
-    DrawDataItems(info_.GetDataItems().value());
+  auto &data_items = info_.GetDataItems();
+  if (data_items.has_value()) {
+    DrawDataItems(data_items.value());
+    ImGui::Separator();
   }
 
-  if (info_.GetInFlows().has_value()) {
+  const auto &kInFlows = info_.GetInFlows();
+  if (kInFlows.has_value() && !kInFlows.value().empty()) {
     ImGui::Text("In Flows");
-    for (auto flows : info_.GetInFlows().value()) {
-      if (ImGui::Button(flows.lock()->GetName().get().c_str())) {
+    for (const auto &kFlows : kInFlows.value()) {
+      if (ImGui::Button(kFlows.lock()->GetName().get().c_str())) {
         SignalHandel::Instance().navigate_element_onclick_(
-            flows.lock()->GetElementId());
+            kFlows.lock()->GetElementId());
       }
     }
     ImGui::Separator();
   }
-  if (info_.GetOutFlows().has_value()) {
+  const auto &kOutFlows = info_.GetOutFlows();
+  if (kOutFlows.has_value() && !kOutFlows.value().empty()) {
 
     ImGui::Text("Out Flows");
-    for (auto flows : info_.GetOutFlows().value()) {
+    for (auto flows : kOutFlows.value()) {
       if (ImGui::Button(flows.lock()->GetName().get().c_str())) {
         SignalHandel::Instance().navigate_element_onclick_(
             flows.lock()->GetElementId());
@@ -170,6 +175,9 @@ auto Info::GetInFlows() -> std::optional<std::vector<std::weak_ptr<DataFlow>>> {
 auto Info::GetOutFlows()
     -> std::optional<std::vector<std::weak_ptr<DataFlow>>> {
   return outflows_;
+}
+void Info::Update() {
+  LoadElement(current_element_);
 }
 void InfoWindow::LoadDfd(const std::shared_ptr<Dfd> &dfd) {
   dfd_ = dfd;
