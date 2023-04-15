@@ -1,7 +1,9 @@
+#include "logging/Logger.h"
 #include <dfd_editor/InfoWindow.h>
 #include <imgui.h>
 #include <signal/SignalHandel.h>
 #include <string>
+#include <ui/Widgets.h>
 
 InfoWindow::InfoWindow() : BaseWindow("Info") {
   SignalHandel::Instance().selected_node_.connect([this](int64_t node_id) {
@@ -72,13 +74,18 @@ void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
   }
   data_item_popup_.Draw();
 
+  using namespace imdfd::ui::widgets;
+  auto column_names = std::vector<std::string>{"Name", "Type"};
+  auto row_data =
+      std::vector<std::vector<std::reference_wrapper<std::string>>>{};
   for (const auto &kDataItem : items) {
-    ImGui::Indent();
-    ImGui::BulletText("%s", kDataItem->GetName().value().get().c_str());
-    ImGui::SameLine();
-    ImGui::Text("Type: %s", kDataItem->GetDateTypeName().value().get().c_str());
-    ImGui::Unindent();
+    row_data.push_back(std::vector<std::reference_wrapper<std::string>>{
+        kDataItem->GetName().value().get(),
+        kDataItem->GetDateTypeName().value().get()});
   }
+  auto action_callbacks = std::map<std::string, std::function<void(int)>>{
+      {"Delete", [](int row) { Logger::Trace("action on row: {}", row); }}};
+  DrawCustomTable(column_names, row_data, action_callbacks);
 }
 void InfoWindow::DrawEditableTextValue(
     std::optional<std::reference_wrapper<std::string>> text,

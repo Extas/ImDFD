@@ -52,7 +52,7 @@ void DearImGui::NewFrame() {
 
 void DearImGui::Draw() {
 
-  // ImGui::ShowDemoWindow();
+  ImGui::ShowDemoWindow();
 
   menu_bar_.Show();
 
