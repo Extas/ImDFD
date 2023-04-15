@@ -32,14 +32,14 @@ auto DataStorage::DeSerialize(nlohmann::json json)
   return data_storage;
 }
 void DataStorage::AddDataItem(std::shared_ptr<DataItem> data_item) {
-  stored_data_items_.push_back(data_item);
+  data_items_.push_back(data_item);
 }
 
 auto DataStorage::Serialize() const -> nlohmann::json {
   nlohmann::json json = DfdNode::Serialize("DataStorage");
 
   nlohmann::json stored_data_items_json = nlohmann::json::array();
-  for (const auto &data_item : stored_data_items_) {
+  for (const auto &data_item : data_items_) {
     stored_data_items_json.push_back(data_item->Serialize());
   }
   json["stored_data_items"] = stored_data_items_json;
@@ -47,11 +47,11 @@ auto DataStorage::Serialize() const -> nlohmann::json {
   return json;
 }
 void DataStorage::RemoveDataItem(const std::shared_ptr<DataItem> &data_item) {
-  stored_data_items_.erase(std::remove(stored_data_items_.begin(),
-                               stored_data_items_.end(), data_item),
-      stored_data_items_.end());
+  data_items_.erase(
+      std::remove(data_items_.begin(), data_items_.end(), data_item),
+      data_items_.end());
 }
 auto DataStorage::GetDataItems() const
     -> std::vector<std::shared_ptr<DataItem>> {
-  return stored_data_items_;
+  return data_items_;
 }

@@ -10,6 +10,13 @@ DataItemPopup::DataItemPopup() : BasePopup("Data Items") {
 }
 
 void DataItemPopup::DrawContents() {
+  if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
+    LoadDataItems(std::dynamic_pointer_cast<DataFlow>(element_)->data_items_);
+  }
+  if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
+    LoadDataItems(
+        std::dynamic_pointer_cast<DataStorage>(element_)->GetDataItems());
+  }
   DrawDataItems();
 
   DrawAddDataItemButton();
@@ -64,7 +71,7 @@ void DataItemPopup::DrawDataItems() {
   }
 }
 
-void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
+void DataItemPopup::DrawDataItem(const std::shared_ptr<DataItem> &data_item) {
   ImGui::PushID(data_item->GetElementId());
 
   bool should_remove_data_item = false;
@@ -131,7 +138,6 @@ void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
   ImGui::Text("Used By Data Flows: ");
   ImGui::Indent();
   for (const auto &data_flow : data_item->GetDataFlows()) {
-    //    ImGui::BulletText("%s", data_flow->GetName().value().get().c_str());
     if (ImGui::Button(data_flow->GetName().get().c_str())) {
       SignalHandel::Instance().navigate_element_onclick_(
           data_flow->GetElementId());
@@ -153,6 +159,13 @@ void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
       std::dynamic_pointer_cast<DataStorage>(element_)->RemoveDataItem(
           data_item);
     }
+  }
+
+  if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
+    std::dynamic_pointer_cast<DataFlow>(element_)->UpdateDataItem(data_item);
+  }
+  if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
+    std::dynamic_pointer_cast<DataStorage>(element_)->UpdateDataItem(data_item);
   }
 
   ImGui::PopID();
@@ -179,13 +192,6 @@ void DataItemPopup::DrawAddDataItemButton() {
   }
 }
 
-void DataItemPopup::SetDataFlow(std::shared_ptr<Element> data_flow) {
-  element_ = data_flow;
-  if (std::dynamic_pointer_cast<DataFlow>(data_flow) != nullptr) {
-    LoadDataItems(std::dynamic_pointer_cast<DataFlow>(data_flow)->data_items_);
-  }
-  if (std::dynamic_pointer_cast<DataStorage>(data_flow) != nullptr) {
-    LoadDataItems(
-        std::dynamic_pointer_cast<DataStorage>(data_flow)->GetDataItems());
-  }
+void DataItemPopup::SetElement(std::shared_ptr<Element> element) {
+  element_ = element;
 }

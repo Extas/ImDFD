@@ -27,13 +27,17 @@ void InfoWindow::DrawContents() {
   info_.Update();
   DrawEditableTextValue(info_.GetName(), "Name:");
   DrawEditableTextValue(info_.GetDescription(), "Description:");
+
   auto &data_items = info_.GetDataItems();
   if (data_items.has_value()) {
     DrawDataItems(data_items.value());
     ImGui::Separator();
   }
 
-  const auto &kInFlows = info_.GetInFlows();
+  DrawFlows();
+}
+void InfoWindow::DrawFlows() {
+  const auto &kInFlows = this->info_.GetInFlows();
   if (kInFlows.has_value() && !kInFlows.value().empty()) {
     ImGui::Text("In Flows");
     for (const auto &kFlows : kInFlows.value()) {
@@ -44,7 +48,7 @@ void InfoWindow::DrawContents() {
     }
     ImGui::Separator();
   }
-  const auto &kOutFlows = info_.GetOutFlows();
+  const auto &kOutFlows = this->info_.GetOutFlows();
   if (kOutFlows.has_value() && !kOutFlows.value().empty()) {
 
     ImGui::Text("Out Flows");
@@ -63,7 +67,7 @@ void InfoWindow::DrawDataItems(std::vector<std::shared_ptr<DataItem>> &items) {
 
   ImGui::SameLine();
   if (ImGui::Button("Detail##")) {
-    data_item_popup_.SetDataFlow(info_.GetElement());
+    data_item_popup_.SetElement(info_.GetElement());
     data_item_popup_.Open();
   }
   data_item_popup_.Draw();

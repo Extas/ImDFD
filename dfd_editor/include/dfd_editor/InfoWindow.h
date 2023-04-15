@@ -76,6 +76,7 @@ private:
   Info info_;
 
   inline static DataItemPopup data_item_popup_;
+  void DrawFlows();
 };
 
 #endif // IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
