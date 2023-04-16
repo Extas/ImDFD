@@ -1,6 +1,7 @@
 #include "imgui.h"
 #include <dfd_editor/DataItemPopup.h>
 #include <dfd_model/DataFlow.h>
+#include <functional>
 #include <signal/SignalHandel.h>
 #include <string>
 #include <ui/Widgets.h>
@@ -50,8 +51,6 @@ void DataItemPopup::DrawDataItem(const std::shared_ptr<DataItem> &data_item) {
 
   ImGui::Separator();
   ImGui::Text("Data Definitions: ");
-
-  nlohmann::json data_json = data_item->GetDataJson();
   static std::map<std::string, std::pair<std::string, std::string>> updates;
   updates.clear();
   static std::vector<std::string> keys_to_remove;
@@ -59,71 +58,36 @@ void DataItemPopup::DrawDataItem(const std::shared_ptr<DataItem> &data_item) {
 
   auto column_names = std::vector<std::string>{"Definition", "Value"};
 
-  // Initialize rowData
-  static std::vector<std::pair<std::string, std::string>> originalData;
-  originalData.clear();
-  originalData.reserve(data_json.size());
-
-  static std::vector<std::pair<std::string, std::string>> updatedData;
-  updatedData.clear();
-  updatedData.reserve(data_json.size());
-
   static std::vector<std::vector<std::reference_wrapper<std::string>>> rowData;
   rowData.clear();
-  rowData.reserve(data_json.size());
-  for (auto it = data_json.begin(); it != data_json.end(); ++it) {
-    auto data_definition = it.key();
-    auto data_value = it.value()["value"].get<std::string>();
 
-    originalData.emplace_back(data_definition, data_value);
-    updatedData.emplace_back(
-        originalData.back().first, originalData.back().second);
-    rowData.push_back({updatedData.back().first, updatedData.back().second});
+  for (auto &data_def : data_item->GetDataDefs()) {
+    rowData.push_back(std::vector<std::reference_wrapper<std::string>>{
+        std::ref(data_def.first), std::ref(data_def.second)});
   }
 
   // Prepare action callbacks
   std::map<std::string, std::function<void(int)>> action_callbacks;
   action_callbacks["Delete"] = [&](int rowIndex) {
-    auto it = data_json.begin();
+    auto it = data_item->GetDataDefs().begin();
     std::advance(it, rowIndex);
-    keys_to_remove.push_back(it.key());
+    keys_to_remove.push_back(it->first);
   };
 
   // Draw the custom table
   imdfd::ui::widgets::DrawCustomTable(column_names, rowData, action_callbacks);
 
   // Apply updates
-  for (size_t i = 0; i < rowData.size(); ++i) {
-    const auto &original = originalData[i];
-    const auto &updated = rowData[i];
-
-    if (original.first != updated[0].get() ||
-        original.second != updated[1].get()) {
-      if (original.first != updated[0].get()) {
-        data_json[updated[0].get()] = data_json[original.first];
-        data_json.erase(original.first);
-      }
-      data_json[updated[0].get()]["value"] = updated[1].get();
-    }
-  }
-
   for (const auto &key : keys_to_remove) {
-    data_json.erase(key);
+    data_item->RemoveDataDef(key);
   }
 
-  if (ImGui::Button("Add Data Definition")) {
-    std::string new_key = "new_key";
-    int counter = 1;
-    while (data_json.contains(new_key)) {
-      new_key = "new def " + std::to_string(counter);
-      counter++;
-    }
-    data_json[new_key] = {{"type", "default type"}, {"value", "default value"}};
+  if (ImGui::Button("Create New Data Definition")) {
+    data_item->CreateDataDef("Definition", "Value");
   }
-  data_item->SetDataJson(data_json);
 
   ImGui::Separator();
-  ImGui::Text("Used By Data Flows: ");
+  ImGui::Text("Used By: ");
   ImGui::Indent();
   for (const auto &data_flow : data_item->GetDataFlows()) {
     if (ImGui::Button(data_flow->GetName().get().c_str())) {
@@ -132,8 +96,8 @@ void DataItemPopup::DrawDataItem(const std::shared_ptr<DataItem> &data_item) {
       ImGui::CloseCurrentPopup();
     }
   }
-
   ImGui::Unindent();
+  ImGui::Separator();
 
   if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
     std::dynamic_pointer_cast<DataFlow>(element_)->UpdateDataItem(data_item);

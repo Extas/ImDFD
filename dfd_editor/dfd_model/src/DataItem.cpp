@@ -9,11 +9,11 @@ auto DataItem::Serialize() const -> nlohmann::json {
   json["id"] = GetElementId();
   json["name"] = name_;
   json["type"] = data_type_name_;
-  json["data"] = data_json_;
+  json["data_def"] = GetDataDefsJson();
 
   nlohmann::json sub_data_items_json = nlohmann::json::array();
-  for (const auto &sub_data_item : sub_data_items_) {
-    sub_data_items_json.push_back(sub_data_item->Serialize());
+  for (const auto &kSubDataItem : sub_data_items_) {
+    sub_data_items_json.push_back(kSubDataItem->Serialize());
   }
   json["sub_data_items"] = sub_data_items_json;
 
@@ -27,7 +27,12 @@ auto DataItem::Deserialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
 
   auto data_item =
       CreateDataItemWithId(id, std::move(name), std::move(type_name));
-  data_item->data_json_ = json.at("data");
+  auto data_defs_json = json.at("data_def");
+  for (auto &data_def : data_defs_json.items()) {
+    data_item->data_defs_.emplace_back(
+        DataItem::DataDescription(data_def.key()),
+        DataItem::DataValue(data_def.value()));
+  }
 
   for (const auto &sub_data_item_json : json.at("sub_data_items")) {
     auto sub_data_item = Deserialize(sub_data_item_json);
@@ -36,9 +41,9 @@ auto DataItem::Deserialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
 
   return data_item;
 }
+
 auto DataItem::CreateDataItem(std::string name, std::string type_name)
     -> std::shared_ptr<DataItem> {
-  all_type_names_.insert(type_name);
   auto data_item =
       std::make_shared<DataItem>(std::move(name), std::move(type_name));
   all_items_.push_back(data_item);
@@ -46,14 +51,12 @@ auto DataItem::CreateDataItem(std::string name, std::string type_name)
 }
 auto DataItem::CreateDataItemWithId(uint64_t id, std::string name,
     std::string type_name) -> std::shared_ptr<DataItem> {
-  all_type_names_.insert(type_name);
   auto data_item =
       std::make_shared<DataItem>(id, std::move(name), std::move(type_name));
   all_items_.push_back(data_item);
   return data_item;
 }
-void DataItem::AddDataDef(DataItem::DataDescription data_description,
-    DataItem::DataValueType data_value_type, DataItem::DataValue data_value) {
-  data_json_[data_description] = {
-      {"type", std::move(data_value_type)}, {"value", std::move(data_value)}};
+void DataItem::CreateDataDef(DataItem::DataDescription data_description,
+    DataItem::DataValue data_value) {
+  data_defs_.emplace_back(std::move(data_description), std::move(data_value));
 }
