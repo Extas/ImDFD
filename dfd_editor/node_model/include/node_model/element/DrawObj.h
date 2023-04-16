@@ -2,6 +2,7 @@
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_ELEMENT_DRAWOBJ_H_
 
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
