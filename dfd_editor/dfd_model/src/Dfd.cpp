@@ -19,10 +19,10 @@ void Dfd::CreateExampleData() {
       CreateDataProcessNode("DataProcess", std::make_pair(500, 0));
 
   auto string_data_item = DataItem::CreateDataItem("DataItem1", "string");
-  string_data_item->AddDataDef("format", "string", "nnnn-nnnn-nnnn-nnnn");
+  string_data_item->CreateDataDef("format", "nnnn-nnnn-nnnn-nnnn");
   auto integer_data_item = DataItem::CreateDataItem("DataItem2", "integer");
-  integer_data_item->AddDataDef("min", "integer", "0");
-  integer_data_item->AddDataDef("max", "integer", "3");
+  integer_data_item->CreateDataDef("min", "0");
+  integer_data_item->CreateDataDef("max", "3");
   integer_data_item->AddSubDataItem(string_data_item);
   integer_data_item->AddSubDataItem(string_data_item);
   integer_data_item->AddSubDataItem(string_data_item);
@@ -81,8 +81,9 @@ auto Dfd::CreateDataProcessNode(const std::string &name,
   data_processes_.push_back(data_process);
 
   Logger::Trace("[DFD {}]: Create DataProcess Node ({}, pos({},{}))",
-      GetElementId(), data_process->name_, data_process->position_.first,
-      data_process->position_.second);
+      GetElementId(), data_process->GetName().get(),
+      data_process->GetPosition().get().first,
+      data_process->GetPosition().get().second);
   return data_process;
 }
 

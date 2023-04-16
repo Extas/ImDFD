@@ -8,8 +8,8 @@
 
 class DataStorageNode : public Node {
 public:
-  DataStorageNode(
-      uint64_t node_id, std::string *name, std::pair<float, float> *position)
+  DataStorageNode(uint64_t node_id, std::reference_wrapper<std::string> name,
+      std::reference_wrapper<std::pair<float, float>> position)
       : Node(node_id, name, position) {
   }
 

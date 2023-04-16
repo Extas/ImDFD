@@ -1,5 +1,4 @@
 #include <dfd_editor/EditorCanvas.h>
-#include <signal/SignalHandel.h>
 
 #include <imgui.h>
 #include <imgui_node_editor.h>
@@ -37,25 +36,6 @@ void EditorCanvas::DrawContents() {
   ed::SetCurrentEditor(nullptr);
 }
 
-void EditorCanvas::LoadLinkFromFlow(
-    const std::shared_ptr<DataFlow> &data_flow_ptr) {
-  auto from_node_id = data_flow_ptr->source_->GetElementId();
-  auto to_node_id = data_flow_ptr->destination_->GetElementId();
-  auto from_node = node_manager_.GetNodeById(from_node_id);
-  auto to_node = node_manager_.GetNodeById(to_node_id);
-  if (!from_node.has_value() || !to_node.has_value()) {
-    Logger::Error("Data flow is not valid");
-  }
-
-  const auto &from_pins = from_node.value().get().GetOutputPins();
-  const auto &to_pins = to_node.value().get().GetInputPins();
-  if (from_pins.size() != 1 || to_pins.size() != 1) {
-    Logger::Error("Data flow is not valid");
-  }
-  link_manager_.AddLink(
-      data_flow_ptr->GetElementId(), from_pins[0].GetId(), to_pins[0].GetId());
-}
-
 void EditorCanvas::DrawNode() const {
   for (const auto &kNode : node_manager_.GetNodes()) {
     kNode->Draw();
@@ -70,8 +50,9 @@ void EditorCanvas::DrawLink() {
 
 void EditorCanvas::HandleInteractions() {
   HandleRightClick();
-
-  // Handle creation action, returns true if editor want to create new object
+  HandleCreateNewLink();
+}
+void EditorCanvas::HandleCreateNewLink() {
   // (node or link)
   if (ed::BeginCreate()) {
     ed::PinId to_pin_id;
@@ -200,13 +181,21 @@ void EditorCanvas::HandleRightClick() {
   create_new_node_list_popup_.SetPosition(
       open_popup_position.x, open_popup_position.y);
   ed::Suspend();
-  if (ed::ShowBackgroundContextMenu()) {
+  if (ed::ShowNodeContextMenu(&context_node_id_)) {
+    Logger::Trace("[EditorCanvas {}] Show Node Context Menu", GetId());
+    delete_node_popup_.Open();
+  } else if (ed::ShowLinkContextMenu(&context_link_id_)) {
+    Logger::Trace("[EditorCanvas {}] Show Link Context Menu", GetId());
+    delete_link_popup_.Open();
+  } else if (ed::ShowBackgroundContextMenu()) {
     Logger::Trace("[EditorCanvas {}] Show Background Context Menu", GetId());
     create_new_node_list_popup_.Open();
   }
   ed::Resume();
 
   ed::Suspend();
+  delete_link_popup_.Draw();
+  delete_node_popup_.Draw();
   create_new_node_list_popup_.Draw();
   ed::Resume();
 }
@@ -229,29 +218,52 @@ void EditorCanvas::LoadDrawData() {
   node_manager_.ClearNodes();
   link_manager_.ClearLinks();
 
-  for (const auto &kDataProcessPtr : dfd_->data_processes_) {
-    auto data_process_node = node_manager_.AddDataProcessNode(
-        kDataProcessPtr->GetElementId(), &kDataProcessPtr->name_,
-        &kDataProcessPtr->position_, &kDataProcessPtr->description_,
-        kDataProcessPtr->sub_dfd_->GetElementId());
+  LoadDataProcessNodes();
+  LoadExternalEntityNodes();
+  LoadDataStorageNodes();
+  LoadDataFlowLinks();
+}
+void EditorCanvas::LoadDataFlowLinks() {
+  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
+    auto from_node_id = kDataFlowPtr->source_->GetElementId();
+    auto to_node_id = kDataFlowPtr->destination_->GetElementId();
+    auto from_node = node_manager_.GetNodeById(from_node_id);
+    auto to_node = node_manager_.GetNodeById(to_node_id);
+    if (!from_node.has_value() || !to_node.has_value()) {
+      Logger::Error("Data flow is not valid");
+    }
 
-    SignalHandel::Instance().create_new_dfd_(kDataProcessPtr->sub_dfd_);
+    const auto &from_pins = from_node.value().get().GetOutputPins();
+    const auto &to_pins = to_node.value().get().GetInputPins();
+    if (from_pins.size() != 1 || to_pins.size() != 1) {
+      Logger::Error("Data flow is not valid");
+    }
+    link_manager_.AddLink(
+        kDataFlowPtr->GetElementId(), from_pins[0].GetId(), to_pins[0].GetId());
   }
-
-  for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
-    auto external_entity_node =
-        node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
-            &kExternalEntityPtr->name_, &kExternalEntityPtr->position_);
-  }
-
+}
+void EditorCanvas::LoadDataStorageNodes() {
   for (const auto &kDataStoragePtr : dfd_->data_storages_) {
     auto data_storage_node =
         node_manager_.AddDataStorageNode(kDataStoragePtr->GetElementId(),
-            &kDataStoragePtr->name_, &kDataStoragePtr->position_);
+            kDataStoragePtr->GetName(), kDataStoragePtr->GetPosition());
   }
+}
+void EditorCanvas::LoadExternalEntityNodes() {
+  for (const auto &kExternalEntityPtr : dfd_->external_entities_) {
+    auto external_entity_node =
+        node_manager_.AddExternalEntityNode(kExternalEntityPtr->GetElementId(),
+            kExternalEntityPtr->GetName(), kExternalEntityPtr->GetPosition());
+  }
+}
+void EditorCanvas::LoadDataProcessNodes() {
+  for (const auto &kDataProcessPtr : dfd_->data_processes_) {
+    auto data_process_node = node_manager_.AddDataProcessNode(
+        kDataProcessPtr->GetElementId(), kDataProcessPtr->GetName(),
+        kDataProcessPtr->GetPosition(), kDataProcessPtr->GetDescription(),
+        kDataProcessPtr->sub_dfd_->GetElementId());
 
-  for (const auto &kDataFlowPtr : dfd_->data_flows_) {
-    LoadLinkFromFlow(kDataFlowPtr);
+    SignalHandel::Instance().create_new_dfd_(kDataProcessPtr->sub_dfd_);
   }
 }
 

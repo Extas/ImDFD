@@ -8,8 +8,8 @@
 
 class ExternalEntityNode : public Node {
 public:
-  ExternalEntityNode(
-      uint64_t node_id, std::string *name, std::pair<float, float> *position)
+  ExternalEntityNode(uint64_t node_id, std::reference_wrapper<std::string> name,
+      std::reference_wrapper<std::pair<float, float>> position)
       : Node(node_id, name, position) {
   }
   void DrawCustomContent() const override {};

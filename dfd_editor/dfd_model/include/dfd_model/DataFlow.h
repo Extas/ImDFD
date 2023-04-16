@@ -22,7 +22,7 @@ public:
 
   void Connect();
   void AddDataItem(std::shared_ptr<DataItem> data_item);
-  void RemoveDataItem(const std::shared_ptr<DataItem>& data_item);
+  void RemoveDataItem(const std::shared_ptr<DataItem> &data_item);
 
   [[nodiscard]] auto Serialize() const -> nlohmann::json override;
   [[nodiscard]] static auto DeSerialize(nlohmann::json json,
@@ -33,6 +33,17 @@ public:
     // Implement the IsValid method as needed
     // ...
     return true;
+  }
+
+  void UpdateDataItem(const std::shared_ptr<DataItem> &data_item) {
+    auto it = std::find_if(data_items_.begin(), data_items_.end(),
+        [data_item](const std::shared_ptr<DataItem> &item) {
+          return item->GetElementId() == data_item->GetElementId();
+        });
+    if (it != data_items_.end()) {
+      data_items_.erase(it);
+    }
+    data_items_.push_back(data_item);
   }
 
   std::vector<std::shared_ptr<DataItem>> data_items_;

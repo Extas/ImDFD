@@ -3,8 +3,8 @@
 #include <utility>
 
 void DataFlow::Connect() {
-  source_->output_data_flows_.push_back(shared_from_this());
-  destination_->input_data_flows_.push_back(shared_from_this());
+  source_->AddOutputDataFlow(shared_from_this());
+  destination_->AddInputDataFlow(shared_from_this());
 }
 auto DataFlow::Serialize() const -> nlohmann::json {
   // Call the base class implementation
@@ -81,6 +81,10 @@ auto DataFlow::HasNode(uint64_t node_id) const -> bool {
 }
 
 void DataFlow::AddDataItem(std::shared_ptr<DataItem> data_item) {
+  if (std::find(data_items_.begin(), data_items_.end(), data_item) !=
+      data_items_.end()) {
+    return;
+  }
   data_item->AddDataFlow(shared_from_this());
   data_items_.push_back(std::move(data_item));
 }

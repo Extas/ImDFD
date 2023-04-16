@@ -1,12 +1,15 @@
 #include "imgui.h"
-#include <cstdint>
+#include <string>
 #include <ui/Widgets.h>
 #include <unordered_map>
 void imdfd::ui::widgets::DrawTextWithLabel(
     const std::string &text, const std::string &label) {
-  ImGui::Text(label.c_str());
+  if (!label.empty()) {
+    auto new_label = label.substr(0, label.find("##"));
+    ImGui::Text("%s", new_label.c_str());
+  }
   ImGui::SameLine();
-  ImGui::Text(text.c_str());
+  ImGui::Text("%s", text.c_str());
 }
 
 void imdfd::ui::widgets::DrawInputText(
@@ -19,7 +22,7 @@ void imdfd::ui::widgets::DrawInputText(
 
 void imdfd::ui::widgets::DrawListWithFilter(
     std::map<uint64_t, std::string> list,
-    const std::function<void(uint64_t)>& callback) {
+    const std::function<void(uint64_t)> &callback) {
   static std::string filter;
 
   ImGui::Text("Filter:");
@@ -49,60 +52,132 @@ void imdfd::ui::widgets::DrawMenuItemList(std::map<uint64_t, std::string> list,
     const std::function<void(uint64_t)> &callback) {
   for (const auto &item : list) {
     if (ImGui::MenuItem(item.second.c_str())) {
-	  if (callback) {
-		callback(item.first);
-	  }
-	}
+      if (callback) {
+        callback(item.first);
+      }
+    }
   }
 }
 
-
-auto imdfd::ui::widgets::DrawEditableInputTexts(std::vector<std::string> texts,
-    std::uint64_t id) -> std::vector<std::string> {
-  if (!texts.empty()) {
-    auto hash_str = texts[0];
-    auto hash = std::hash<std::string>{}(hash_str);
-    id = id + hash;
-  }
-  static std::unordered_map<std::uint64_t, bool> editing;
-  auto &edit_mode = editing[id];
-
-  static std::vector<std::string> edited_texts;
-  edited_texts.clear();
+void imdfd::ui::widgets::DrawEditableInputTexts(
+    const std::vector<std::reference_wrapper<std::string>> &texts) {
+  auto size = texts.size();
+  static std::unordered_map<void *, bool> editing;
 
   ImGui::BeginGroup();
 
-  if (edit_mode) {
-    edited_texts = texts;
-    for (size_t i = 0; i < edited_texts.size(); ++i) {
-      ImGui::InputText(("##" + std::to_string(id) + std::to_string(i)).c_str(),
-          &edited_texts[i]);
-      if (i < edited_texts.size() - 1) {
+  static size_t i = 0;
+  for (auto &text_ref : texts) {
+    auto edit_mode = editing[&text_ref.get()];
+
+    ImGui::PushID(i);
+    if (edit_mode) {
+      if (ImGui::Button("OK")) {
+        editing[&text_ref.get()] = false;
+      }
+    } else {
+      if (ImGui::Button("Edit##")) {
+        editing[&text_ref.get()] = true;
+      }
+    }
+
+    ImGui::SameLine();
+    std::string &text = text_ref.get();
+    if (edit_mode) {
+      ImGui::InputText("##", &text);
+      if (i < texts.size() - 1) {
+        ImGui::SameLine();
+      }
+    } else {
+      ImGui::TextUnformatted(text.c_str());
+      if (i < texts.size() - 1) {
         ImGui::SameLine();
       }
     }
-    ImGui::BeginGroup();
-    if (ImGui::Button("OK")) {
-      texts = edited_texts;
-      edit_mode = false;
+    ++i;
+    if (i == size) {
+      i = 0;
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      edit_mode = false;
-    }
-    ImGui::EndGroup();
-  } else {
-    for (const auto &kText : texts) {
-      ImGui::TextUnformatted(kText.c_str());
-      ImGui::SameLine();
-    }
-    auto edit_name = "Edit" + std::to_string(id);
-    if (ImGui::Button(edit_name.c_str())) {
-      edit_mode = true;
-    }
+    ImGui::PopID();
   }
 
   ImGui::EndGroup();
+}
 
-  return edited_texts;
+void imdfd::ui::widgets::DrawCustomTable(
+    const std::vector<std::string> &columnNames,
+    const std::vector<std::vector<std::reference_wrapper<std::string>>>
+        &rowData,
+    const std::map<std::string, std::function<void(int)>> &action_callbacks) {
+  int numColumns = columnNames.size();
+
+  // Table setup
+  ImGui::BeginTable("custom_table", numColumns + 1,
+      ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg);
+
+  // Set up columns
+  for (const auto &columnName : columnNames) {
+    ImGui::TableSetupColumn(columnName.c_str());
+  }
+  ImGui::TableSetupColumn("Action");
+  ImGui::TableHeadersRow();
+
+  // Inserting data into the table
+  int rowIndex = 0;
+  for (const auto &row : rowData) {
+    ImGui::TableNextRow();
+
+    for (int colIndex = 0; colIndex < numColumns; ++colIndex) {
+      ImGui::TableSetColumnIndex(colIndex);
+      // gen unique id by rowIndex and colIndex
+      auto id = rowIndex * numColumns + colIndex;
+      ImGui::PushID(id);
+      DrawEditableInputTexts({row[colIndex]});
+      ImGui::PopID();
+    }
+
+    // Action column
+    ImGui::TableSetColumnIndex(numColumns);
+    int buttonIndex = 0;
+    for (const auto &[buttonName, callback] : action_callbacks) {
+      if (ImGui::Button(
+              (buttonName + "##" + std::to_string(rowIndex)).c_str())) {
+        callback(rowIndex);
+      }
+      if (buttonIndex < static_cast<int>(action_callbacks.size()) - 1) {
+        ImGui::SameLine();
+      }
+      ++buttonIndex;
+    }
+
+    ++rowIndex;
+  }
+
+  ImGui::EndTable();
+}
+void imdfd::ui::widgets::DrawTextNextLineEdit(
+    std::reference_wrapper<std::string> text, const std::string &label) {
+  static std::unordered_map<std::string, bool> editing;
+  static char buffer[128];
+
+  auto &editing_state = editing[label];
+
+  if (!editing_state) {
+    imdfd::ui::widgets::DrawTextWithLabel(text.get(), label);
+
+    auto button_name = "Edit##" + label + text.get();
+    if (ImGui::Button(button_name.c_str())) {
+      editing_state = true;
+
+      strncpy(buffer, text.get().c_str(), sizeof(buffer));
+      buffer[sizeof(buffer) - 1] = '\0';
+    }
+  } else {
+    ImGui::InputText("##editable_text", buffer, sizeof(buffer));
+
+    if (ImGui::Button("OK")) {
+      editing_state = false;
+      text.get() = std::string(buffer);
+    }
+  }
 }

@@ -16,7 +16,8 @@ namespace ed = ax::NodeEditor;
 
 class Node : public DrawObj {
 public:
-  Node(uint64_t node_id, std::string *name, std::pair<float, float> *position)
+  Node(uint64_t node_id, std::reference_wrapper<std::string> name,
+      std::reference_wrapper<std::pair<float, float>> position)
       : DrawObj(node_id, name), position_(position) {
   }
 
@@ -33,20 +34,22 @@ public:
       -> std::optional<std::reference_wrapper<const InPin>>;
   [[nodiscard]] auto GetOutputPin(uint64_t pin_id) const
       -> std::optional<std::reference_wrapper<const OutPin>>;
-  auto AddInputPin(uint64_t pin_id, std::string *name) -> InPin &;
-  auto AddOutputPin(uint64_t pin_id, std::string *name) -> OutPin &;
+  auto AddInputPin(uint64_t pin_id) -> InPin &;
+  auto AddOutputPin(uint64_t pin_id) -> OutPin &;
 
   [[nodiscard]] auto GetPosition() const -> const std::pair<float, float> & {
-    return *position_;
+    return position_.get();
   }
-  void SetPosition(const std::pair<float, float> &position) {
-    *position_ = position;
+
+  void SetPosition(const std::pair<float, float> &new_position) {
+    position_.get().first = new_position.first;
+    position_.get().second = new_position.second;
   }
 
 private:
   std::vector<InPin> input_pins_;
   std::vector<OutPin> output_pins_;
-  std::pair<float, float> *position_;
+  std::reference_wrapper<std::pair<float, float>> position_;
 
   ed::Utilities::BlueprintNodeBuilder node_builder_;
 

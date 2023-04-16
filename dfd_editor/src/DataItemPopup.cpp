@@ -1,49 +1,36 @@
 #include "imgui.h"
 #include <dfd_editor/DataItemPopup.h>
 #include <dfd_model/DataFlow.h>
+#include <functional>
 #include <signal/SignalHandel.h>
 #include <string>
 #include <ui/Widgets.h>
+#include <utility>
 #include <vector>
 
 DataItemPopup::DataItemPopup() : BasePopup("Data Items") {
 }
 
 void DataItemPopup::DrawContents() {
-  DrawDataItems();
+  std::vector<std::shared_ptr<DataItem>> data_items;
+  if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
+    data_items = std::dynamic_pointer_cast<DataFlow>(element_)->data_items_;
+  }
+  if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
+    data_items =
+        std::dynamic_pointer_cast<DataStorage>(element_)->GetDataItems();
+  }
+  // data_item find id same
+  auto data_item = std::find_if(
+      data_items.begin(), data_items.end(), [this](const auto &data_item) {
+        return data_item->GetElementId() == data_item_id_;
+      });
 
-  DrawAddDataItemButton();
-  ImGui::SameLine();
-  DarwAddDataItemPopup();
+  DrawDataItem(*data_item);
 
   if (ImGui::Button("Close")) {
     ImGui::CloseCurrentPopup();
   }
-}
-void DataItemPopup::DarwAddDataItemPopup() {
-  auto all_data_items = DataItem::GetAllItems();
-
-  std::map<uint64_t, std::string> data_items_map;
-  for (const auto &data_item : all_data_items) {
-    data_items_map[data_item->GetElementId()] =
-        data_item->GetName().value().get();
-  }
-
-  imdfd::ui::widgets::ListWithFilterPopup popup(
-      "My List", data_items_map, [this, &all_data_items](uint64_t item_id) {
-        for (const auto &data_item : all_data_items) {
-          if (data_item->GetElementId() == item_id) {
-            data_items_->push_back(data_item);
-            break;
-          }
-        }
-      });
-
-  if (ImGui::Button("Add Existing Data Item")) {
-    popup.Open();
-  }
-
-  popup.Draw();
 }
 
 void DataItemPopup::Draw() {
@@ -54,138 +41,77 @@ void DataItemPopup::Draw() {
   }
 }
 
-void DataItemPopup::DrawDataItems() {
-  if (data_items_ == nullptr) {
-    return;
-  }
-
-  for (const auto &data_item : *data_items_) {
-    DrawDataItem(data_item);
-  }
-}
-
-void DataItemPopup::DrawDataItem(std::shared_ptr<DataItem> data_item) {
+void DataItemPopup::DrawDataItem(const std::shared_ptr<DataItem> &data_item) {
   ImGui::PushID(data_item->GetElementId());
-
-  bool should_remove_data_item = false;
 
   imdfd::ui::widgets::DrawInputText(
       data_item->GetName().value().get(), "Name: ");
   imdfd::ui::widgets::DrawInputText(
       data_item->GetDateTypeName().value().get(), "Data Type: ");
 
+  ImGui::Separator();
   ImGui::Text("Data Definitions: ");
-  ImGui::Indent();
-  nlohmann::json data_json = data_item->GetDataJson();
-  std::map<std::string, std::pair<std::string, std::string>> updates;
-  std::vector<std::string> keys_to_remove;
-  int id = 0;
-  for (auto it = data_json.begin(); it != data_json.end(); ++it) {
-    auto data_definition = it.key();
-    auto original_data_definition = data_definition;
-    imdfd::ui::widgets::DrawInputText(
-        data_definition, "Data Def: " + std::to_string(id));
-    ImGui::SameLine();
-    auto data_value = it.value()["value"].get<std::string>();
-    auto original_data_value = data_value;
-    imdfd::ui::widgets::DrawInputText(
-        data_value, "Value: " + std::to_string(id));
-    ImGui::SameLine();
-    std::string button_label = "Delete " + std::to_string(id);
-    if (ImGui::Button(button_label.c_str())) {
-      keys_to_remove.push_back(original_data_definition);
-    }
-    id++;
+  static std::map<std::string, std::pair<std::string, std::string>> updates;
+  updates.clear();
+  static std::vector<std::string> keys_to_remove;
+  keys_to_remove.clear();
 
-    if (data_definition != original_data_definition ||
-        data_value != original_data_value) {
-      updates[original_data_definition] =
-          std::make_pair(data_definition, data_value);
-    }
-  }
-  ImGui::Unindent();
+  auto column_names = std::vector<std::string>{"Definition", "Value"};
 
-  // 应用更改
-  for (const auto &update : updates) {
-    if (update.first != update.second.first) {
-      data_json[update.second.first] = data_json[update.first];
-      data_json.erase(update.first);
-    }
-    data_json[update.second.first]["value"] = update.second.second;
+  static std::vector<std::vector<std::reference_wrapper<std::string>>> rowData;
+  rowData.clear();
+
+  for (auto &data_def : data_item->GetDataDefs()) {
+    rowData.push_back(std::vector<std::reference_wrapper<std::string>>{
+        std::ref(data_def.first), std::ref(data_def.second)});
   }
+
+  // Prepare action callbacks
+  std::map<std::string, std::function<void(int)>> action_callbacks;
+  action_callbacks["Delete"] = [&](int rowIndex) {
+    auto it = data_item->GetDataDefs().begin();
+    std::advance(it, rowIndex);
+    keys_to_remove.push_back(it->first);
+  };
+
+  // Draw the custom table
+  imdfd::ui::widgets::DrawCustomTable(column_names, rowData, action_callbacks);
+
+  // Apply updates
   for (const auto &key : keys_to_remove) {
-    data_json.erase(key);
+    data_item->RemoveDataDef(key);
   }
 
-  if (ImGui::Button("Add Data Definition")) {
-    std::string new_key = "new_key";
-    int counter = 1;
-    while (data_json.contains(new_key)) {
-      new_key = "new def " + std::to_string(counter);
-      counter++;
-    }
-    data_json[new_key] = {{"type", "default type"}, {"value", "default value"}};
+  if (ImGui::Button("Create New Data Definition")) {
+    data_item->CreateDataDef("Definition", "Value");
   }
-  data_item->SetDataJson(data_json);
 
-  ImGui::Text("Used By Data Flows: ");
+  ImGui::Separator();
+  ImGui::Text("Used By: ");
   ImGui::Indent();
   for (const auto &data_flow : data_item->GetDataFlows()) {
-    //    ImGui::BulletText("%s", data_flow->GetName().value().get().c_str());
-    if (ImGui::Button(data_flow->GetName().value().get().c_str())) {
+    if (ImGui::Button(data_flow->GetName().get().c_str())) {
       SignalHandel::Instance().navigate_element_onclick_(
           data_flow->GetElementId());
       ImGui::CloseCurrentPopup();
     }
   }
-
   ImGui::Unindent();
+  ImGui::Separator();
 
-  if (ImGui::Button("Delete Data Item")) {
-    should_remove_data_item = true;
+  if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
+    std::dynamic_pointer_cast<DataFlow>(element_)->UpdateDataItem(data_item);
   }
-
-  if (should_remove_data_item) {
-    if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
-      std::dynamic_pointer_cast<DataFlow>(element_)->RemoveDataItem(data_item);
-    }
-    if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
-      std::dynamic_pointer_cast<DataStorage>(element_)->RemoveDataItem(
-          data_item);
-    }
+  if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
+    std::dynamic_pointer_cast<DataStorage>(element_)->UpdateDataItem(data_item);
   }
 
   ImGui::PopID();
   ImGui::Separator();
 }
 
-void DataItemPopup::LoadDataItems(
-    std::vector<std::shared_ptr<DataItem>> &data_items) {
-  data_items_ = &data_items;
-}
-
-void DataItemPopup::DrawAddDataItemButton() {
-  if (ImGui::Button("Create New Data Item")) {
-    if (data_items_ != nullptr) {
-      if (std::dynamic_pointer_cast<DataFlow>(element_) != nullptr) {
-        std::dynamic_pointer_cast<DataFlow>(element_)->AddDataItem(
-            DataItem::CreateDataItem("New Data Item", "No Type"));
-      }
-      if (std::dynamic_pointer_cast<DataStorage>(element_) != nullptr) {
-        std::dynamic_pointer_cast<DataStorage>(element_)->AddDataItem(
-            DataItem::CreateDataItem("New Data Item", "No Type"));
-      }
-    }
-  }
-}
-
-void DataItemPopup::SetDataFlow(std::shared_ptr<Element> data_flow) {
-  element_ = data_flow;
-  if (std::dynamic_pointer_cast<DataFlow>(data_flow) != nullptr) {
-    LoadDataItems(std::dynamic_pointer_cast<DataFlow>(data_flow)->data_items_);
-  }
-  if (std::dynamic_pointer_cast<DataStorage>(data_flow) != nullptr) {
-    LoadDataItems(
-        std::dynamic_pointer_cast<DataStorage>(data_flow)->stored_data_items_);
-  }
+void DataItemPopup::SetData(
+    std::shared_ptr<Element> element, std::uint64_t data_item) {
+  element_ = std::move(element);
+  data_item_id_ = data_item;
 }

@@ -1,7 +1,7 @@
 #include <GLFWMainWindows.h>
 #include <logging/Logger.h>
 
-int main() {
+auto main() -> int {
   Logger::Init();
 
   GLFWMainWindows::Init();

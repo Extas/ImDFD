@@ -86,8 +86,8 @@ void DearImGui::Shutdown() {
 
 void DearImGui::IoConfig() {
   auto &imgui_io = ImGui::GetIO();
-  auto ini_path = std::filesystem::current_path().parent_path() / "data" /
-                  "imgui.ini";
+  auto ini_path =
+      std::filesystem::current_path().parent_path() / "data" / "imgui.ini";
   ImGui::LoadIniSettingsFromDisk(ini_path.string().data());
 
   // docking and multi-viewport enable

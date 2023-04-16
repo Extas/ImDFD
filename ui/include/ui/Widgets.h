@@ -22,8 +22,17 @@ void DrawListWithFilter(std::map<uint64_t, std::string> list,
 void DrawMenuItemList(std::map<uint64_t, std::string> list,
     const std::function<void(uint64_t)> &callback);
 
-auto DrawEditableInputTexts(std::vector<std::string> texts, std::uint64_t id)
-    -> std::vector<std::string>;
+void DrawTextNextLineEdit(
+    std::reference_wrapper<std::string> text, const std::string &label);
+
+void DrawEditableInputTexts(
+    const std::vector<std::reference_wrapper<std::string>> &texts);
+
+void DrawCustomTable(const std::vector<std::string> &columnNames,
+    const std::vector<std::vector<std::reference_wrapper<std::string>>>
+        &rowData,
+    const std::map<std::string, std::function<void(int)>> &action_callbacks =
+        {});
 
 class MenuItemListPopup : public BasePopup {
 public:
@@ -34,9 +43,7 @@ public:
   }
 
   void DrawContents() override {
-    auto new_callback = [this](uint64_t id) {
-      callback_(id, GetPosition());
-    };
+    auto new_callback = [this](uint64_t id) { callback_(id, GetPosition()); };
     imdfd::ui::widgets::DrawMenuItemList(list_, new_callback);
   }
 

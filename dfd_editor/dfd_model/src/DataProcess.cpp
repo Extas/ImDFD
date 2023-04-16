@@ -3,13 +3,13 @@
 #include <utility>
 
 DataProcess::DataProcess(const std::string &name, std::pair<float, float> pos)
-    : DfdNode(name, pos, "nod"),
+    : DfdNode(name, pos, "no description"),
       sub_dfd_(std::make_shared<Dfd>(name + "_dfd")) {
 }
 
 DataProcess::DataProcess(
     uint64_t id, const std::string &name, std::pair<float, float> pos)
-    : DfdNode(id, name, pos, "nod"),
+    : DfdNode(id, name, pos, "no description"),
       sub_dfd_(std::make_shared<Dfd>(name + "_dfd")) {
 }
 auto DataProcess::Serialize() const -> nlohmann::json {

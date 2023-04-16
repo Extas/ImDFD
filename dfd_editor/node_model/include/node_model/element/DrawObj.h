@@ -7,17 +7,18 @@
 
 class DrawObj {
 public:
-  explicit DrawObj(uint64_t obj_id, std::string *name)
+  explicit DrawObj(uint64_t obj_id, std::reference_wrapper<std::string> name)
       : id_(obj_id), name_(name) {
   }
 
   virtual void Draw() = 0;
 
-  [[nodiscard]] auto GetName() const -> const std::string & {
-    return *name_;
+  [[nodiscard]] auto GetName() const -> std::reference_wrapper<std::string> {
+    return name_;
   }
-  void SetName(std::string *name) {
-    name_ = name;
+
+  void SetName(const std::string &new_name) {
+    name_.get() = new_name;
   }
 
   [[nodiscard]] auto GetId() const -> uint64_t {
@@ -26,7 +27,7 @@ public:
 
 private:
   uint64_t id_ = static_cast<uint64_t>(0);
-  std::string *name_;
+  std::reference_wrapper<std::string> name_;
 
 public:
   DrawObj(DrawObj &&other) noexcept : id_(other.id_), name_(other.name_) {
@@ -38,8 +39,6 @@ public:
       name_ = other.name_;
       id_ = other.id_;
       other.id_ = static_cast<uint64_t>(0);
-      ;
-      other.name_ = nullptr;
     }
     return *this;
   }
