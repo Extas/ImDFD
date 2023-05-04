@@ -117,6 +117,5 @@ private:
 
   inline static std::vector<std::shared_ptr<DataItem>> all_items_;
 };
-;
 
 #endif // IMDFD_DFD_EDITOR_DFD_MODEL_INCLUDE_DFD_MODEL_DATAITEM_H_
