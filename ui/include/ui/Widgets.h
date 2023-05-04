@@ -1,5 +1,6 @@
 #ifndef IMDFD_UI_INCLUDE_UI_WIDGETS_H_
 #define IMDFD_UI_INCLUDE_UI_WIDGETS_H_
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include "BasePopup.h"
 #include <cstring>

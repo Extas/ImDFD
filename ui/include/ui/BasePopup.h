@@ -1,5 +1,6 @@
 #ifndef IMDFD_UI_INCLUDE_UI_BASEPOPUP_H_
 #define IMDFD_UI_INCLUDE_UI_BASEPOPUP_H_
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include <imgui.h>
 #include <signal/SignalHandel.h>

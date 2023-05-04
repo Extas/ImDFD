@@ -1,5 +1,6 @@
-#include "dfd_model/DataItem.h"
-#include "logging/Logger.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <dfd_model/DataItem.h>
+#include <logging/Logger.h>
 #include <dfd_editor/InfoWindow.h>
 #include <imgui.h>
 #include <signal/SignalHandel.h>

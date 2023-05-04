@@ -1,8 +1,9 @@
 #ifndef IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
 #define IMDFD_DFD_EDITOR_INCLUDE_DFD_EDITOR_INFOWINDOW_H_
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include "DataItemPopup.h"
-#include "logging/Logger.h"
+#include <logging/Logger.h>
 #include <dfd_model/DataFlow.h>
 #include <dfd_model/DataItem.h>
 #include <dfd_model/DataProcess.h>

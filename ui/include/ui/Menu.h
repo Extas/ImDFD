@@ -1,5 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include <functional>
 #include <imgui.h>
