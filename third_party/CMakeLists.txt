@@ -49,7 +49,8 @@ asap_add_package(
         GIT_TAG
         # 192196711a7d0d7c2d60454d42654cf090498a74 # docking branch
         # 9cd9c2eff99877a3f10a7f9c2a3a5b9c15ea36c6 # 1.88 docking
-        docking-layout
+        #        docking-layout
+        4055110b5626cdb393e98d8071255beb13901b5a
         GITHUB_REPOSITORY
         thedmd/imgui)
 
