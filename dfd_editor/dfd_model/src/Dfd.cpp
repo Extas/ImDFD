@@ -145,6 +145,16 @@ auto Dfd::GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode> {
     return *iter3;
   }
 
+  for (const auto &kDataProcess : data_processes_) {
+    auto sub_dfd = kDataProcess->sub_dfd_;
+    if (sub_dfd) {
+      auto node = sub_dfd->GetNodeById(node_id);
+      if (node) {
+        return node;
+      }
+    }
+  }
+
   return nullptr;
 }
 auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
@@ -154,6 +164,17 @@ auto Dfd::DeleteFlow(uint64_t flow_id) -> bool {
     data_flows_.erase(iter);
     return true;
   }
+
+  for (const auto &kDataProcess : data_processes_) {
+    auto sub_dfd = kDataProcess->sub_dfd_;
+    if (sub_dfd) {
+      auto result = sub_dfd->DeleteFlow(flow_id);
+      if (result) {
+        return true;
+      }
+    }
+  }
+
   return false;
 }
 auto Dfd::AddDataFlow(const std::string &name, uint64_t src_node_id,
