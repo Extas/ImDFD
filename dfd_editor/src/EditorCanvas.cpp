@@ -1,9 +1,5 @@
 #include <dfd_editor/EditorCanvas.h>
 
-#include <imgui.h>
-#include <imgui_node_editor.h>
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include <imgui_internal.h>
 #include <logging/Logger.h>
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)

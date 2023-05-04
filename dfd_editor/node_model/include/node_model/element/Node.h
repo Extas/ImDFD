@@ -4,7 +4,9 @@
 #include "DrawObj.h"
 #include "Pin.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <examples/blueprints-example/utilities/builders.h>
+#include <imgui_internal.h>
 #include <imgui_node_editor.h>
 namespace ed = ax::NodeEditor;
 
