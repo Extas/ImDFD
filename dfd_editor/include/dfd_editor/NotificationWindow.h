@@ -1,6 +1,5 @@
 #ifndef IMNOTIFICATION_H
 #define IMNOTIFICATION_H
-#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include <imgui.h>
 #include <spdlog/common.h>

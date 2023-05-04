@@ -3,6 +3,7 @@
 #define IMDFD_DFD_EDITOR_NODE_MODEL_INCLUDE_NODE_MODEL_UTIL_DRAWING_H_
 
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui.h>
 #include <imgui_internal.h>
 
 namespace ax::Drawing {
