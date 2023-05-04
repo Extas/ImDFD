@@ -93,6 +93,17 @@ auto MultCanvasWindow::CreateNewCanvas(const std::shared_ptr<Dfd> &dfd)
   return AddCanvas(std::make_shared<EditorCanvas>(dfd));
 }
 
+void MultCanvasWindow::OpenCanvas(int64_t canvas_id) {
+  auto found_editor = std::find_if(canvas_.begin(), canvas_.end(),
+      [canvas_id](const std::shared_ptr<EditorCanvas> &editor) {
+        return editor->GetId() == canvas_id;
+      });
+
+  if (found_editor != canvas_.end()) {
+    (*found_editor)->open_ = true;
+  }
+}
+
 auto MultCanvasWindow::AddCanvas(
     const std::shared_ptr<EditorCanvas> &editor_canvas) -> int64_t {
   canvas_.push_back(editor_canvas);

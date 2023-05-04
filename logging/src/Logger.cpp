@@ -8,11 +8,14 @@ void Logger::Init() {
   sinks_.push_back(console_sink);
   sinks_.push_back(file_sink);
 
+  // Create logger with both console and file sinks
   logger_ =
       std::make_shared<spdlog::logger>("main", sinks_.begin(), sinks_.end());
 
+  // Set log level
   logger_->set_level(spdlog::level::trace);
 
+  // Set pattern
   spdlog::set_pattern("[%H:%M:%S.%e] [%^%l%$] %v");
 
   atexit([]() {
