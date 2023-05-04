@@ -1,4 +1,3 @@
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include <dfd_editor/MultCanvasWindow.h>
 
 #include <imgui.h>

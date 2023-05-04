@@ -1,6 +1,5 @@
 #ifndef IMDFD__DEARIMGUI_H_
 #define IMDFD__DEARIMGUI_H_
-#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include <GLFW/glfw3.h>
 #include <dfd_editor/DfdManager.h>

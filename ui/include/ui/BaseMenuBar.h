@@ -1,6 +1,5 @@
 #ifndef BASEMENUBAR_H
 #define BASEMENUBAR_H
-#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include <ui/Menu.h>
 
