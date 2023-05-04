@@ -93,7 +93,7 @@ void DearImGui::IoConfig() {
   // docking and multi-viewport enable
   imgui_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   imgui_io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-  // imgui_io.ConfigFlags |= ImGuiViewportFlags_NoDecoration;
+  imgui_io.ConfigFlags |= ImGuiViewportFlags_NoDecoration;
   imgui_io.ConfigFlags |= ImGuiCol_DockingEmptyBg;
 
   // font

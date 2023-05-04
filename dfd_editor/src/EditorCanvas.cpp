@@ -111,17 +111,11 @@ void EditorCanvas::HandleDelete() {
         dfd_->DeleteNode(node_id.Get());
       }
     }
-    // There may be many links marked for deletion, let's loop over them.
     ed::LinkId deleted_link_id;
     while (ed::QueryDeletedLink(&deleted_link_id)) {
-      // If you agree that link can be deleted, accept deletion.
       if (ed::AcceptDeletedItem()) {
-        // Then remove link from your data.
         dfd_->DeleteFlow(deleted_link_id.Get());
       }
-
-      // You may reject link deletion by calling:
-      // ed::RejectDeletedItem();
     }
   }
   ed::EndDelete(); // Wrap up deletion action

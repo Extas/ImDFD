@@ -18,8 +18,6 @@ public:
 
   auto CreateNewCanvas(const std::shared_ptr<Dfd> &dfd) -> int64_t;
 
-  void OpenCanvas(int64_t canvas_id);
-
   void LoadDfd(const std::shared_ptr<Dfd> &dfd);
 
 private:
