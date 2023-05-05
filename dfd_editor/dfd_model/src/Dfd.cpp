@@ -237,9 +237,9 @@ auto Dfd::GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow> {
   for (const auto &kDataProcess : data_processes_) {
     auto sub_dfd = kDataProcess->sub_dfd_;
     if (sub_dfd) {
-      auto result = sub_dfd->DeleteFlow(flow_id);
+      auto result = sub_dfd->GetFlowById(flow_id);
       if (result) {
-        return true;
+        return result;
       }
     }
   }
