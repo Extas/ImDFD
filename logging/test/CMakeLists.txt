@@ -4,18 +4,22 @@
 
 set(MAIN_TEST_TARGET_NAME ${MODULE_TARGET_NAME}_test)
 
+file(GLOB_RECURSE SOURCES
+        CONFIGURE_DEPENDS
+        *.cpp)
+
 asap_add_test(
-  ${MAIN_TEST_TARGET_NAME}
-  UNIT_TEST
-  VALGRIND_MEMCHECK
-  SRCS
-  "main.cpp"
-  LINK
-  ${MODULE_TARGET_NAME}
-  gtest
-  gmock
-  COMMENT
-  "logging unit tests")
+        ${MAIN_TEST_TARGET_NAME}
+        UNIT_TEST
+        VALGRIND_MEMCHECK
+        SRCS
+        ${SOURCES}
+        LINK
+        ${MODULE_TARGET_NAME}
+        gtest
+        gmock
+        COMMENT
+        "logging unit tests")
 
 asap_set_language_standards(${MAIN_TEST_TARGET_NAME} CXX 17)
 

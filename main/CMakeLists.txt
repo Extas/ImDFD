@@ -28,61 +28,22 @@ asap_declare_module(
 # -----------------------------------------------------
 set(MODULE_TARGET_NAME "ImDFD")
 
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp src/*.h)
 asap_add_executable(
   ${MODULE_TARGET_NAME}
   WARNING
   EXCEPTIONS
   SOURCES
-  src/main.cpp
-  src/GLFWMainWindows.cpp
-  src/DearImGui.cpp
-  src/ui/NodeEditerDemo.hpp
-)
+  ${SOURCES})
 
 asap_set_language_standards(${MODULE_TARGET_NAME}
   CXX 17)
 
-find_package(GLFW REQUIRED)
-find_package(glad REQUIRED)
-find_package(imgui REQUIRED)
-find_package(imgui_node_editor REQUIRED)
-
-set(GLAD_PROFILE "core" CACHE STRING "" FORCE)
-
-asap_add_library(imgui STATIC
-  WARNING
-  SOURCES
-  ${imgui_SOURCE_DIR}/imgui.cpp
-  ${imgui_SOURCE_DIR}/imgui_draw.cpp
-  ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-  ${imgui_SOURCE_DIR}/imgui_demo.cpp
-  ${imgui_SOURCE_DIR}/imgui_tables.cpp
-  ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
-  ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-)
-
-target_link_libraries(imgui PUBLIC glfw glad)
-
-target_include_directories(imgui PUBLIC
-  ${imgui_SOURCE_DIR}
-  ${imgui_SOURCE_DIR}/backends
-  ${GLFW_SOURCE_DIR}/include
-)
-
-file(GLOB IMGUI_NODE_EDITOR_SRC ${imgui_node_editor_SOURCE_DIR}/*.cpp)
-asap_add_library(imgui_node_editor STATIC
-  WARNING
-  SOURCES
-  ${IMGUI_NODE_EDITOR_SRC}
-)
-target_link_libraries(imgui_node_editor PRIVATE imgui)
-target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_SOURCE_DIR})
-
 target_link_libraries(
   ${MODULE_TARGET_NAME}
-  PUBLIC
-  imgui
-  imgui_node_editor
+  PRIVATE
+  ui
+  dfd_editor
   logging
 )
 

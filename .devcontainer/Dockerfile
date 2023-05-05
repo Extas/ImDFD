@@ -28,6 +28,9 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # Install ccache
 RUN apt-get -y install ccache
 
+# Install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev libxkbcommon-dev
+RUN apt-get -y install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev libxkbcommon-dev
+
 # Clean-up
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 

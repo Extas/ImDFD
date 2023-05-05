@@ -245,9 +245,12 @@ endif()
 # Project modules
 # ------------------------------------------------------------------------------
 add_subdirectory(tools/version-info)
+add_subdirectory(third_party/imgui)
 
-# Add project modules here
 add_subdirectory(logging)
+add_subdirectory(signal)
+add_subdirectory(ui)
+add_subdirectory(dfd_editor)
 add_subdirectory(main)
 
 # ------------------------------------------------------------------------------

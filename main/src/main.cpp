@@ -1,9 +1,8 @@
 #include <GLFWMainWindows.h>
-#include <Logger.h>
+#include <logging/Logger.h>
 
-int main() {
+auto main() -> int {
   Logger::Init();
-  Logger::Info("Welcome to the ImDFD");
 
   GLFWMainWindows::Init();
 
