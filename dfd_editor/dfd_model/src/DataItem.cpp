@@ -27,6 +27,7 @@ auto DataItem::Deserialize(nlohmann::json json) -> std::shared_ptr<DataItem> {
 
   auto data_item =
       CreateDataItemWithId(id, std::move(name), std::move(type_name));
+
   auto data_defs_json = json.at("data_def");
   for (auto &data_def : data_defs_json.items()) {
     data_item->data_defs_.emplace_back(

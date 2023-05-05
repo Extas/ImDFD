@@ -288,3 +288,7 @@ auto Dfd::LoadFromJsonString(const std::string &json) -> std::shared_ptr<Dfd> {
   auto dfd = DeSerialize(json_obj);
   return dfd;
 }
+
+void Dfd::SetName(const std::string &name) {
+  name_ = name;
+}

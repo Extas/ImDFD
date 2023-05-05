@@ -4,7 +4,7 @@
 
 EditorCanvas::EditorCanvas(const std::shared_ptr<Dfd> &dfd)
     : BaseWindow(dfd->GetName()), canvas_id_(dfd->GetElementId()), dfd_(dfd) {
-
+  SetTitle(dfd->GetName());
   ConnectSignals();
 }
 
