@@ -40,6 +40,7 @@ public:
   [[nodiscard]] auto IsValid() const -> bool override;
 
   [[nodiscard]] auto GetName() const -> std::string;
+  void SetName(const std::string &name);
 
   auto GetNodeById(uint64_t node_id) -> std::shared_ptr<DfdNode>;
   auto GetFlowById(uint64_t flow_id) -> std::shared_ptr<DataFlow>;
